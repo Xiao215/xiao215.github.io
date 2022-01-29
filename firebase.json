@@ -10,9 +10,12 @@
       "**/node_modules/**"
     ]
   },
+  "storage": {
+    "rules": "storage.rules"
+  },
   "emulators": {
     "hosting": {
-      "port": 5010
+      "port": 5013
     },
     "ui": {
       "enabled": true
