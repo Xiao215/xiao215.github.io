@@ -15,7 +15,7 @@
   },
   "emulators": {
     "hosting": {
-      "port": 5013
+      "port": 5014
     },
     "ui": {
       "enabled": true

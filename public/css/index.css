@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body{
+  background: rgb(225,200,226);
+  background: radial-gradient(circle, rgba(225,200,226,1) 0%, rgba(187,175,213,1) 35%, rgba(144,104,189,1) 100%);
+}
+.nav-item{
+  font-family: 'Montserrat', sans-serif;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 40px;
+  color: #ecf0f1;
+}
+
+header{
+  display: flex;
+  /* move things to right */
+  justify-content:flex-end;
+  align-items: center;
+  padding: 30px 5%;
+}
+
+.nav-links{
+  /* no list style */
+  list-style: none;
+}
+.nav-links li{
+  /* going side by side */
+  display: inline-block;
+  padding: 0px 20px;
+}
+
+.nav-item{
+  transition: all 0.3s ease 0s;
+}
+.nav-item:hover{
+  color: #ecf0f1;
+  transition: all 0.3s ease 0s;
+  border-bottom: 5px solid #ecf0f1;
+}
+
+
+/* CSS */
+.button-52 {
+  margin-bottom: 40px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 25px;
+  letter-spacing: 1px;
+  padding: 13px 20px 13px;
+  outline: 0;
+  color:white;
+  border: 3px solid white;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.button-52:after {
+  content: "";
+  background-color: #60adf7;
+  width: 100%;
+  z-index: -1;
+  position: absolute;
+  height: 100%;
+  top: 20px;
+  left: 20px;
+  transition: 0.2s;
+}
+
+.button-52:hover:after {
+  top: 0px;
+  left: 0px;
+}
+
+@media (min-width: 768px) {
+  .button-52 {
+    padding: 13px 50px 13px;
+  }
+}
+.content{
+
+    margin-top: 5%;
+}
+.button-group{
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+}
