@@ -5,8 +5,9 @@
   padding: 0;
 }
 body{
-  background: rgb(225,200,226);
-  background: radial-gradient(circle, rgba(225,200,226,1) 0%, rgba(187,175,213,1) 35%, rgba(144,104,189,1) 100%);
+  background-image: url('AAA.JPG') ;
+  /* background: rgb(225,200,226);
+  background: radial-gradient(circle, rgba(225,200,226,1) 0%, rgba(187,175,213,1) 35%, rgba(144,104,189,1) 100%); */
 }
 .nav-item{
   font-family: 'Montserrat', sans-serif;
@@ -49,9 +50,8 @@ header{
   margin-bottom: 60px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  font-size: 25px;
+  font-size: 30px;
   letter-spacing: 1px;
-  padding: 13px 20px 13px;
   outline: 0;
   color:white;
   border: 3px solid white;
@@ -70,8 +70,8 @@ header{
   z-index: -1;
   position: absolute;
   height: 100%;
-  top: 17px;
-  left: 17px;
+  top: 20px;
+  left: 20px;
   transition: 0.2s;
 }
 
@@ -82,11 +82,14 @@ header{
 
 @media (min-width: 768px) {
   .button-52 {
+    transition-duration: 0.3s;
+    padding: 23px 40px 3px 60px;
+  }.button-52:hover {
+    transition-duration: 0.3s;
     padding: 13px 50px 13px;
   }
 }
 .content{
-
     margin-top: 7%;
 }
 .button-group{
