@@ -6,7 +6,7 @@ var storageRef = storage.ref();
   storageRef.child('image/corgi.png').getDownloadURL()
     .then((url) => {
       // `url` is the download URL for 'images/stars.jpg'
-      console.log(url);
+      //console.log(url);
       const link = document.querySelector("link[rel~='icon']");
       link.href=url;
     })
