@@ -18,7 +18,9 @@ body{
   text-decoration: none;
   font-weight: 500;
   font-size: 45px;
-  color: #ecf0f1;
+  color: #340aa7;
+  border-radius: 25px 25px 0 0;
+  background-color: hsl(192, 15%, 94%, 0.5);
 }
 
 header{
@@ -43,9 +45,9 @@ header{
   transition: all 0.3s ease 0s;
 }
 .nav-item:hover{
-  color: #ecf0f1;
+  color: #340aa7;
   transition: all 0.3s ease 0s;
-  border-bottom: 5px solid #ecf0f1;
+  border-bottom: 5px solid #340aa7;
 }
 
 
