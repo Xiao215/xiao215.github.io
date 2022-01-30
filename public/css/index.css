@@ -46,7 +46,7 @@ header{
 
 /* CSS */
 .button-52 {
-  margin-bottom: 40px;
+  margin-bottom: 60px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
   font-size: 25px;
@@ -65,13 +65,13 @@ header{
 
 .button-52:after {
   content: "";
-  background-color: #60adf7;
+  background-color: #c887b9;
   width: 100%;
   z-index: -1;
   position: absolute;
   height: 100%;
-  top: 20px;
-  left: 20px;
+  top: 17px;
+  left: 17px;
   transition: 0.2s;
 }
 
@@ -87,7 +87,7 @@ header{
 }
 .content{
 
-    margin-top: 5%;
+    margin-top: 7%;
 }
 .button-group{
   margin-left: auto;
