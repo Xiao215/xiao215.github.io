@@ -1,7 +1,7 @@
 // Get a reference to the storage service, which is used to create references in your storage bucket
 var storage = firebase.storage();
 var storageRef = storage.ref();
-console.log(storageRef.child('resume/Resume-Xiao.pdf'));
+console.log(storageRef.child('resume/resume-xiao.pdf'));
   storageRef.child('image/corgi.png').getDownloadURL()
     .then((url) => {
       // `url` is the download URL for 'images/stars.jpg'
