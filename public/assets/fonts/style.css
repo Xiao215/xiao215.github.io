@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'Fiver';
+    src: local('Fiver Regular'), local('Fiver-Regular'),
+        url('Fiver.woff2') format('woff2'),
+        url('Fiver.woff') format('woff'),
+        url('Fiver.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }

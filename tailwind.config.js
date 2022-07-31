@@ -7,13 +7,6 @@ module.exports = {
       fontFamily: {
         raleway: ["Montserrat", "sans-serif"],
       },
-      spacing: {
-        128: "32rem",
-        144: "36rem",
-      },
-      borderRadius: {
-        "4xl": "2rem",
-      },
       colors: {
         transparent: "transparent",
         current: "currentColor",

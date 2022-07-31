@@ -1,11 +1,9 @@
 import React from 'react';
-import Slider from '@mui/material/Slider';
-
-interface AppProps {}
+import NavBar from './Nav/NavBar';
 function App(): JSX.Element{
   return (
     <div className="font-raleway" >
-      
+      <NavBar/>
     </div>
   );
 }
