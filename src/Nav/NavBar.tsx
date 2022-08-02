@@ -16,7 +16,7 @@ function NavBar(){
         <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500'}} >
           <NavItem menuItem={leftMenu}></NavItem>
         </Box>
-        <Box className='title' sx={{ alignContent: 'center' }}>{title}</Box>
+        <Box className='title text-themeTwo-900' sx={{ alignContent: 'center' }}>{title}</Box>
         <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500'}} >
           <NavItem menuItem={rightMenu}></NavItem>
         </Box>
