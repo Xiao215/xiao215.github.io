@@ -4,7 +4,7 @@ import App from './App';
 import './tailwind.css';
 import { StyledEngineProvider } from '@mui/material/styles';
 import './assets/fonts/style.css';
-
+import GlobalStyles from './globalTheme';
 const root = ReactDOM.createRoot(
   document.getElementById('root')as HTMLElement
 );
@@ -12,6 +12,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode >
     <StyledEngineProvider injectFirst>
+      <GlobalStyles />
       <App />
     </StyledEngineProvider>
   </React.StrictMode>

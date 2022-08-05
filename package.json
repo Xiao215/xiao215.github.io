@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+     "@mdi/js": "5.9.55",
+    "@react-spring/three": "9.0.0-rc.3",
+    "@react-three/drei": "2.2.18",
     "@emotion/react": "^11.9.3",
     "@emotion/styled": "^11.9.3",
     "@mui/icons-material": "^5.8.4",
@@ -14,9 +17,14 @@
     "@types/node": "^16.11.46",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
+    "chartist": "^0.11.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "styled-components": "^5.3.5",
+    "react-three-fiber": "5.3.14",
+    "react-use-gesture": "9.0.0",
+    "three": "^0.143.0",
     "typescript": "^4.7.4",
     "web-vitals": "^2.1.4"
   },
@@ -45,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@types/styled-components": "^5.1.25",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "tailwindcss": "^3.1.6"

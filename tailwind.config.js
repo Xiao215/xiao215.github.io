@@ -10,15 +10,31 @@ module.exports = {
       colors: {
         transparent: "transparent",
         current: "currentColor",
-        themeOne: {
-          300: "#ffe8d6",
-          600: "#ddbea9",
-          900: "#cb997e",
+        red: {
+          light: "#ff8a8e",
+          default: "#ff595e",
+          dark: "#e53e41",
         },
-        themeTwo: {
-          300: "#48cae4",
-          600: "#0096c7",
-          900: "#023e8a",
+        blue: {
+          light: "#5ae3ff",
+          default: "#00bbf9",
+          dark: "#0077b6",
+        },
+        green: {
+          light: "#9be6a8",
+          default: "#4caf50",
+          dark: "#388e3c",
+        },
+        yellow: {
+          light: "#ffeb3b",
+          default: "#fbc02d",
+          dark: "#f9a825",
+        },
+        gray: {
+          light: "#f5f5f5",
+          default: "#e0e0e0",
+          darker: "#bdbdbd",
+          dark: "#757575",
         },
       },
     },

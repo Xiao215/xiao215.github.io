@@ -14,11 +14,11 @@ function NavBar(){
   return (
     <Box className="flex items-stretch text-3xl" sx={{justifyContent: 'space-between'}}>
         <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500', mx:10}} >
-          <NavItem menuItem={leftMenu}></NavItem>
+          <NavItem menuItem={leftMenu} side={0}></NavItem>
         </Box>
-        <Box className='title text-themeTwo-900' sx={{ alignContent: 'center' }}>{title}</Box>
+        <img src="../assets/images/icon.png" alt="Title"/>
         <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500',mx:10}} >
-          <NavItem menuItem={rightMenu}></NavItem>
+          <NavItem menuItem={rightMenu} side={1}></NavItem>
         </Box>
     </Box>
   );
