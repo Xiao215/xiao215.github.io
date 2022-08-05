@@ -12,12 +12,12 @@ const title:string=menu.title;
 function NavBar(){  
     
   return (
-    <Box className="flex items-stretch px-5 text-3xl" sx={{justifyContent: 'space-between'}}>
-        <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500'}} >
+    <Box className="flex items-stretch text-3xl" sx={{justifyContent: 'space-between'}}>
+        <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500', mx:10}} >
           <NavItem menuItem={leftMenu}></NavItem>
         </Box>
         <Box className='title text-themeTwo-900' sx={{ alignContent: 'center' }}>{title}</Box>
-        <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500'}} >
+        <Box sx={{ borderTop: 1, borderBottom: 1,borderColor: 'grey.500',mx:10}} >
           <NavItem menuItem={rightMenu}></NavItem>
         </Box>
     </Box>

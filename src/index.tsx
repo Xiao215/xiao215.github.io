@@ -4,7 +4,6 @@ import App from './App';
 import './tailwind.css';
 import { StyledEngineProvider } from '@mui/material/styles';
 import './assets/fonts/style.css';
-import './assets/fonts/FLIX/Web Fonts/stylesheet.css';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root')as HTMLElement
