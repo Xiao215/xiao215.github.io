@@ -35,7 +35,7 @@ const openInNewTab = url => {
   };
 function Projects(){
   return (
-   <Grid className="overflow-auto no-scrollbar mx-10 my-10">
+   <Grid className="overflow-auto no-scrollbar py-10 px-10">
         {data.map((item, index) => (
           <Card
             key={index}
