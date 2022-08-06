@@ -2,25 +2,22 @@ import {Button,Typography, Box} from "@mui/material/"
 interface menuProps{
   menuItem:{label: string;
     href: string;
-  }[],
-  side:number
+  }[]
 }
 const colorOrder: string[]=[
-  " hover:text-red-light text-red-default",
-  " hover:text-blue-light text-blue-default",
-  " hover:text-green-light text-green-default",
-  " hover:text-yellow-light text-yellow-default",
+  " hover:bg-red-light text-red-default hover:before:content-['-_']",
+  " hover:text-blue-light text-blue-default  hover:before:content-['-_']",
+  " hover:text-green-light text-green-default  hover:before:content-['-_']",
+  " hover:text-yellow-light text-yellow-default  hover:before:content-['-_']",
 ]
-function NavItem({menuItem, side}:menuProps){
+function NavItem({menuItem}:menuProps){
   return(
-    <Box className="h-full" sx={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+    <Box className="leftNav">
     {
       menuItem.map((item,index:number)=>{
-        if(side){
-          index=3-index;
-        }
         return(
-          <div className={"transition mx-2 text-4xl py-4"+colorOrder[index]} key={index} >{item.label}</div>
+          <div className={"duration-700 transition navItem mx-2 text-2xl py-4"+colorOrder[index]} key={index} 
+          >{item.label}</div>
         )
       })
     }
