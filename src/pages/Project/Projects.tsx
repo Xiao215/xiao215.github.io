@@ -7,7 +7,7 @@ const colorOrder=[
   "#388e3c",
   "#f9a825",
 ]
-function Projects({color}:{color:string}){
+function Projects({color, id}:{color:string, id:string}){
   return (
     <div>
       <p className={"underline underline-offset-8 text-4xl pl-10 font-bold text-"+color}>Projects</p>

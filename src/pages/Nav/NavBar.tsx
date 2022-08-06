@@ -1,4 +1,3 @@
-import Box from '@mui/material/Box';
 import menu from "../../data/nav";
 import NavItem from './NavItem';
 import BottomIcons from './BottomIcons';
@@ -16,10 +15,14 @@ const iconItem:iconProps[] = menu.external;
 function NavBar(){  
     
   return (
-    <Box >
-          <NavItem menuItem={menuItem}></NavItem>
-          <BottomIcons data={iconItem}></BottomIcons>
-    </Box>
+    <div className="fixed h-full overflow-auto">
+      <div className="justify-start">
+          <NavItem menuItem={menuItem} ></NavItem>
+          </div>
+      <div className="bottom-0">
+          <BottomIcons data={iconItem} ></BottomIcons>
+          </div>
+    </div>
   );
 }
 

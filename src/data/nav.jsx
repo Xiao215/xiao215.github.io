@@ -1,10 +1,10 @@
-import { mdiLinkedin, mdiGithub } from '@mdi/js';
+import { mdiLinkedin, mdiGithub ,mdiEmail} from '@mdi/js';
 const data={
     "item":[
         {"label": "Home Page","href":"#"},
-        {"label":"About", "href":"#"},
-        {"label": "Projects","href":"#"},
-        {"label":"Academic", "href":"#"}
+        {"label":"About", "href":"#about"},
+        {"label": "Projects","href":"#projects"},
+        {"label":"Academic", "href":"#academic"}
     ],
     "external":[{
         "mdiName": mdiLinkedin,
@@ -12,6 +12,10 @@ const data={
     },
     {
         "mdiName": mdiGithub,
+        "link": "https://www.github.com/xiao215"
+    },
+    {
+        "mdiName": mdiEmail,
         "link": "https://www.github.com/xiao215"
     }
     ]
