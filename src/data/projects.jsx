@@ -4,46 +4,46 @@ import projMinecraft from "../assets/images/project-image/proj-minecraft.png"
 import projPikachu from "../assets/images/project-image/proj-pikachu.png"
 import projScheDuo from "../assets/images/project-image/proj-scheduo.png"
 
-export default [
+const data=[
   {
     "title": "ScheDuo",
-    "description": "May 2021",
+    "description": "Javascript, Node.js",
     "image": projScheDuo,
     "link": "https://devpost.com/software/scheduo"
   },
 {
     "title": "COVID-19 Simulator",
-    "description": "Sept' 2020 - Nov' 2020",
+    "description": "Java",
     "image": projCovid,
     "link": "https://www.greenfoot.org/scenarios/26802"
   },
   {
     "title": "Minecraft Engine",
-    "description": "Dec' 2020 - Jan' 2021",
+    "description": "Java",
     "image": projMinecraft,
     "link": "https://www.greenfoot.org/scenarios/27201"
   },
   {
     "title": "I wanna be the Pikachu",
-    "description": "Sept' 2019 - Jan' 2020",
+    "description": "Java",
     "image": projPikachu,
     "link": "https://www.greenfoot.org/scenarios/25200"
   },
   {
     "title": "Minecraft Engine",
-    "description": "Dec' 2020 - Jan' 2021",
+    "description": "Java",
     "image": projMinecraft,
     "link": "https://www.greenfoot.org/scenarios/27201"
   },
   {
     "title": "I wanna be the Pikachu",
-    "description": "Sept' 2019 - Jan' 2020",
+    "description": "Java",
     "image": projPikachu,
     "link": "https://www.greenfoot.org/scenarios/25200"
   },
   {
     "title": "Minecraft Engine",
-    "description": "Dec' 2020 - Jan' 2021",
+    "description": "Java",
     "image": projMinecraft,
     "link": "https://www.greenfoot.org/scenarios/27201"
   },
@@ -54,3 +54,4 @@ export default [
     "link": "https://www.greenfoot.org/scenarios/25200"
   }
 ];
+export default data;

@@ -1,26 +1,21 @@
 import React from 'react';
 import NavBar from './pages/Nav/NavBar';
-import Project from './pages/Project/Projects';
+import Projects from './pages/Project/Projects';
 import {Box} from '@mui/material';
 function App(): JSX.Element{
+  const headingColorOrder: string[]=[
+  "red-default",
+  "blue-default",
+  "green-default",
+  "yellow-default",
+]
   return (
     <div className="font-raleway" >
       <Box position="static">
-      <NavBar/>
+        <NavBar/>
       </Box>
       <Box position="static" sx={{ml:20, zIndex: 'tooltip',minWidth: 200 }}>
-      <Project/>
-            <Project/>
-
-      <Project/>
-
-      <Project/>
-
-      <Project/>
-
-      <Project/>
-
-
+        <Projects color={headingColorOrder[0]}/>
       </Box>
     </div>
   );

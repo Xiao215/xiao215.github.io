@@ -1,5 +1,4 @@
-import {Button,Typography, Box} from "@mui/material/"
-import {useState} from "react";
+import {Box} from "@mui/material/"
 interface menuProps{
   menuItem:{label: string;
     href: string;
@@ -7,7 +6,7 @@ interface menuProps{
 }
 const colorOrder: string[]=[
   " hover:bg-red-light text-red-default",
-  " hover:text-blue-light text-blue-default",
+  " hover:text-blue-light text-blue-default ",
   " hover:text-green-light text-green-default",
   " hover:text-yellow-light text-yellow-default",
 ]
