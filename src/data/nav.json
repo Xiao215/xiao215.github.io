@@ -1,5 +1,5 @@
 {
-    "left":[{"label": "Home Page","href":"aaa"},{"label":"About", "href":"bbb"}],
-    "right":[{"label": "Projects","href":"aaa"},{"label":"Academic", "href":"bbb"}],
+    "left":[{"label": "Home Page","href":"#"},{"label":"About", "href":"#"}],
+    "right":[{"label": "Projects","href":"#"},{"label":"Academic", "href":"#"}],
     "title": "Xiao"
 }

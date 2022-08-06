@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Card from './ProjectCard';
-import data from '../data/projects';
+import data from '../../data/projects';
 import './style.css';
 const Grid = styled.div`
   display: flex;

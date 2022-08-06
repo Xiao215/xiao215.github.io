@@ -1,7 +1,6 @@
 import Box from '@mui/material/Box';
-import menu from "../data/nav.json";
+import menu from "../../data/nav.json";
 import NavItem from './NavItem';
-import "./NavBar.css";
 interface menuProps{
   label: string;
   href: string;
