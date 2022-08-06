@@ -13,7 +13,7 @@ const openInNewTab = url => {
   };
 function Projects(){
   return (
-   <div className="snap-x overflow-scroll flex scroll-pl-6 ml-5 no-scrollbar py-5">
+   <div className="snap-x overflow-scroll flex pl-6 scroll-pl-6 ml-5 no-scrollbar py-5">
         {data.map((item, index) => (
           <div 
             className="snap-start mr-10">
