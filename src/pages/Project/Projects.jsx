@@ -2,28 +2,6 @@ import styled from 'styled-components';
 import Card from './ProjectCard';
 import data from '../../data/projects';
 import './style.css';
-const Grid = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-
-  /* Fake padding-right */
-  &::after {
-    content: '';
-    position: relative;
-    display: block;
-    flex-shrink: 0;
-    height: 1px;
-  }
-
-  > button {
-    margin-right: 40px;
-  }
-
-  /* Hide the others cards */
-  > button:not(:first-child) {
-    visibility: visible; /* switch to 'visible' */
-  }
-`;
 const colorOrder=[
   "#e53e41",
   "#0077b6",
@@ -35,8 +13,10 @@ const openInNewTab = url => {
   };
 function Projects(){
   return (
-   <Grid className="overflow-auto no-scrollbar py-10 px-10">
+   <div className="snap-x overflow-scroll flex scroll-pl-6 ml-5 no-scrollbar py-5">
         {data.map((item, index) => (
+          <div 
+            className="snap-start mr-10">
           <Card
             key={index}
             hexa={colorOrder[index%4]}
@@ -45,8 +25,9 @@ function Projects(){
             image={item.image}
             link={item.link}
           />
+          </div>
         ))}
-      </Grid>
+      </div>
   );
 }
 
