@@ -10,7 +10,7 @@ function NavItem({menuItem}){
     {
       menuItem.map((item,index)=>{
         return(
-          <div className={"font-bold duration-700 cursor-pointer transition navItem mx-2 text-2xl py-4"+colorOrder[index]} 
+          <div className={"font-bold duration-700 cursor-pointer transition navItem mx-2 text-2xl py-4 hover:before:content-['-_']"+colorOrder[index]} 
             onClick={()=>window.location.replace(item.href)}key={index}>
             {item.label}
             </div>
