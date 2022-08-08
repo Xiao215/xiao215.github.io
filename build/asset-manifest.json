@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/static/css/main.265326d0.css",
+    "main.js": "/static/js/main.7d6f992d.js",
+    "static/media/proj-pikachu.png": "/static/media/proj-pikachu.49ff69705de586f35beb.png",
+    "static/media/proj-minecraft.png": "/static/media/proj-minecraft.cca5c5ab44c64f989a90.png",
+    "static/media/proj-covid.png": "/static/media/proj-covid.1434161a2301db45c0be.png",
+    "static/media/uoft.svg": "/static/media/uoft.bcc924650d8ffea7ecaa4f97a9d12806.svg",
+    "static/media/proj-scheduo.png": "/static/media/proj-scheduo.09987dfa6353e145a85e.png",
+    "index.html": "/index.html",
+    "main.265326d0.css.map": "/static/css/main.265326d0.css.map",
+    "main.7d6f992d.js.map": "/static/js/main.7d6f992d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.265326d0.css",
+    "static/js/main.7d6f992d.js"
+  ]
+}

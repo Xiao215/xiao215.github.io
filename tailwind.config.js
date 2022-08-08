@@ -4,6 +4,7 @@ module.exports = {
   theme: {
     fontFamily: {},
     extend: {
+      translate: ["group-hover", "hover"],
       fontFamily: {
         raleway: ["Montserrat", "sans-serif"],
       },

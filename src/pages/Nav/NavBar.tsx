@@ -15,7 +15,7 @@ const iconItem:iconProps[] = menu.external;
 function NavBar(){  
     
   return (
-    <div className="fixed h-full overflow-y-scroll">
+    <div className="fixed h-full overflow-y-scroll no-scrollbar">
       <div className="justify-start">
           <NavItem menuItem={menuItem} ></NavItem>
           </div>

@@ -13,8 +13,7 @@ function Projects({color, id}:{color:string, id:string}){
       <p className={"underline underline-offset-8 text-4xl pl-10 font-bold text-"+color}>Projects</p>
       <div className="snap-x pl-6 overflow-scroll flex scroll-pl-6 ml-5 no-scrollbar py-5">
           {data.map((item, index) => (
-            <div 
-              className="snap-start mr-10">
+            <div className="snap-start mr-10" key={index}>
             <Card
               key={index}
               hexa={colorOrder[index%4]}
