@@ -6,7 +6,7 @@ function Academic({color, id}){
     <div>
     <p className={"underline underline-offset-8 text-4xl pl-10 font-bold text-"+color}>Academic</p>
     <Box sx={{width: 240}}>
-      <UoftLogo />
+      <UoftLogo className=""/>
     </Box>
   </div>
   )

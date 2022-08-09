@@ -110,15 +110,23 @@ const openInNewTab = url => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-const ProjectCard = ({ hexa, title, description, image, link }) => (
+const ProjectCard = ({ index, title, description, image, link }) => {
+  const style = [
+    "bg-gradient-to-r from-yellow-default to-red-default",
+    "bg-gradient-to-r from-red-default to-blue-default",
+    "bg-gradient-to-r from-blue-default to-green-default",
+    "bg-gradient-to-r from-green-default to-yellow-default",
+];
+  return(
   <Style onClick={() => openInNewTab(link) }>
     <Screenshot image={image} />
     <Content>
       <Title>{title}</Title>
       <Description>{description}</Description>
-      <BottomBar background={hexa} />
+      <BottomBar className={style[index]}/>
     </Content>
   </Style>
-);
+
+);};
 
 export default ProjectCard;
