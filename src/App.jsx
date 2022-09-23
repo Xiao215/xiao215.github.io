@@ -4,8 +4,7 @@ import Projects from './pages/Project/Projects';
 import Academic from './pages/Academic/Academic';
 import {Box} from '@mui/material';
 import color from './data/color';
-function App(): JSX.Element{
-  const headingColorOrder: string[]=color;
+function App(){
   return (
     <div className="font-raleway" >
       <Box position="static">
