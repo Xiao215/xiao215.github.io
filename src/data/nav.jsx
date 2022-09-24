@@ -2,10 +2,11 @@ import { mdiLinkedin, mdiGithub ,mdiEmail} from '@mdi/js';
 
 const data={
     "item":[
-        {"label": "Home Page","href":"#"},
-        {"label":"About", "href":"#about"},
-        {"label": "Projects","href":"#projects"},
-        {"label":"Academic", "href":"#academic"}
+        {"label": "Home Page","link":"/"},
+        {"label":"About", "link":"/"},
+        {"label": "Projects","link":"/"},
+        {"label":"Academic", "link":"/"},
+        {"label":"Resume", "link":"/resume"},
     ],
     "external":[{
         "type":"mdi",

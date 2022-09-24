@@ -1,4 +1,4 @@
-
+import {Link} from "react-router-dom";
 const colorOrder=[
   " hover:text-red-dark text-red-default",
   " hover:text-blue-dark text-blue-default ",
@@ -17,13 +17,15 @@ function NavItem({menuItem}){
     {
       menuItem.map((item,index)=>{
         return(
-          <div className={"flex items-center group font-bold duration-700 cursor-pointer transition mx-2 py-4"} 
-            onClick={()=>window.location.replace(item.href)} key={index}>
-               <div className={"w-0 h-0.5 translate duration-700"+lineOrder[index]}></div> 
-              <div className={"text-2xl translate duration-700"+colorOrder[index]}>
-                {item.label}
+          <Link to={item.link} className="no-underline">
+            <div className={"flex items-center group font-bold duration-700 cursor-pointer transition mx-2 py-4"} 
+              key={index}  >
+                <div className={"w-0 h-0.5 translate duration-700"+lineOrder[index%4]}></div> 
+                <div className={"text-2xl translate duration-700"+colorOrder[index%4]}>
+                  {item.label}
                 </div>
             </div>
+          </Link>
         )
       })
     }

@@ -118,7 +118,7 @@ const ProjectCard = ({ index, title, description, image, link }) => {
     "bg-gradient-to-r from-green-default to-yellow-default",
 ];
   return(
-  <Style onClick={() => openInNewTab(link) }>
+  <Style onClick={() => openInNewTab(link) } className="font-raleway">
     <Screenshot image={image} />
     <Content>
       <Title>{title}</Title>
