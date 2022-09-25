@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const cardWidth = 320;
 const borderRadius = 8;
-const transition = 'all 0.45s ease';
+const transition = "all 0.45s ease";
 
 const Screenshot = styled.figure`
   z-index: 200;
@@ -19,7 +19,7 @@ const Screenshot = styled.figure`
   transition: ${transition};
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -71,7 +71,8 @@ const Style = styled.button`
   background: #ffffff;
   border-radius: ${borderRadius}px;
   cursor: pointer;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12), 0 20px 20px -10px rgba(0, 0, 0, 0.125);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12),
+    0 10px 10px -10px rgba(0, 0, 0, 0.125);
   transition: ${transition};
 
   &:hover {
@@ -106,9 +107,9 @@ const Style = styled.button`
     }
   }
 `;
-const openInNewTab = url => {
-    window.open(url, '_blank', 'noopener,noreferrer');
-  };
+const openInNewTab = (url) => {
+  window.open(url, "_blank", "noopener,noreferrer");
+};
 
 const ProjectCard = ({ index, title, description, image, link }) => {
   const style = [
@@ -116,17 +117,17 @@ const ProjectCard = ({ index, title, description, image, link }) => {
     "bg-gradient-to-r from-red-default to-blue-default",
     "bg-gradient-to-r from-blue-default to-green-default",
     "bg-gradient-to-r from-green-default to-yellow-default",
-];
-  return(
-  <Style onClick={() => openInNewTab(link) } className="font-raleway">
-    <Screenshot image={image} />
-    <Content>
-      <Title>{title}</Title>
-      <Description>{description}</Description>
-      <BottomBar className={style[index]}/>
-    </Content>
-  </Style>
-
-);};
+  ];
+  return (
+    <Style onClick={() => openInNewTab(link)} className="font-raleway">
+      <Screenshot image={image} />
+      <Content>
+        <Title>{title}</Title>
+        <Description>{description}</Description>
+        <BottomBar className={style[index % 4]} />
+      </Content>
+    </Style>
+  );
+};
 
 export default ProjectCard;

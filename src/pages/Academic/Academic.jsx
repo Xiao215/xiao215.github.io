@@ -1,4 +1,4 @@
-import {ReactComponent as UoftLogo} from "../../assets/uoft.svg";
+import {ReactComponent as UoftLogo} from "../../assets/logo-svg/uoft.svg";
 import {Box} from '@mui/material';
 import "./style.css";
 function Academic({color, id}){
