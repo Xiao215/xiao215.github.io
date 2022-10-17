@@ -40,13 +40,13 @@ function Skill({ color, id }) {
   );
 }
 export default Skill;
-const size = 11;
+const size = "w-20";
 const language = [
   {
     name: "JavaScript",
     component: (
       <div className="hexagon color-js">
-        <JS className={"h-" + size + " w-" + size} />
+        <JS className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -54,7 +54,7 @@ const language = [
     name: "TypeScript",
     component: (
       <div className="hexagon color-ts">
-        <TS className={"h-" + size + " w-" + size} />
+        <TS className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -62,7 +62,7 @@ const language = [
     name: "Python",
     component: (
       <div className="hexagon color-python">
-        <Python className={"h-" + size + " w-" + size} />
+        <Python className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -70,7 +70,7 @@ const language = [
     name: "C++",
     component: (
       <div className="hexagon color-cpp">
-        <CPP className={"h-" + size + " w-" + size} />
+        <CPP className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -78,7 +78,7 @@ const language = [
     name: "C",
     component: (
       <div className="hexagon color-c">
-        <C className={"h-" + size + " w-" + size} />
+        <C className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -86,7 +86,7 @@ const language = [
     name: "Java",
     component: (
       <div className="hexagon color-java">
-        <Java className={"h-" + size + " w-" + size} />
+        <Java className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -94,7 +94,7 @@ const language = [
     name: "Matlab",
     component: (
       <div className="hexagon color-matlab">
-        <Matlab className={"h-" + size + " w-" + size} />
+        <Matlab className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -104,7 +104,7 @@ const tool = [
     name: "React",
     component: (
       <div className="hexagon color-react">
-        <React className={"h-" + size + " w-" + size} />
+        <React className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -112,7 +112,7 @@ const tool = [
     name: "ElectronJS",
     component: (
       <div className="hexagon color-electron">
-        <Electron className={"h-" + size + " w-" + size} />
+        <Electron className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -120,7 +120,7 @@ const tool = [
     name: "NodeJS",
     component: (
       <div className="hexagon color-nodejs">
-        <Node className={"h-" + size + " w-" + size} />
+        <Node className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -128,7 +128,7 @@ const tool = [
     name: "Firebase",
     component: (
       <div className="hexagon color-firebase">
-        <Firebase className={"h-" + size + " w-" + size} />
+        <Firebase className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -136,7 +136,7 @@ const tool = [
     name: "Tailwind",
     component: (
       <div className="hexagon color-tailwind">
-        <Tailwind className={"h-" + size + " w-" + size} />
+        <Tailwind className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -144,7 +144,7 @@ const tool = [
     name: "Heroku",
     component: (
       <div className="hexagon color-heroku">
-        <Heroku className={"h-" + size + " w-" + size} />
+        <Heroku className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -152,7 +152,7 @@ const tool = [
     name: "Bootstrap",
     component: (
       <div className="hexagon color-bootstrap">
-        <Bootstrap className={"h-" + size + " w-" + size} />
+        <Bootstrap className={"h-" + size + " " + size} />
       </div>
     ),
   },
@@ -160,7 +160,7 @@ const tool = [
   //   name: "Flask",
   //   component: (
   //     <div className="hexagon color-flask">
-  //       <Flask className={"h-" + size + " w-" + size} />
+  //       <Flask className={"h-" + size + " " + size} />
   //     </div>
   //   ),
   // },
