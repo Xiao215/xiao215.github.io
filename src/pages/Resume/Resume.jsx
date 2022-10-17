@@ -7,7 +7,7 @@ export default function Test() {
       height="100vh"
     >
       <iframe
-        src="https://drive.google.com/file/d/1C0RUUqg39ugr5OvHXKdldaZvF-rU33Ve/view?usp=sharing"
+        src="https://drive.google.com/file/d/1C0RUUqg39ugr5OvHXKdldaZvF-rU33Ve/preview"
         frameBorder="0"
         className="bg-white	 w-full h-full"
         allow="autoplay"

@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.8f8587f9.css",
-    "main.js": "/static/js/main.c77e300f.js",
+    "main.css": "/static/css/main.5e51eef9.css",
+    "main.js": "/static/js/main.39b26bb1.js",
     "static/media/proj-pikachu.png": "/static/media/proj-pikachu.49ff69705de586f35beb.png",
     "static/media/proj-minecraft.png": "/static/media/proj-minecraft.cca5c5ab44c64f989a90.png",
     "static/media/proj-covid.png": "/static/media/proj-covid.1434161a2301db45c0be.png",
@@ -29,11 +29,11 @@
     "index.html": "/index.html",
     "static/media/firebase.svg": "/static/media/firebase.9dc265047148ce18470bd03f56aa370b.svg",
     "static/media/tailwind.svg": "/static/media/tailwind.8c3da428740892f13db8831d3208cc4d.svg",
-    "main.8f8587f9.css.map": "/static/css/main.8f8587f9.css.map",
-    "main.c77e300f.js.map": "/static/js/main.c77e300f.js.map"
+    "main.5e51eef9.css.map": "/static/css/main.5e51eef9.css.map",
+    "main.39b26bb1.js.map": "/static/js/main.39b26bb1.js.map"
   },
   "entrypoints": [
-    "static/css/main.8f8587f9.css",
-    "static/js/main.c77e300f.js"
+    "static/css/main.5e51eef9.css",
+    "static/js/main.39b26bb1.js"
   ]
 }
