@@ -19,19 +19,19 @@ module.exports = {
       },
       translate: ["group-hover", "hover"],
       colors: {
-        orange: "#d19a66", // 土橙黄
-        gray: "#ABB2BF", // 灰白
-        cyan: "#56B6C2", // 青蓝
-        yellow: "#d19a66", // 土黄
-        red: "#E06C75", // 浅粉红
-        purple: {
+        atomorange: "#d19a66", // 土橙黄
+        atomgray: "#ABB2BF", // 灰白
+        atomcyan: "#56B6C2", // 青蓝
+        atomyellow: "#d19a66", // 土黄
+        atomred: "#E06C75", // 浅粉红
+        atompurple: {
           DEFAULT: "#C678DD",
           light: "#D3A4E3",
-          dark: "61297F",
+          dark: "#61297F",
         }, // 浅紫
-        blue: "#61AFEF", // 蓝
-        green: "#98C379", // 抹茶绿
-        black: "282C34",
+        atomblue: "#61AFEF", // 蓝
+        atomgreen: "#98C379", // 抹茶绿
+        atomblack: "#282C34",
       },
     },
   },

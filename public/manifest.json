@@ -1,6 +1,6 @@
 {
-  "name": "Fintorch",
-  "short_name": "Fintorch",
+  "name": "Xiao215",
+  "short_name": "Xiao215",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#8bd996",
@@ -8,7 +8,7 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/assets/logos/fintorch-logo-square.png",
+      "src": "/assets/logos/logo.png",
       "type": "image/png",
       "sizes": "72x72",
       "purpose": "maskable"

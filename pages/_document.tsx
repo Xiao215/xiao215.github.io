@@ -4,9 +4,10 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <meta name="description" content="Welcome to Xiao's " />
+        <meta name="description" content="Welcome to Xiao's website" />
         <meta name="theme-color" content="#0E1116" />
-        <link rel="icon" href="/assets/logos/fintorch-logo-square.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" href="/assets/logo/webicon.svg" />
         <link
           rel="apple-touch-icon"
           href="/assets/logos/fintorch-logo-square.png"

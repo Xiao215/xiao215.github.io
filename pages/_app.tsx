@@ -30,7 +30,7 @@ function MyApp({
   return (
     <>
       <Head>
-        <title>FINTORCH</title>
+        <title>Xiao's Tea Pot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <SessionProvider session={session}>

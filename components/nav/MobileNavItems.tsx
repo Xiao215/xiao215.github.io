@@ -9,7 +9,7 @@ const MobileNavItems: NextPage<Props> = ({ link, name, icon }) => {
   return (
     <Link
       href={link}
-      className="relative my-2 group py-2.5 px-4 rounded flex items-center transition-duration-200 hover:animate-flash text-emerald-300 "
+      className="relative mb-4 group py-2.5 px-4 rounded flex items-center transition-duration-200 hover:animate-flash text-emerald-300 "
     >
       {icon}
       <span>{name}</span>
