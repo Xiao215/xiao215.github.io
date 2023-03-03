@@ -1,0 +1,17 @@
+{
+  "name": "Fintorch",
+  "short_name": "Fintorch",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#8bd996",
+  "theme_color": "#8bd996",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/logos/fintorch-logo-square.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "maskable"
+    }
+  ]
+}
