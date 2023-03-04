@@ -15,7 +15,7 @@ const Nav: NextPage = () => {
     setMobileOpen(!mobileOpen);
   };
   return (
-    <div>
+    <div className="z-40">
       <div className="static bg-atomblack text-emerald-300 flex items-center lg:justify-around justify-between p-4  w-full z-30 transition duration-300">
         <div className="lg:hidden ml-auto" onClick={toggleMobileBar}>
           <MenuItem />

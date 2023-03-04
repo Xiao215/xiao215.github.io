@@ -16,7 +16,7 @@ const TerminalView: NextPage = () => {
     "└── contact.tsx",
   ];
   return (
-    <div className="w-1/2 mx-auto">
+    <div className="md:w-1/2 w-5/6 mx-auto z-10">
       <div className="w-full shadow-2xl subpixel-antialiased rounded-b-lg h-64 bg-black border-black mx-auto">
         <div
           className="flex items-center h-6 rounded-t-lg bg-gray-100 border-b border-gray-500 text-center text-black"

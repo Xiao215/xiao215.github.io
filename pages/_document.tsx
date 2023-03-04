@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html>
       <Head>
-        <meta name="description" content="Welcome to Xiao's website" />
+        <meta name="description" content="Welcome to Xiao's Tea Pot!" />
         <meta name="theme-color" content="#0E1116" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/assets/logo/webicon.svg" />

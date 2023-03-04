@@ -10,6 +10,7 @@ body {
   scroll-behavior: smooth !important;
   overflow: visible;
   background-color: #282C34;
+  z-index: -100;
 }
 
 a {
