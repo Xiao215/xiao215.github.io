@@ -29,7 +29,10 @@ const Home: NextPage = () => {
           <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
           <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
         </span>
-        <LineChart />
+        <div className="flex flex-col md:flex-row">
+          <LineChart />
+          <Slime />
+        </div>
       </div>
       <div className="px-20 pt-20">
         <span className="font-mono text-emerald-300 text-3xl relative">
