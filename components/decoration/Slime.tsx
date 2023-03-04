@@ -7,7 +7,7 @@ import slime3 from "../../public/assets/decoration/slime3.png";
 import slime4 from "../../public/assets/decoration/slime4.png";
 import slime5 from "../../public/assets/decoration/slime5.png";
 import slime6 from "../../public/assets/decoration/slime6.png";
-const CrystalFly: NextPage = () => {
+const Slime: NextPage = () => {
   const images = [slime1, slime2, slime2, slime1, slime6, slime5, slime6];
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -23,4 +23,4 @@ const CrystalFly: NextPage = () => {
     </div>
   );
 };
-export default CrystalFly;
+export default Slime;

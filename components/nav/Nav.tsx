@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { NextPage } from "next";
@@ -10,13 +10,32 @@ const NavItems = dynamic(() => import("../nav/NavItems"));
 const MobileNavItems = dynamic(() => import("../nav/MobileNavItems"));
 
 const Nav: NextPage = () => {
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
+  const [hidden, setHidden] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      setHidden(prevScrollPos < currentScrollPos);
+      setPrevScrollPos(currentScrollPos);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [prevScrollPos]);
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const toggleMobileBar = () => {
     setMobileOpen(!mobileOpen);
   };
+
   return (
-    <div className="z-40">
-      <div className="static bg-atomblack text-emerald-300 flex items-center lg:justify-around justify-between p-4  w-full z-30 transition duration-300">
+    <div className=" z-40">
+      <div
+        className={
+          cn({ ["-translate-y-full "]: hidden }) +
+          "fixed bg-atomblack/80 text-emerald-300 flex items-center lg:justify-around justify-between p-4  w-full z-30 transition duration-300"
+        }
+      >
         <div className="lg:hidden ml-auto" onClick={toggleMobileBar}>
           <MenuItem />
         </div>
