@@ -2,7 +2,6 @@ import "../styles/globals.css";
 import Head from "next/head";
 import { useEffect } from "react";
 import type { AppProps } from "next/app";
-import type { Session } from "next-auth";
 
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -11,10 +10,7 @@ export function reportWebVitals(metric) {
   // console.log(metric);
 }
 
-function MyApp({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps<{ session: Session }>) {
+function MyApp({ Component, pageProps }: AppProps) {
   useEffect(() => {
     AOS.init({
       disable: false, // accepts following values: 'phone', 'tablet', 'mobile', boolean, expression or function
