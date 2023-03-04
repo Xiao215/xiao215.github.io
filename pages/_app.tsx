@@ -2,7 +2,6 @@ import "../styles/globals.css";
 import Head from "next/head";
 import { useEffect } from "react";
 import type { AppProps } from "next/app";
-import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 
 import AOS from "aos";
@@ -33,9 +32,7 @@ function MyApp({
         <title>Xiao's Tea Pot</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <Component {...pageProps} />
     </>
   );
 }
