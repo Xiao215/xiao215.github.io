@@ -14,18 +14,6 @@ module.exports = {
     locales: ["en", "fr"],
     defaultLocale: "en",
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "cdn.discordapp.com",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
-      },
-    ],
-  },
   async rewrites() {
     return [
       {
@@ -34,13 +22,4 @@ module.exports = {
       },
     ];
   },
-  // async redirects() {
-  //   return [
-  //     {
-  //       source: "/",
-  //       destination: "/login",
-  //       permanent: true,
-  //     },
-  //   ];
-  // },
 };
