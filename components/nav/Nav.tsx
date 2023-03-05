@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import type { NextPage } from "next";
 import cn from "clsx";
 import menuItem from "../../data/NavData";
