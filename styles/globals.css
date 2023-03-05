@@ -8,7 +8,8 @@ body {
   margin: 0;
   font-family: 'Raleway', sans-serif;
   scroll-behavior: smooth !important;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: visible;
   background-color: #282C34;
   z-index: -100;
 }

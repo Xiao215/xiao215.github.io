@@ -21,6 +21,7 @@ const BarChart = ({ data, options }: LineChartProps) => {
             borderWidth: 2,
           },
         },
+        maintainAspectRatio: false,
         responsive: true,
         scales: {
           x: {
@@ -34,7 +35,7 @@ const BarChart = ({ data, options }: LineChartProps) => {
               color: "#d19a66",
               font: {
                 family: "'Raleway', sans-serif",
-                size: 18,
+                size: 15,
               },
             },
             grid: {
@@ -60,7 +61,7 @@ const BarChart = ({ data, options }: LineChartProps) => {
 };
 
 const chartData = {
-  labels: ["Python", "C++", "JavaScript/TypeScript", "C", "Rust", "Java"],
+  labels: ["Python", "C++", "JS/TS", "C", "Rust", "Java"],
   datasets: [
     {
       label: "Familiarity",
@@ -68,7 +69,6 @@ const chartData = {
       fill: false,
       borderColor: "#56B6C2",
       backgroundColor: "rgb(75, 192, 192, 0.3)",
-
       tension: 0.1,
     },
   ],
@@ -76,7 +76,7 @@ const chartData = {
 
 const LanguageChart = () => {
   return (
-    <div className="w-1/2">
+    <div className="w-full h-64">
       <BarChart data={chartData} />
     </div>
   );

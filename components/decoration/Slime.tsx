@@ -7,7 +7,11 @@ import slime3 from "../../public/assets/decoration/slime3.png";
 import slime4 from "../../public/assets/decoration/slime4.png";
 import slime5 from "../../public/assets/decoration/slime5.png";
 import slime6 from "../../public/assets/decoration/slime6.png";
-const Slime: NextPage = () => {
+type ItemProps = {
+  width: number;
+  height: number;
+};
+const Slime: NextPage<ItemProps> = ({ width, height }) => {
   const images = [slime1, slime2, slime2, slime1, slime6, slime5, slime6];
   const [index, setIndex] = useState(0);
   useEffect(() => {
@@ -18,8 +22,8 @@ const Slime: NextPage = () => {
     return () => clearInterval(intervalId);
   }, [index]);
   return (
-    <div className="flex justify-center items-center animate-bounce">
-      <Image src={images[index]} alt="Slime" />
+    <div className="z-10 flex justify-center items-center animate-bounce">
+      <Image src={images[index]} alt="Slime" width={width} height={height} />
     </div>
   );
 };

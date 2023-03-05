@@ -20,9 +20,9 @@ const menuItem: menuProps[] = [
         height={50}
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M326.041199,379.883667 
 	C335.633209,381.359650 342.326904,392.349243 342.916992,399.356079 
@@ -163,9 +163,9 @@ M326.041199,379.883667
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M193.041992,183.114655 
 	C188.587021,187.356308 183.213821,190.984604 179.880127,195.975250 
@@ -225,9 +225,9 @@ M193.041992,183.114655
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M398.113037,247.044052 
 	C395.642151,254.589279 393.731995,262.378540 390.577484,269.626221 
@@ -257,9 +257,9 @@ M398.113037,247.044052
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M318.110626,386.046417 
 	C316.308472,387.383575 314.342896,388.552643 312.748077,390.103027 
@@ -272,9 +272,9 @@ M318.110626,386.046417
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M398.417358,246.879532 
 	C396.621887,244.743759 396.255035,240.275513 391.466949,243.876495 
@@ -284,9 +284,9 @@ M398.417358,246.879532
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M318.495911,386.027039 
 	C317.429108,384.323486 316.747620,382.600555 316.033508,380.522034 
@@ -296,9 +296,9 @@ M318.495911,386.027039
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M193.420929,183.056473 
 	C192.720474,181.055008 192.398972,178.995377 192.038666,176.551132 
@@ -309,9 +309,9 @@ M193.420929,183.056473
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M224.914154,93.608765 
 	C223.010223,92.475967 221.187302,90.951942 219.129211,89.189041 
@@ -321,9 +321,9 @@ M224.914154,93.608765
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M219.710266,83.983353 
 	C219.962112,84.090553 219.966873,84.295357 219.964630,84.807381 
@@ -347,9 +347,9 @@ z"
         height={50}
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M275.094879,97.922180 
 	C290.953339,99.289574 306.901611,100.012596 322.644684,102.207588 
@@ -637,9 +637,9 @@ z"
         height={50}
       >
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M88.340340,234.588333 
 	C89.765060,232.246323 91.023109,230.276520 92.220863,228.270721 
@@ -786,9 +786,9 @@ M274.670624,198.060287
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M291.907257,133.078293 
 	C291.571869,137.184662 292.133667,141.663452 290.630432,145.285065 
@@ -881,9 +881,9 @@ M291.529785,131.154404
 z"
         />
         <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="10"
           d="
 M51.113983,157.889740 
 	C49.020752,156.445648 47.086914,155.361435 44.942787,154.159317 
