@@ -42,9 +42,7 @@ const TerminalView: NextPage = () => {
           className="pl-1 pt-1 h-auto  text-atompurple font-mono text-xs bg-black"
           id="console"
         >
-          <p className="pb-1">
-            Last login: Wed Sep 25 09:11:04 {currentDate} on ttys000
-          </p>
+          <p className="pb-1">Last login: {currentDate} on ttys000</p>
           <p className="pb-1 flex flex-wrap">
             xiao215-MacBook-Pro:
             <span className="text-emerald-300">~&nbsp;</span>
