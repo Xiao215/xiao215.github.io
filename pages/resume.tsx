@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import type { NextPage } from "next";
 const Resume = dynamic(() => import("../components/resume/Main"));
 const Nav = dynamic(() => import("../components/nav/Nav"), { ssr: false });
+
 // const DynamicComponent = dynamic(() =>
 //   import("../components/hello").then((mod) => mod.Hello)
 // );
@@ -15,9 +16,6 @@ const Index: NextPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <Resume />
       </Suspense>
-      {/* <Suspense fallback={<div>Loading...</div>}>
-        <Footer />
-      </Suspense> */}
     </main>
   );
 };

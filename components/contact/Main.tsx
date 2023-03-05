@@ -27,13 +27,21 @@ const Main: NextPage = () => {
   ];
   return (
     <div className="h-screen">
-      <div className="pt-40 gap-4 flex flex-col md:flex-row items-center justify-center">
+      <div className="px-20 pt-20">
+        <span className="font-mono text-emerald-300 text-3xl relative">
+          Xiao.Contact();
+          <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
+          <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
+        </span>
+      </div>
+      <div className="pt-20 gap-4 flex flex-col md:flex-row items-center justify-center">
         {contacts.map((item) => (
           <Link
             target="_blank"
             key={item.name}
             href={item.link}
             className="text-emerald-300 relative group flex-col px-4 py-2 items-center text-xl group rounded transition duration-500 hover:animate-flash"
+            data-aos="fade-in"
           >
             <span className="absolute left-1/2 top-0 h-[2px] w-full origin-center -translate-x-1/2 transform bg-emerald-300 transition-all duration-300"></span>
             <span className="absolute top-1/2 left-0 h-full w-[2px] origin-center -translate-y-1/2 transform bg-emerald-300 transition-all duration-300"></span>
@@ -44,7 +52,7 @@ const Main: NextPage = () => {
           </Link>
         ))}
       </div>
-      <div className="md:pt-40 pt-10">
+      <div className="md:pt-40 pt-10" data-aos="fade-in">
         <Slime width={400} height={240} />
       </div>
       <div className="fixed animate-fall1 flex flex-row justify-center items-center">

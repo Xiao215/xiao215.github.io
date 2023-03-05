@@ -16,7 +16,10 @@ const Main: NextPage = () => {
           <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
         </span>
       </div>
-      <div className="pt-20 gap-4 flex flex-col md:flex-row items-center justify-center">
+      <div
+        className="pt-20 gap-4 flex flex-col md:flex-row items-center justify-center"
+        data-aos="fade-in"
+      >
         {ResumeNavData.map((item, index) => (
           <div data-index={index} key={item.name} onClick={toggleNavSwitch}>
             <ResumeNavButton
@@ -27,7 +30,7 @@ const Main: NextPage = () => {
           </div>
         ))}
       </div>
-      <div className=" pt-20 md:w-2/3 mx-auto">
+      <div className=" py-20 md:w-2/3 mx-auto">
         <iframe
           src={ResumeNavData[versionSelected].link}
           className="bg-white w-full aspect-[8.5/11]"
