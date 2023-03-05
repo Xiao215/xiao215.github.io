@@ -30,15 +30,15 @@ const Main: NextPage = () => {
           <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
         </span>
         <div
-          className="grid grid-cols-1 gap-8 md:grid-cols-4 lg:grid-cols-7 md:flex-row py-10 "
+          className="grid grid-cols-1 gap-8 lg:grid-cols-5 md:flex-row py-10 "
           data-aos="fade-in"
         >
           <div className="md:col-span-2">
             <LineChart />
           </div>
-          <div className="lg:hidden md:col-span-2">
+          {/* <div className="lg:hidden md:col-span-2">
             <Slime width={250} height={150} />
-          </div>
+          </div> */}
           <div className="lg:col-span-3 md:col-span-4 text-lg text-atomgray">
             Previously, I have been doing a lot of Full Stack Development, both
             during my RBC internship and at hackathons, with
@@ -52,9 +52,9 @@ const Main: NextPage = () => {
             <span className="text-atomred"> PyTorch </span> as well as playing
             around with <span className="text-atomred"> Rust </span>.
           </div>
-          <div className="col-span-2 hidden lg:block">
+          {/* <div className="col-span-2 hidden lg:block">
             <Slime width={250} height={150} />
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="px-20 pt-20">
