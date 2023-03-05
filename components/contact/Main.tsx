@@ -28,7 +28,7 @@ const Main: NextPage = () => {
     },
   ];
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col">
       <div className="z-10 px-20 pt-20">
         <Title text="Xiao.Contact();" />
       </div>

@@ -1,7 +1,9 @@
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import type { NextPage } from "next";
-const Resume = dynamic(() => import("../components/resume/Main"));
+const Resume = dynamic(() => import("../components/resume/Main"), {
+  ssr: false,
+});
 const Nav = dynamic(() => import("../components/nav/Nav"), { ssr: false });
 
 // const DynamicComponent = dynamic(() =>

@@ -15,7 +15,13 @@ const Nav: NextPage = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      setHidden(prevScrollPos < currentScrollPos && currentScrollPos != 0);
+      console.log(
+        "prevScrollPos: " +
+          prevScrollPos +
+          " currentScrollPos: " +
+          currentScrollPos
+      );
+      setHidden(prevScrollPos < currentScrollPos && currentScrollPos >= 50);
       setPrevScrollPos(currentScrollPos);
     };
     window.addEventListener("scroll", handleScroll);
@@ -28,7 +34,7 @@ const Nav: NextPage = () => {
   };
 
   return (
-    <div className=" z-40">
+    <div className="z-40">
       <div
         className={
           cn({ ["-translate-y-full "]: hidden }) +

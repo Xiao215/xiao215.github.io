@@ -16,7 +16,7 @@ const Main: NextPage = () => {
     setVersionSelected(parseInt(e.currentTarget.dataset.index));
   };
   return (
-    <div className="h-screen relative flex flex-col">
+    <div className="relative flex flex-col">
       <div className="px-20 pt-20 z-10">
         <Title text="Xiao.Resume();" />
       </div>

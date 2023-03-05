@@ -8,7 +8,7 @@ const MenuItem: NextPage = () => {
   };
   return (
     <button className="relative group" onClick={triggerNav}>
-      <div className="relative flex overflow-hidden items-center justify-center rounded-full w-[50px] h-[50px] transform transition-all ring-0 ring-gray hover:ring-8 ring-opacity-30 duration-200 border-2 border-emerald-300">
+      <div className="relative flex overflow-hidden items-center justify-center rounded-full w-[50px] h-[50px] transform transition-all ring-0 ring-atomgray hover:ring-8 ring-opacity-30 duration-200 border-2 border-emerald-300">
         <div
           className={
             cn({
