@@ -65,12 +65,23 @@ const Main: NextPage = () => {
           className="md:px-20 py-10 text-lg text-atomgray "
           data-aos="fade-in"
         >
-          <Image
-            src={UofT}
-            alt="UofT"
-            height={120}
-            className="md:float-left float-none"
-          />
+          <div className="justify-center flex md:hidden">
+            <Image
+              src={UofT}
+              alt="UofT"
+              height={120}
+              className="md:float-left float-none"
+            />
+          </div>
+          <div className="hidden md:block">
+            <Image
+              src={UofT}
+              alt="UofT"
+              height={120}
+              className="md:float-left float-none"
+            />
+          </div>
+
           <div>
             I am a <span className="text-atomcyan">second-year</span> student
             studying <span className="text-atompurple">Engieering Science</span>{" "}
@@ -108,18 +119,34 @@ const Main: NextPage = () => {
           className="md:px-20 py-10 text-lg text-atomgray"
           data-aos="fade-in"
         >
-          <Image
-            src={RBC}
-            alt="RBC"
-            height={120}
-            className="md:float-left float-none"
-          />
-          <Image
-            src={Google}
-            alt="Google"
-            height={120}
-            className="md:float-right float-none"
-          />
+          <div className="items-center flex flex-col md:hidden">
+            <Image
+              src={RBC}
+              alt="RBC"
+              height={120}
+              className="md:float-left float-none"
+            />
+            <Image
+              src={Google}
+              alt="Google"
+              height={120}
+              className="md:float-right float-none"
+            />
+          </div>
+          <div className="hidden md:block">
+            <Image
+              src={RBC}
+              alt="RBC"
+              height={120}
+              className="md:float-left float-none"
+            />
+            <Image
+              src={Google}
+              alt="Google"
+              height={120}
+              className="md:float-right float-none"
+            />
+          </div>
           <div>
             I interned remotely at{" "}
             <span className="text-atompurple">Royal Bank of Canada (RBC)</span>{" "}

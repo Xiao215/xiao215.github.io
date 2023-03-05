@@ -28,11 +28,11 @@ const Main: NextPage = () => {
     },
   ];
   return (
-    <div className="h-screen">
-      <div className="px-20 pt-20">
+    <div className="h-screen flex flex-col">
+      <div className="z-10 px-20 pt-20">
         <Title text="Xiao.Contact();" />
       </div>
-      <div className="pt-20 gap-4 flex flex-col md:flex-row items-center justify-center">
+      <div className="z-10 pt-20 gap-4 flex flex-col md:flex-row items-center justify-center">
         {contacts.map((item) => (
           <Link
             target="_blank"
@@ -50,28 +50,28 @@ const Main: NextPage = () => {
           </Link>
         ))}
       </div>
-      <div className="md:pt-40 pt-10" data-aos="fade-in">
+      <div className="z-10 md:pt-40 pt-10" data-aos="fade-in">
         <Slime width={400} height={240} />
       </div>
-      <div className="fixed animate-fall1 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall1">
         <Image src={SakuraImage1} alt="Sakura" width={40} height={40} />
       </div>
-      <div className="fixed animate-fall2 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall2">
         <Image src={SakuraImage2} alt="Sakura" width={30} height={30} />
       </div>
-      <div className=" fixed animate-fall3 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall3">
         <Image src={SakuraImage3} alt="Sakura" width={30} height={30} />
       </div>
-      <div className=" fixed animate-fall4 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall4">
         <Image src={SakuraImage4} alt="Sakura" width={30} height={30} />
       </div>
-      <div className=" fixed animate-fall5 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall5">
         <Image src={SakuraImage4} alt="Sakura" width={30} height={30} />
       </div>
-      <div className=" fixed animate-fall6 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall6">
         <Image src={SakuraImage3} alt="Sakura" width={30} height={30} />
       </div>
-      <div className=" fixed animate-fall7 flex flex-row justify-center items-center">
+      <div className="z-0 fixed animate-fall7">
         <Image src={SakuraImage2} alt="Sakura" width={30} height={30} />
       </div>
     </div>
