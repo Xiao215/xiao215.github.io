@@ -15,7 +15,7 @@ const Nav: NextPage = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      setHidden(prevScrollPos < currentScrollPos);
+      setHidden(prevScrollPos < currentScrollPos && currentScrollPos != 0);
       setPrevScrollPos(currentScrollPos);
     };
     window.addEventListener("scroll", handleScroll);
