@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
-
+import Title from "../decoration/Title";
 import Image from "next/image";
 import Slime from "../decoration/Slime";
 import board from "../../public/assets/decoration/lines.png";
@@ -19,7 +19,7 @@ const Main: NextPage = () => {
         <div className="z-0">
           <Image
             src={board}
-            alt="Your PNG layer"
+            alt="PNG layer"
             className="absolute w-full h-full inset-0"
           />
         </div>
@@ -27,11 +27,7 @@ const Main: NextPage = () => {
         <TerminalView />
       </div>
       <div className="px-20 pt-20">
-        <span className="font-mono text-emerald-300 text-3xl relative">
-          Xiao.Programming();
-          <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
-          <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
-        </span>
+        <Title text="Xiao.Programming();" />
         <div
           className="grid grid-cols-1 gap-8 lg:grid-cols-5 md:flex-row py-10 "
           data-aos="fade-in"
@@ -64,11 +60,7 @@ const Main: NextPage = () => {
         </div>
       </div>
       <div className="px-20 pt-20">
-        <span className="font-mono text-emerald-300 text-3xl relative">
-          Xiao.Education();
-          <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
-          <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
-        </span>
+        <Title text="Xiao.Education();" />
         <div
           className="md:px-20 py-10 text-lg text-atomgray "
           data-aos="fade-in"
@@ -110,11 +102,8 @@ const Main: NextPage = () => {
         </div>
       </div>
       <div className="px-20 pt-20">
-        <span className="font-mono text-emerald-300 text-3xl relative">
-          Xiao.Work();
-          <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
-          <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
-        </span>
+        <Title text="Xiao.Work();" />
+
         <div
           className="md:px-20 py-10 text-lg text-atomgray"
           data-aos="fade-in"

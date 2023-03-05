@@ -6,6 +6,8 @@ import SakuraImage1 from "../../public/assets/decoration/sakura1.png";
 import SakuraImage2 from "../../public/assets/decoration/sakura2.png";
 import SakuraImage3 from "../../public/assets/decoration/sakura3.png";
 import SakuraImage4 from "../../public/assets/decoration/sakura4.png";
+import Title from "../decoration/Title";
+
 const Main: NextPage = () => {
   const contacts = [
     {
@@ -28,11 +30,7 @@ const Main: NextPage = () => {
   return (
     <div className="h-screen">
       <div className="px-20 pt-20">
-        <span className="font-mono text-emerald-300 text-3xl relative">
-          Xiao.Contact();
-          <span className="absolute left-0 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atompurple transition-all duration-300"></span>
-          <span className="absolute left-1/2 -bottom-2 h-[3px] w-1/2 origin-center transform bg-atomred transition-all duration-300"></span>
-        </span>
+        <Title text="Xiao.Contact();" />
       </div>
       <div className="pt-20 gap-4 flex flex-col md:flex-row items-center justify-center">
         {contacts.map((item) => (
