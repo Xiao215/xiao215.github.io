@@ -9,7 +9,7 @@ module.exports = {
     extend: {
       translate: ["group-hover", "hover"],
       animation: {
-        flash: "flash-frame 0.5s infinite",
+        flash: "flash-frame 1.5s infinite",
         fall1: "fall1-frame 22s infinite linear",
         fall2: "fall2-frame 15s infinite linear",
         fall3: "fall3-frame 23s infinite linear",
