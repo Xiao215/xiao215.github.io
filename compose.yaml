@@ -1,20 +1,33 @@
-services:
-  fintorch-react:
-    container_name: xiao215
-    image: node:18
-    working_dir: /usr/src/app
-    volumes:
-    - type: bind
-      source: .
-      target: /usr/src/app
-      consistency: cached
-    - chat_backend_node_modules:/usr/src/app/node_modules
-    ports:
-    - "9000:9000"
-    env_file:
-    - ./.env.local
-    command: bash -c "npm i -g nodemon && nodemon ./bin/www"
+name: Deploy to Github Pages
 
-volumes:
-  chat_backend_node_modules:
-    external: true
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  deployment:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Build
+        run: |
+          npm i
+          npm run build
+          npm run export
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./out
