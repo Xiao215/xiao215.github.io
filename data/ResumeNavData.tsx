@@ -7,15 +7,15 @@ type resumeNavProps = {
 const resumeNav: resumeNavProps[] = [
   {
     name: "CV",
-    link: "https://drive.google.com/file/d/1-VTcPhmI67T9zjgecNWxZnOykj6owIsQ/preview",
+    link: "https://drive.google.com/file/d/1cIhAMDdPmgg3mNbdxWe0P3RcVBqj2EYM/preview",
   },
   {
     name: "Machine Learning",
-    link: "https://drive.google.com/file/d/1rYXYxXcdh3Ss4VqeXJzktkJCRA9MSiA5/preview",
+    link: "https://drive.google.com/file/d/1vRssDE3tgXt_OihRQvvUtGHQhjJYyY4y/preview",
   },
   {
     name: "Software",
-    link: "https://drive.google.com/file/d/14OV-0uAPnmsk2DGFXGSgidOGjRTGKOVt/preview",
+    link: "https://drive.google.com/file/d/1v26oiDe7Ep91S8ABP46yonKoloZvmL59/preview",
   },
 ];
 
