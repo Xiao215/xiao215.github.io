@@ -17,16 +17,4 @@ module.exports = {
   },
   reactStrictMode: true,
   swcMinify: true,
-  i18n: {
-    locales: ["en", "fr"],
-    defaultLocale: "en",
-  },
-  async rewrites() {
-    return [
-      {
-        source: "/backend/:path*",
-        destination: "http://127.0.0.1:5000/:path*",
-      },
-    ];
-  },
 };
