@@ -1,10 +1,9 @@
-import type { NextPage } from "next";
 import Link from "next/link";
 type ItemProps = {
   name: string;
   link: string;
 };
-const Item: NextPage<ItemProps> = ({ name, link }) => {
+const Item = ({ name, link }: ItemProps) => {
   return (
     <Link
       href={link}
@@ -25,7 +24,7 @@ type NavItemProps = {
     icon: JSX.Element;
   }[];
 };
-const NavItems: NextPage<NavItemProps> = ({ items }) => {
+const NavItems = ({ items }: NavItemProps) => {
   return (
     <div className="flex gap-4">
       {items.map((item) => (

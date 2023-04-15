@@ -1,18 +1,17 @@
-import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import Title from "../decoration/Title";
 import Image from "next/image";
-import Slime from "../decoration/Slime";
 import board from "../../public/assets/decoration/lines.png";
 import ProfilePic from "./ProfilePic";
 import LineChart from "./LineChart";
 import UofT from "../../public/assets/logo/uoft.svg";
 import RBC from "../../public/assets/logo/rbc.svg";
 import Google from "../../public/assets/logo/google.svg";
+// import FadeIn from "../motion/FadeUp";
 const TerminalView = dynamic(() => import("../textfield/TerminalView"), {
   ssr: false,
 });
-const Main: NextPage = () => {
+const Main = () => {
   return (
     <div>
       <div className="pt-20 relative flex flex-col md:flex-row justify-center items-center">
@@ -23,15 +22,13 @@ const Main: NextPage = () => {
             className="absolute w-full h-full inset-0"
           />
         </div>
+
         <ProfilePic />
         <TerminalView />
       </div>
       <div className="px-20 pt-20">
         <Title text="Xiao.Programming();" />
-        <div
-          className="grid grid-cols-1 gap-8 lg:grid-cols-5 md:flex-row py-10 "
-          data-aos="fade-in"
-        >
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 md:flex-row py-10 ">
           <div className="md:col-span-2">
             <LineChart />
           </div>
@@ -59,12 +56,10 @@ const Main: NextPage = () => {
           </div> */}
         </div>
       </div>
+
       <div className="px-20 pt-20">
         <Title text="Xiao.Education();" />
-        <div
-          className="md:px-20 py-10 text-lg text-atomgray "
-          data-aos="fade-in"
-        >
+        <div className="md:px-20 py-10 text-lg text-atomgray ">
           <div className="justify-center flex md:hidden">
             <Image
               src={UofT}
@@ -115,10 +110,7 @@ const Main: NextPage = () => {
       <div className="px-20 pt-20">
         <Title text="Xiao.Work();" />
 
-        <div
-          className="md:px-20 py-10 text-lg text-atomgray"
-          data-aos="fade-in"
-        >
+        <div className="md:px-20 py-10 text-lg text-atomgray">
           <div className="items-center flex flex-col md:hidden">
             <Image
               src={RBC}

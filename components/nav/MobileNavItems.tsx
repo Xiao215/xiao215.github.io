@@ -1,11 +1,10 @@
-import type { NextPage } from "next";
 import Link from "next/link";
 type Props = {
   name: string;
   link: string;
   icon: JSX.Element;
 };
-const MobileNavItems: NextPage<Props> = ({ link, name, icon }) => {
+const MobileNavItems = ({ link, name, icon }: Props) => {
   return (
     <Link
       href={link}

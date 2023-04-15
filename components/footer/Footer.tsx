@@ -1,6 +1,5 @@
-import type { NextPage } from "next";
 import Link from "next/link";
-const Footer: NextPage = () => {
+const Footer = () => {
   return (
     <footer className=" text-atomgray body-font w-full justify-center items-center flex">
       <p className=" text-sm text-center sm:text-left flex-warp flex">

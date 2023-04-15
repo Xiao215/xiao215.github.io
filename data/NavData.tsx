@@ -1,5 +1,3 @@
-import Butterfly from "../public/assets/logo/butterfly.svg";
-import Image from "next/image";
 type menuProps = {
   name: string;
   link: string;

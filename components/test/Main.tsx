@@ -8,10 +8,7 @@ const Main: NextPage = () => {
       <div className="px-20 pt-20 z-10">
         <Title text="Xiao.Test();" />
       </div>
-      <div
-        className="pt-10 z-40 gap-4 flex flex-col md:flex-row items-center justify-center"
-        data-aos="fade-in"
-      >
+      <div className="pt-10 z-40 gap-4 flex flex-col md:flex-row items-center justify-center">
         <Upload />
       </div>
     </div>

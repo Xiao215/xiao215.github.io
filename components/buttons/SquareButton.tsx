@@ -1,9 +1,8 @@
-import type { NextPage } from "next";
 interface Props {
   colour: string;
   text: string | JSX.Element;
 }
-const SquareButton: NextPage<Props> = ({ colour, text }: Props) => {
+const SquareButton = ({ colour, text }: Props) => {
   switch (colour) {
     case "purple":
       return (

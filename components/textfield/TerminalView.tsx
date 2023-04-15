@@ -1,6 +1,5 @@
-import type { NextPage } from "next";
 import Typewriter from "typewriter-effect";
-const TerminalView: NextPage = () => {
+const TerminalView = () => {
   const currentDate = new Date().toLocaleString("en-US", {
     weekday: "short",
     month: "short",

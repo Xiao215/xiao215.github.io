@@ -13,7 +13,6 @@ export default function Document() {
           href="/assets/logos/fintorch-logo-square.png"
         />
         <meta name="apple-mobile-web-app-status-bar" content="#0E1116" />
-        <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
         {/* fonts below */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link

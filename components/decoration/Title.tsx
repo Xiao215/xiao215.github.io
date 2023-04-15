@@ -1,8 +1,7 @@
-import type { NextPage } from "next";
 type ItemProps = {
   text: string;
 };
-const Title: NextPage<ItemProps> = ({ text }) => {
+const Title = ({ text }: ItemProps) => {
   return (
     <div className="flex justify-center md:justify-start">
       <span className="font-mono text-emerald-300 text-3xl relative">

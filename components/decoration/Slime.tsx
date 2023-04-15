@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import slime1 from "../../public/assets/decoration/slime1.png";
@@ -11,7 +10,7 @@ type ItemProps = {
   width: number;
   height: number;
 };
-const Slime: NextPage<ItemProps> = ({ width, height }) => {
+const Slime = ({ width, height }: ItemProps) => {
   const images = [slime1, slime2, slime2, slime1, slime6, slime5, slime6];
   const [index, setIndex] = useState(0);
   useEffect(() => {

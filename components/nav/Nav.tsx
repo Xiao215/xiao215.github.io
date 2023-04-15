@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import type { NextPage } from "next";
 import cn from "clsx";
 import menuItem from "../../data/NavData";
 import dynamic from "next/dynamic";
@@ -8,19 +6,19 @@ const MenuItem = dynamic(() => import("../buttons/MenuItem"));
 const NavItems = dynamic(() => import("../nav/NavItems"));
 const MobileNavItems = dynamic(() => import("../nav/MobileNavItems"));
 
-const Nav: NextPage = () => {
+const Nav = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
   const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      console.log(
-        "prevScrollPos: " +
-          prevScrollPos +
-          " currentScrollPos: " +
-          currentScrollPos
-      );
+      // console.log(
+      //   "prevScrollPos: " +
+      //     prevScrollPos +
+      //     " currentScrollPos: " +
+      //     currentScrollPos
+      // );
       setHidden(prevScrollPos < currentScrollPos && currentScrollPos >= 50);
       setPrevScrollPos(currentScrollPos);
     };
@@ -62,7 +60,7 @@ const Nav: NextPage = () => {
           <div>
             {menuItem.map((item, index) => (
               <MobileNavItems
-                key={index}
+                key={item.name}
                 name={item.name}
                 link={item.link}
                 icon={item.icon}

@@ -1,7 +1,6 @@
-import type { NextPage } from "next";
 import { useState } from "react";
 import cn from "clsx";
-const MenuItem: NextPage = () => {
+const MenuItem = () => {
   const [navOpen, setNavOpen] = useState(false);
   const triggerNav = () => {
     setNavOpen(!navOpen);
