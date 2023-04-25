@@ -34,7 +34,7 @@ const TerminalView = () => {
             id="maxbtn"
           ></div>
           <div className="mx-auto pr-16" id="terminaltitle">
-            <p className="text-center text-md text-xl">Xiao's Terminal</p>
+            <p className="text-center text-md text-lg">Xiao's Terminal</p>
           </div>
         </div>
         <div
