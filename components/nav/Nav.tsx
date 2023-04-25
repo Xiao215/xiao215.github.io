@@ -63,7 +63,7 @@ const Nav = () => {
                 key={item.name}
                 name={item.name}
                 link={item.link}
-                icon={item.icon}
+                // icon={item.icon}
               />
             ))}
           </div>

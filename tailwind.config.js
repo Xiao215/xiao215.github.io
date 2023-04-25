@@ -7,6 +7,48 @@ module.exports = {
   ],
   theme: {
     extend: {
+      typography: ({ theme }) => ({
+        default: {
+          css: {
+            "--tw-prose-body": "#E6E8EB",
+            "--tw-prose-headings": "#E6E8EB",
+            "--tw-prose-lead": theme("colors.emerald[300]"),
+            "--tw-prose-links": theme("colors.emerald[300]"),
+            "--tw-prose-bold": "#E6E8EB",
+            "--tw-prose-counters": theme("colors.emerald[300]"),
+            "--tw-prose-bullets": theme("colors.emerald[300]"),
+            "--tw-prose-hr": theme("colors.emerald[300]"),
+            "--tw-prose-quotes": theme("colors.emerald[300]"),
+            "--tw-prose-quote-borders": theme("colors.emerald[300]"),
+            "--tw-prose-captions": theme("colors.emerald[700]"),
+            "--tw-prose-code": theme("colors.emerald[300]"),
+            "--tw-prose-pre-code": theme("colors.emerald[100]"),
+            "--tw-prose-pre-bg": theme("colors.emerald[900]"),
+            // "--tw-prose-th-borders": theme("colors.pink[300]"),
+            // "--tw-prose-td-borders": theme("colors.pink[200]"),
+            // "--tw-prose-invert-body": theme("colors.pink[200]"),
+            // "--tw-prose-invert-headings": theme("colors.white"),
+            // "--tw-prose-invert-lead": theme("colors.pink[300]"),
+            // "--tw-prose-invert-links": theme("colors.white"),
+            // "--tw-prose-invert-bold": theme("colors.white"),
+            // "--tw-prose-invert-counters": theme("colors.pink[400]"),
+            // "--tw-prose-invert-bullets": theme("colors.pink[600]"),
+            // "--tw-prose-invert-hr": theme("colors.pink[700]"),
+            // "--tw-prose-invert-quotes": theme("colors.pink[100]"),
+            // "--tw-prose-invert-quote-borders": theme("colors.pink[700]"),
+            // "--tw-prose-invert-captions": theme("colors.pink[400]"),
+            // "--tw-prose-invert-code": theme("colors.white"),
+            // "--tw-prose-invert-pre-code": theme("colors.pink[300]"),
+            // "--tw-prose-invert-pre-bg": "rgb(0 0 0 / 50%)",
+            // "--tw-prose-invert-th-borders": theme("colors.pink[600]"),
+            // "--tw-prose-invert-td-borders": theme("colors.pink[700]"),
+            "code::before": false,
+            "code::after": false,
+            "blockquote p:first-of-type::before": false,
+            "blockquote p:last-of-type::after": false,
+          },
+        },
+      }),
       translate: ["group-hover", "hover"],
       animation: {
         flash: "flash-frame 1.5s infinite",
@@ -209,15 +251,12 @@ module.exports = {
       translate: ["group-hover", "hover"],
       colors: {
         atomorange: "#d19a66", // 土橙黄
-        atomgray: "#ABB2BF", // 灰白
+        // atomgray: "#ABB2BF", // 灰白
+        atomgray: "#E6E8EB",
         atomcyan: "#56B6C2", // 青蓝
         atomyellow: "#d19a66", // 土黄
         atomred: "#E06C75", // 浅粉红
-        atompurple: {
-          DEFAULT: "#C678DD",
-          light: "#D3A4E3",
-          dark: "#61297F",
-        }, // 浅紫
+        atompurple: "#C678DD", // 紫
         atomblue: "#61AFEF", // 蓝
         atomgreen: "#98C379", // 抹茶绿
         atomblack: "#282C34",
@@ -229,5 +268,6 @@ module.exports = {
       animation: ["hover"],
     },
   },
-  plugins: [],
+
+  plugins: [require("@tailwindcss/typography")],
 };

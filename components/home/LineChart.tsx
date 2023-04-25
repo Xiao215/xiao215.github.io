@@ -32,7 +32,7 @@ const BarChart = ({ data, options }: LineChartProps) => {
               display: false,
             },
             ticks: {
-              color: "#d19a66",
+              color: "#6ee7b7",
               font: {
                 family: "'Raleway', sans-serif",
                 size: 15,
@@ -67,8 +67,8 @@ const chartData = {
       label: "Familiarity",
       data: [98, 90, 88, 70, 60, 54],
       fill: false,
-      borderColor: "#56B6C2",
-      backgroundColor: "rgb(75, 192, 192, 0.3)",
+      borderColor: "#6ee7b7",
+      backgroundColor: "rgb(110, 231, 183, 0.3)",
       tension: 0.1,
     },
   ],

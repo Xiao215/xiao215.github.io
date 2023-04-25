@@ -21,7 +21,6 @@ type NavItemProps = {
   items: {
     name: string;
     link: string;
-    icon: JSX.Element;
   }[];
 };
 const NavItems = ({ items }: NavItemProps) => {

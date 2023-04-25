@@ -6,6 +6,7 @@ export default function Document() {
       <Head>
         <meta name="description" content="Welcome to Xiao's Tea Pot!" />
         <meta name="theme-color" content="#0E1116" />
+        <meta name="og:title" content="Xiao's Tea Pot!" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/assets/logo/webicon.svg" />
         <link

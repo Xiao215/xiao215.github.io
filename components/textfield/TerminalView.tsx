@@ -16,7 +16,7 @@ const TerminalView = () => {
   ];
   return (
     <div className="md:w-1/2 w-5/6 mx-auto z-10">
-      <div className="w-full shadow-2xl subpixel-antialiased rounded-b-lg h-64 bg-black border-black mx-auto">
+      <div className="w-full shadow-2xl subpixel-antialiased rounded-lg h-72 bg-black border-black mx-auto">
         <div
           className="flex items-center h-6 rounded-t-lg bg-gray-100 border-b border-gray-500 text-center text-black"
           id="headerTerminal"
@@ -34,11 +34,11 @@ const TerminalView = () => {
             id="maxbtn"
           ></div>
           <div className="mx-auto pr-16" id="terminaltitle">
-            <p className="text-center text-md">Xiao's Terminal</p>
+            <p className="text-center text-md text-xl">Xiao's Terminal</p>
           </div>
         </div>
         <div
-          className="pl-1 pt-1 h-auto  text-atompurple font-mono text-xs bg-black"
+          className="pl-1 pt-1 h-auto  text-atompurple font-mono text-md bg-black"
           id="console"
         >
           <p className="pb-1">Last login: {currentDate} on ttys000</p>

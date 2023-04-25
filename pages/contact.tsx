@@ -17,9 +17,6 @@ const Index: NextPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <Contact />
       </Suspense>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Footer />
-      </Suspense>
     </main>
   );
 };

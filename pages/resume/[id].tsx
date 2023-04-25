@@ -3,40 +3,52 @@ import { Suspense, useEffect, useState } from "react";
 const Resume = dynamic(() => import("../../components/resume/Main"));
 const Nav = dynamic(() => import("../../components/nav/Nav"), { ssr: false });
 import { useRouter } from "next/router";
+export async function getStaticPaths() {
+  // Get the list of paths you want to pre-render
 
-const Main = () => {
-  const router = useRouter();
-  const { query, isReady } = useRouter();
+  return {
+    paths: [
+      { params: { id: "ml" } },
+      { params: { id: "swe" } },
+      { params: { id: "cv" } },
+    ],
+    fallback: true, // or 'blocking'
+  };
+}
 
+export async function getStaticProps({ params }) {
   const allowedOptions = ["cv", "ml", "swe"];
-  const [routerResume, setRouterResume] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (isReady) {
-      if (
-        Array.isArray(query.id) ||
-        !allowedOptions.includes(query.id as string)
-      ) {
-        router.push("/resume");
-      } else {
-        setRouterResume(query.id as string);
-      }
-    }
-  }, [isReady]);
-
+  if (allowedOptions.includes(params.id as string)) {
+    const resumeType = params.id;
+    return {
+      props: {
+        resumeType,
+      },
+    };
+  } else {
+    return {
+      redirect: {
+        destination: "/resume",
+        permanent: false,
+      },
+    };
+  }
+}
+export default function ResumeMain({ resumeType }) {
+  const router = useRouter();
+  // Show a loading message while the page is being generated
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
   // Render components only when isReady and routerResume are set
   return (
-    isReady &&
-    routerResume && (
-      <main className="w-screen h-full bg-transparent relative body-container">
-        <Suspense fallback={<div>Loading...</div>}>
-          <Nav />
-        </Suspense>
-        <Suspense fallback={<div>Loading...</div>}>
-          <Resume type={routerResume} />
-        </Suspense>
-      </main>
-    )
+    <main className="w-screen h-full bg-transparent relative body-container">
+      <Suspense fallback={<div>Loading...</div>}>
+        <Nav />
+      </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Resume type={resumeType} />
+      </Suspense>
+    </main>
   );
-};
-export default Main;
+}

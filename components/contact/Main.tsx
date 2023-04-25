@@ -30,9 +30,9 @@ const Main = () => {
           </Link>
         ))}
       </div>
-      <div className="z-10 md:pt-40 pt-10">
+      {/* <div className="z-10 md:pt-40 pt-10">
         <Slime width={400} height={240} />
-      </div>
+      </div> */}
       <div className="z-0 fixed animate-fall1">
         <Image src={SakuraImage1} alt="Sakura" width={40} className="h-auto" />
       </div>
