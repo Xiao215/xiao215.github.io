@@ -17,7 +17,6 @@ module.exports = {
       "/contact": { page: "/contact", query: { __nextDefaultLocale: true } },
     };
   },
-
   reactStrictMode: true,
   swcMinify: true,
   async rewrites() {
