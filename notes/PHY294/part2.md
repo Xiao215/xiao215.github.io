@@ -5,49 +5,35 @@ title: "Quantum Physics Chapter 9"
 ### Spin angular momentum
 
 - **quantum number**: $s=\frac{1}{2}$
-- **magnitude**:
+- **magnitude**: $S= \sqrt{s(s+1)}\hbar=\sqrt{3}\hbar/2$
+- **z direction**: $S=\pm \frac{1}{2}\hbar$
 
-### 2D Square well
+### Classical magnetic moment and Potential energy
 
-Energies, $E=E_0(n_x^2+n_y^2)$, for two quantum number $n_x$ and $n_y$
+$\mathbf{\mu} = i\mathbf{A}$, $U=-\mathbf{\mu}\cdot\mathbf{B}$
 
-### Quantum numbers
+### Electron’s magnetic moment
 
-Integers or half-integers that identify the allowed values of some dynamical variable, such as energy or angular momentum
+- **Orbiting moment**: $\mathbf{\mu}_{orb} = -(e/2m_e)\mathbf{L}$
+- **Spin moment**: $\mathbf{\mu}_{spin} = -(e/m_e)\mathbf{S}$
+- **Total Magnetic Moment**: $\mathbf{\mu}_{tot}=\mathbf{\mu}_{orb}+\mathbf{\mu}_{spin}=-(e/2m_e)(\mathbf{L}+2\mathbf{S})$
 
-### Degeneracy
+### The Bohr magneton
 
-Two or more physically independent wave functions with the same energy
+Convenient unit for atomic magnetic moments, $\mu_B=e\hbar/(2m_e)$
 
-### Quantization of angular momentum
+### Zeeman splitting
 
-- **magnitude** with quantum number $l$: $L=\sqrt{l(l+1)}\hbar, (l=0, 1, 2, \dots)$
-- **z component** with quantum number $m$: $L_z=m\hbar, (m = l, l-1, \dots, -l)$
-- **vector model**:
+Energy shift of orbital magnetic moment in a field, $E=m\mu_B B$
+
 <p align="center">
-<img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100797013433516122/image.png" alt="Vector model" width="200"/>
+<img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100822155379351672/image.png" alt="diagram" width="350"/>
 </p>
 
-- **code letters**, $s, p, d, f$: denote $l=0, 1, 2, 3$
+### Energy difference
 
-### Hydrogen atom
-
-- **principal quantum number** $n$: $E_n=-E_R/n^2$
-- **wave functions**: $\psi_{nlm}(r, \theta, \phi)=R_{nl}(r)\Theta_{lm}(theta)\Phi_m(\phi)$ where $\phi=e^{im\phi}$
-
-### Radial probability density, $P(r)$
-
-$P(R)dr$ is the probability of finding particals between $r$ and $r+dr$
-
-### Shells
-
-- **Energy Shell**: group of levels with approximately the same energy
-- **Spatial Shell**: group of levels concentrated at approximately the same
-radius
+- $\Delta E$ between each **Magnetic Quantum Number** $m_l$ is $\mu_B B$
+- $\Delta E$ between each **Spin Quantum Number** $m_s$ is $2\mu_B B$
 <p align="center">
-<img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100799882152919050/image.png" alt="radial distributions" width="500"/>
+<img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100824735094411324/image.png" alt="diagram" width="500"/>
 </p>
-
-### Hydrogen-like ion
-
-A single electron in the field of a charge $Z_e$ (only one electron). Energy level $E_n=-Z^2E_R/n^2$
