@@ -66,7 +66,7 @@ export default function DeepLearningNotes({ notesData }) {
               remarkPlugins={[remarkMath]}
               rehypePlugins={[rehypeKatex, rehypeRaw]}
             >
-              {notesData.fileContents}
+              {notesData.contentHtml}
             </ReactMarkdown>
           </main>
         </Layout>

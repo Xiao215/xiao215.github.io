@@ -88,7 +88,6 @@ export async function getNoteData(
   return {
     id,
     contentHtml: contentHtml.replace(/\\_/g, "_"),
-    fileContents,
     ...matterResult.data,
   };
 }
