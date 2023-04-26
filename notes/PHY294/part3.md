@@ -6,7 +6,8 @@ title: "Quantum Physics Chapter 10"
 
 Each electron moves in the field of the nucleus and the average distribution of the other $Z-1$ electrons
 
-- **IPA potential energy**: $U(r)=-Z_{eff}(r)ke^2/r$<img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100826809605566522/image.png" alt="diagram" width="220" align="right"/>
+- **IPA potential energy**: $U(r)=-Z_{eff}(r)ke^2/r$
+  <img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100826809605566522/image.png" alt="diagram" width="220" align="right"/>
 - **Z effective**: $Z_{eff}\to Z$ as $r\to 0$, and $Z_{eff}\to 1$ as $r\to \infty$
 - **Energy levels**:
 <p align="center">

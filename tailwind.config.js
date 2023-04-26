@@ -11,7 +11,7 @@ module.exports = {
         default: {
           css: {
             "--tw-prose-body": "#E6E8EB",
-            "--tw-prose-headings": "#E6E8EB",
+            "--tw-prose-headings": "#C678DD",
             "--tw-prose-lead": theme("colors.emerald[300]"),
             "--tw-prose-links": theme("colors.emerald[300]"),
             "--tw-prose-bold": "#E6E8EB",

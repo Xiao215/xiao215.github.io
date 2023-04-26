@@ -49,7 +49,7 @@ v_{21}e^{\lambda_1t}&v_{22}e^{\lambda_2t}
 
 ## ODE behaviour
 
-det(A)=$\lambda_1\times\lambda_2$, tr(A)=$\lambda_1+\lambda_2$
+$\text{det}(A) = \lambda_1\times\lambda_2$, $\text{tr}(A)=\lambda_1+\lambda_2$
 
 <p align="center">
 <img src="https://media.discordapp.net/attachments/1094676554652602419/1100810912874643556/6398dd7854755a5fc72c72f8.png?width=1986&height=1130" alt="diagram" width="400"/>
