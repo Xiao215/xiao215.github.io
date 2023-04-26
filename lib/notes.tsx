@@ -87,7 +87,7 @@ export async function getNoteData(
   // Combine the data with the id and contentHtml
   return {
     id,
-    contentHtml,
+    contentHtml: contentHtml.replace(/\\_/g, "_"),
     fileContents,
     ...matterResult.data,
   };

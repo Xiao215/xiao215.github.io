@@ -15,10 +15,6 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import rehypeRaw from "rehype-raw";
 
-const renderers = {
-  image: Image,
-};
-
 const course = "deep-learning";
 export async function getStaticProps({ params }) {
   try {
@@ -47,7 +43,6 @@ export async function getStaticPaths() {
 }
 export default function DeepLearningNotes({ notesData }) {
   const router = useRouter();
-
   // Show a loading message while the page is being generated
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -71,7 +66,7 @@ export default function DeepLearningNotes({ notesData }) {
               remarkPlugins={[remarkMath]}
               rehypePlugins={[rehypeKatex, rehypeRaw]}
             >
-              {notesData.contentHtml}
+              {notesData.fileContents}
             </ReactMarkdown>
           </main>
         </Layout>

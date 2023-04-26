@@ -4,11 +4,11 @@ title: "Segment Anything"
 
 # Segment Anything
 
-# $$y = \frac{a}{b} = \int_{a}^{b} aaa dx$$
-
-<a href="https://github.com/Xiao215" target="_blank" rel="noreferrer"><img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100637726124032140/image.png" width="200" align="right"></a>
+# $$y = \frac{a}{b} = \int_{a}^b aaa dx$$
 
 **[Meta AI Research, FAIR](https://ai.facebook.com/research/)**
+
+$$\delta Q = \sqrt{\left( \frac{C}{V_{up}}(\frac{3}{2}\sqrt{v_t} + \frac{1}{2}v_{up}\sqrt{v_t}) \times \delta v_t\right)^2 + \left(-C\frac{(v_t+v_{up})\sqrt{v_t}}{(V_{up})^2} \times \delta V_{up}\right)^2 + \left(\frac{C\sqrt{v_t}}{V_{up}} \times \delta v_{up}\right)^2}$$
 
 [Alexander Kirillov](https://alexander-kirillov.github.io/), [Eric Mintun](https://ericmintun.github.io/), [Nikhila Ravi](https://nikhilaravi.com/), [Hanzi Mao](https://hanzimao.me/), Chloe Rolland, Laura Gustafson, [Tete Xiao](https://tetexiao.com), [Spencer Whitehead](https://www.spencerwhitehead.com/), Alex Berg, Wan-Yen Lo, [Piotr Dollar](https://pdollar.github.io/), [Ross Girshick](https://www.rossgirshick.info/)
 
