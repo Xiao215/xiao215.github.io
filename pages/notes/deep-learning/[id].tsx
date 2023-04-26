@@ -7,6 +7,17 @@ const Layout = dynamic(() => import("../../../components/Layout"));
 const Nav = dynamic(() => import("../../../components/nav/Nav"), {
   ssr: false,
 });
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import Image from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
+import rehypeRaw from "rehype-raw";
+
+const renderers = {
+  image: Image,
+};
 
 const course = "deep-learning";
 export async function getStaticProps({ params }) {
@@ -55,10 +66,13 @@ export default function DeepLearningNotes({ notesData }) {
             {postData.date && <Date dateString={postData.date} />}
           </div>
           <br /> */}
-            <article
+            <ReactMarkdown
               className="prose prose-default md:prose-lg lg:prose-xl prose-img:rounded-xl"
-              dangerouslySetInnerHTML={{ __html: notesData.contentHtml }}
-            />
+              remarkPlugins={[remarkMath]}
+              rehypePlugins={[rehypeKatex, rehypeRaw]}
+            >
+              {notesData.contentHtml}
+            </ReactMarkdown>
           </main>
         </Layout>
       </Suspense>
