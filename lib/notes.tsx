@@ -84,6 +84,9 @@ export async function getNoteData(
   let contentHtml = processedContent.toString();
   contentHtml = contentHtml.replace(/\\_/g, "_");
   contentHtml = contentHtml.replace(/\\\[/g, "[");
+  contentHtml = contentHtml.replace(/\\\*/g, "*");
+  contentHtml = contentHtml.replace(/\\</g, "<");
+
   // Combine the data with the id and contentHtml
   return {
     id,

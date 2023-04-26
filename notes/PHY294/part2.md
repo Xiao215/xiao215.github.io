@@ -1,10 +1,11 @@
 ---
-title: "Quantum Physics Chapter 8"
+title: "Quantum Physics Chapter 9"
 ---
 
-### 3D Schrödinger equation
+### Spin angular momentum
 
-$$\frac{\partial^2\psi}{\partial x^2}+\frac{\partial^2\psi}{\partial y^2}+\frac{\partial^2\psi}{\partial z^2}=\frac{2M}{\hbar}[U-E]\psi$$
+- **quantum number**: $s=\frac{1}{2}$
+- **magnitude**:
 
 ### 2D Square well
 
