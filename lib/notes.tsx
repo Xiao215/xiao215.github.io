@@ -76,18 +76,18 @@ export async function getNoteData(
   const courseDirectory = path.join(notesDirectory, course);
   const fullPath = path.join(courseDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
-
   // Use gray-matter to parse the post metadatanpm i @tailwindcss/typography section
   const matterResult = matter(fileContents);
 
   // Use remark to convert markdown into HTML string
   const processedContent = await remark().process(matterResult.content);
-  const contentHtml = processedContent.toString();
-
+  let contentHtml = processedContent.toString();
+  contentHtml = contentHtml.replace(/\\_/g, "_");
+  contentHtml = contentHtml.replace(/\\\[/g, "[");
   // Combine the data with the id and contentHtml
   return {
     id,
-    contentHtml: contentHtml.replace(/\\_/g, "_"),
+    contentHtml,
     ...matterResult.data,
   };
 }

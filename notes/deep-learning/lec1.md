@@ -4,7 +4,7 @@ title: "Quantum Physics Chapter 8"
 
 #### 3D Schrödinger equation
 
-$$\frac{\partial^2\psi}{\partial x^2}+\frac{\partial^2\psi}{\partial y^2}+\frac{\partial^2\psi}{\partial z^2}=\frac{2M}{\hbar}[U-E]\psi$$
+$$\frac{\partial^2\psi}{\partial x^2}+\frac{\partial^2\psi}{\partial y^2}+\frac{\partial^2\psi}{\partial z^2}=\frac{2M}{\hbar}[U-E]\psi [aaa]$$
 
 #### 2D Square well
 
