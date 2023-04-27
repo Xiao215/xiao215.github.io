@@ -25,11 +25,12 @@ $$\Delta E = IE(Na) - EA(Cl) = 5.1eV - 3.6eV = 1.5eV$$
   - Bonding orbital: Probability Density Function: $\psi_+$, Energy: $E_+(R)$
   - Antibonding orbital: Probability Density Function: $\psi_-$, Energy: $E_-(R)$
 
-<div>
-    <img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100854754487312545/image.png" alt="diagram" height="160" align="left"/>
-    <img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100856232639737986/image.png" alt="diagram" height="160" align="right"/>
-</div>
-<br clear="both"/>
+<p align="center">
+    <img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100854754487312545/image.png" alt="diagram" height="160"/></p>
+    
+<p align="center">
+    <img src="https://cdn.discordapp.com/attachments/1094676554652602419/1100856232639737986/image.png" alt="diagram" height="160"/>
+</p>
 
 ### Molecular Orbital (MO) Diagram
 
