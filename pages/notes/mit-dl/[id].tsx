@@ -14,7 +14,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import rehypeRaw from "rehype-raw";
 
-const course = "midDL";
+const course = "mitDL";
 export async function getStaticProps({ params }) {
   try {
     const notesData = await getNoteData(params.id, course);

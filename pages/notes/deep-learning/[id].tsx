@@ -15,7 +15,7 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import rehypeRaw from "rehype-raw";
 
-const course = "deep-learning";
+const course = "deeplearning";
 export async function getStaticProps({ params }) {
   try {
     const notesData = await getNoteData(params.id, course);
