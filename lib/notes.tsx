@@ -38,37 +38,27 @@ export function getSortedNotesData(courseDirectory): NoteData[] {
     }
   });
 }
-interface NoteIdObject {
-  params: {
-    id: string;
-  };
-}
-export function getAllNoteIds(course: string): NoteIdObject[] {
+// interface NoteIdObject {
+//   params: {
+//     id: string;
+//   };
+// }
+export function getCourseNoteIds(course: string): string[] {
   const courseDirectory = path.join(notesDirectory, course);
   const fileNames = fs.readdirSync(courseDirectory);
-
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
-  return fileNames.map((fileName) => {
-    return {
-      params: {
-        id: fileName.replace(/\.md$/, ""),
-      },
-    };
-  });
+  return fileNames.map((fileName) => fileName.replace(/\.md$/, ""));
 }
 
+export function getCourses(): string[] {
+  const entries = fs.readdirSync(notesDirectory, { withFileTypes: true });
+
+  // Filter out all entries that are not directories
+  const courseNames = entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name);
+
+  return courseNames;
+}
 export async function getNoteData(
   id: string,
   course: string

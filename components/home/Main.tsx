@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import Title from "../decoration/Title";
 import Image from "next/image";
 import board from "../../public/assets/decoration/lines.png";
-import ProfilePic from "./ProfilePic";
+const ProfilePic = dynamic(() => import("./ProfilePic"));
 import LineChart from "./LineChart";
 import UofT from "../../public/assets/logo/uoft.svg";
 import RBC from "../../public/assets/logo/rbc.svg";

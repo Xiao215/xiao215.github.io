@@ -971,7 +971,7 @@ const menuItem: menuProps[] = [
   },
   {
     name: "Notes",
-    link: "/notes/PHY294/part1",
+    link: "/notes",
   },
 ];
 
