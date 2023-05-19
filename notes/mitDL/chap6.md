@@ -88,10 +88,81 @@ where $\mathbf{m}_{t}$ is the momentum, $\beta$ is the momentum parameter. The m
 
 a) shows the normal SGD update. The gradient is noisy and the updates are small. b) shows the momentum SGD update. The momentum term is a running average of the gradient. The effective learning rate increases if all these gradients are aligned over multiple iterations but decreases if the gradient direction repeatedly changes as the terms in the sum cancel out.
 
+For simplicity in the further notes, I will represent the momentum SGD with the following equation:
+
+$$
+\mathbf{v}_{t+1} \leftarrow \rho \mathbf{v}_t + \eta\mathbf{g}(\mathbf{\theta}_t)\\
+\mathbf{\theta}_{t+1} \leftarrow \mathbf{\theta}_t + \mathbf{v}_{t+1}
+$$
+
+where $\mathbf{v}_t$ is the momentum, $\rho$ is the momentum parameter, $\eta$ is the learning rate, $\mathbf{g}(\mathbf{w}_t) = \frac{\partial L}{\partial \mathbf{w}_t}$ is the gradient and $\mathbf{w}_t$ is the parameter.
+
 ### Nesterov momentum
 
 _Nesterov momentum_ is a modification of momentum that improves the convergence rate of SGD. It is also known as _Nesterov accelerated gradient_ or _Nesterov accelerated gradient descent_. It is a way to give our momentum term a "look ahead". Instead of evaluating the gradient at the current parameters, we evaluate the gradient at the parameters that our momentum term would cause us to reach at the next step.
 
+$$
+\mathbf{v}_{t+1} \leftarrow \rho \mathbf{v}_t + \eta\mathbf{g}(\mathbf{\theta}_t+\rho\mathbf{v}_t)\\
+\mathbf{\theta}_{t+1} \leftarrow \mathbf{\theta}_t + \mathbf{v}_{t+1}
+$$
+
+### Adagrad
+
+Adagrad is an algorithm for gradient-based optimization that adapts the learning rate to the parameters, performing smaller updates (i.e. low learning rates) for parameters associated with frequently occurring features, and larger updates (i.e. high learning rates) for parameters associated with infrequent features. For this reason, it is well-suited for dealing with sparse data.
+
+$$\mathbf{\theta}_{i,t+1} = \mathbf{\theta}_{i,t} - \frac{\eta}{\epsilon+\sqrt{G_{t,ii} }} g_{i,t} = \mathbf{\theta}_{i,t} - \frac{\eta}{\epsilon+\sqrt{\sum_{\tau=1}^t g_{i,\tau}^2}} g_{i,t}$$
+
+where $G_{t,ii}$ is the sum of the squares of the gradients w.r.t. $\mathbf{w}_i$ up to time step $t$ and $\epsilon$ is a smoothing term that avoids division by zero (usually on the order of $10^{-8}$). The learning rate $\eta$ is typically set to a small value, e.g. 0.01. The initial value of $G_{t,ii}$ is typically set to 1.0.
+
+**Disadvantages**: The main weakness of Adagrad is its accumulation of the squared gradients in the denominator: Since every added term is positive, the accumulated sum keeps growing during training. This in turn **causes the learning rate to shrink and eventually become infinitesimally small**, at which point the algorithm is no longer able to acquire additional knowledge. The following algorithms aim to resolve this flaw.
+
+### RMSProp (Root Mean Square Propagation)
+
+RMSProp is an unpublished, adaptive learning rate method proposed by Geoff Hinton in Lecture 6e of his Coursera Class. RMSProp resolve Adagrad's radically diminishing learning rates, as it can **increase** or **decrease** the learning rate term.
+
+$$
+E[g^2]_{t+1} = \gamma E[g^2]_{t} + (1-\gamma) g^2_{t}\\
+\theta_{t+1} = \theta_t - \frac{\eta}{\epsilon + \sqrt{E[g^2]_{t+1}}} g_t
+$$
+
+where $\gamma$ (discount parameter, $0\leq\gamma\leq 1$) is a decay rate that controls the size of the moving average. $\gamma$ controls how much the previous $E[g^2]_{t}$ is remembered. When a **large gradient** is encountered, $E[g^2]_{t}$ is modefied such that the learning rate is **scared down**. When a **small gradient** is encountered, $E[g^2]_{t}$ is modefied such that the learning rate is **scared up**. Typical values are 0.9, 0.99, 0.999. The parameter $\epsilon$ is a smoothing term that avoids division by zero (usually on the order of $10^{-8}$).
+
+### Adadelta
+
+Adadelta is an extension of Adagrad that seeks to reduce its aggressive, monotonically decreasing learning rate. Instead of accumulating all past squared gradients, Adadelta restricts the window of accumulated past gradients to some fixed size $w$.
+
+$$
+E[g^2]_t = \gamma E[g^2]_{t-1} + (1-\gamma) g^2_t\\
+\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{E[g^2]_t + \epsilon}} g_t
+$$
+
+where $\gamma$ (discount parameter, $0\leq\gamma\leq 1$) is a decay rate that controls the size of the moving average. $\gamma$ controls how much the previous $E[g^2]_{t}$ is remembered. When a **large gradient** is encountered, $E[g^2]_{t}$ is modefied such that the learning rate is **scared down**. When a **small gradient** is encountered, $E[g^2]_{t}$ is modefied such that the learning rate is **scared up**. Typical values are 0.9, 0.99, 0.999. The parameter $\epsilon$ is a smoothing term that avoids division by zero (usually on the order of $10^{-8}$).
+
 ### Adam
 
 For a normal gradient descent with a fix step size, it has the following undesirable property: it makes **large** adjustments to params associated with **large gradients** (where perhaps we should be more cautious) and **small** adjustments to params associate with **small gradients** (which perhaps we should explore further). When gradient of the loss surface is much steeper in one direction than another, it is difficualt to choose a learning rate that **(i)** makes good progress in both directions and **(ii)** is stable.
+
+The update rule in Adam includes bias corrections to the estimates of both the first-order moment (the mean) and the second raw moment (the uncentered variance) to account for their initialization at the origin. Adam is known for its **efficiency** and **relatively low memory requirements**.
+
+$$
+m_t = \beta_1 m_{t-1} + (1-\beta_1) g_t = \beta_1 m_{t-1} + (1-\beta_1) \sum_{i\in\mathcal{B_t}} \frac{\partial l_i[\phi]}{\partial \phi}\\
+v_t = \beta_2 v_{t-1} + (1-\beta_2) g_t^2 = \beta_2 v_{t-1} + (1-\beta_2) \sum_{i\in\mathcal{B_t}} \left(\frac{\partial l_i[\phi]}{\partial \phi}\right)^2\\
+\hat{m}_t = \frac{m_t}{1-\beta_1^t}\\
+\hat{v}_t = \frac{v_t}{1-\beta_2^t}
+$$
+
+$$
+\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t
+$$
+
+where $\beta_1$ and $\beta_2$ are the momentum coefficient / decay rate, $0\leq\beta_1,\beta_2\leq 1$. The parameter $\epsilon$ is a smoothing term that avoids division by zero (usually on the order of $10^{-8}$). Note Adam is usually used in a stochastic setting where the gradients and their squares are computed from mini-batches.
+
+### AdamW
+
+AdamW is a variant of Adam proposed by researchers at fast.ai. The main difference between Adam and AdamW is in the way weight decay is handled. In standard Adam, weight decay is included in the calculation of the running averages of the gradients. In AdamW, weight decay is separated from the gradient update step, which makes the decay rate more predictable and controllable. In practice, this often leads to better performance and faster convergence.
+
+$$
+\theta_{t+1} = \theta_t - \frac{\eta}{\sqrt{\hat{v}_t} + \epsilon} \hat{m}_t - \eta \lambda \theta_t
+$$
+
+where $\lambda$ is the weight decay coefficient.
