@@ -10,7 +10,7 @@ import Image from "next/image";
 interface ResumeProps {
   type?: string;
 }
-const Main = ({ type = "cv" }: ResumeProps) => {
+const Main = ({ type = "swe" }: ResumeProps) => {
   const resumeNavData = Object.values(resumeNav);
   const [versionSelected, setVersionSelected] = useState(type);
   const toggleNavSwitch = (e) => {

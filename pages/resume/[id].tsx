@@ -1,23 +1,25 @@
 import dynamic from "next/dynamic";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense } from "react";
 const Resume = dynamic(() => import("../../components/resume/Main"));
 const Nav = dynamic(() => import("../../components/nav/Nav"), { ssr: false });
 import { useRouter } from "next/router";
+import resumeNavData from "../../data/ResumeNavData";
+
 export async function getStaticPaths() {
   // Get the list of paths you want to pre-render
 
   return {
-    paths: [
-      { params: { id: "ml" } },
-      { params: { id: "swe" } },
-      { params: { id: "cv" } },
-    ],
+    paths: Object.values(resumeNavData).map((entry) => {
+      return { params: { id: entry.navName } };
+    }),
     fallback: true, // or 'blocking'
   };
 }
 
 export async function getStaticProps({ params }) {
-  const allowedOptions = ["cv", "ml", "swe"];
+  const allowedOptions = Object.values(resumeNavData).map((entry) => {
+    return entry.navName;
+  });
   if (allowedOptions.includes(params.id as string)) {
     const resumeType = params.id;
     return {
