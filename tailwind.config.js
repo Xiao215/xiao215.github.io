@@ -259,7 +259,7 @@ module.exports = {
         atompurple: "#C678DD", // 紫
         atomblue: "#61AFEF", // 蓝
         atomgreen: "#98C379", // 抹茶绿
-        atomblack: "#061322",
+        atomblack: "#282C34",
       },
     },
   },
