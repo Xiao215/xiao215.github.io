@@ -36,6 +36,7 @@ const Main = () => {
             <Slime width={250} height={150} />
           </div> */}
           <div className="lg:col-span-3 md:col-span-4 text-lg text-atomgray">
+            https://drive.google.com/file/d/1WDlI74T5z5cb6TnfsX2cpRJG3fjji_kl/view?usp=sharing
             In the past, I have worked on many full stack projects based using
             <span className="text-emerald-300"> TypeScript Nextjs </span>
             Frontend and <span className="text-emerald-300">Flask Python </span>
