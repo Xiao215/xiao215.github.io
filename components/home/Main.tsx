@@ -35,6 +35,9 @@ const Main = () => {
           {/* <div className="lg:hidden md:col-span-2">
             <Slime width={250} height={150} />
           </div> */}
+          <div>
+            https://drive.google.com/file/d/1VL1zOH55niUcj9YPHJa4KNrdlt7FGc8Z/view?usp=sharing
+          </div>
           <div className="lg:col-span-3 md:col-span-4 text-lg text-atomgray">
             In the past, I have worked on many full stack projects based using
             <span className="text-emerald-300"> TypeScript Nextjs </span>
