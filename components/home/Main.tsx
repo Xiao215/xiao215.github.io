@@ -36,7 +36,7 @@ const Main = () => {
             <Slime width={250} height={150} />
           </div> */}
           <div>
-            https://drive.google.com/file/d/1xcWfnKPSvAHkBLPQIU3j8zxXdr0i1yG9/view?usp=sharing
+            https://drive.google.com/drive/folders/1MPLTvOqbkluk2Mgx57qF008kMk8V-d1f?usp=sharing
           </div>
           <div className="lg:col-span-3 md:col-span-4 text-lg text-atomgray">
             In the past, I have worked on many full stack projects based using
