@@ -969,10 +969,10 @@ const menuItem: menuProps[] = [
     //       </svg>
     //     ),
   },
-  {
-    name: "Notes",
-    link: "/notes",
-  },
+  // {
+  //   name: "Notes",
+  //   link: "/notes",
+  // },
 ];
 
 export default menuItem;

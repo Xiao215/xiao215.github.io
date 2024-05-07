@@ -35,9 +35,7 @@ const Main = () => {
           {/* <div className="lg:hidden md:col-span-2">
             <Slime width={250} height={150} />
           </div> */}
-          <div>
-            https://drive.google.com/drive/folders/1MPLTvOqbkluk2Mgx57qF008kMk8V-d1f?usp=drive_link
-          </div>
+
           <div className="lg:col-span-3 md:col-span-4 text-lg text-atomgray">
             In the past, I have worked on many full stack projects based using
             <span className="text-emerald-300"> TypeScript Nextjs </span>
@@ -145,23 +143,56 @@ const Main = () => {
           </div>
           <div>
             I interned remotely at{" "}
-            <span className="text-emerald-300">Royal Bank of Canada (RBC)</span>{" "}
+            <a
+              href="https://www.rbc.com"
+              className="text-emerald-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              RBC
+            </a>{" "}
             in summer <span className="text-emerald-300">2021</span> as a{" "}
             <span className="text-emerald-300">Innovation Developer</span> as
             part of the Summer Tech Lab program. During this internship, I built
-            the RBC tech information center, designed the UI components and
-            restructured navigation for the access to the company's tech product
-            using Figma, Angular and TypeScipt. In summer{" "}
+            the RBC tech information center. In summer{" "}
             <span className="text-emerald-300">2022</span>, I returned to{" "}
             <span className="text-emerald-300">RBC</span> as a{" "}
             <span className="text-emerald-300">Software Developer Intern</span>{" "}
             to the Toronto Office. I integrated a data hub for RBC online
-            banking across 10 countries and developed a customizable desktop app
-            with React & Electron. For the upcoming summer{" "}
-            <span className="text-emerald-300">2023</span>, I will be joining
-            <span className="text-emerald-300"> Google</span> as a{" "}
+            banking and developed a customizable desktop app with React &
+            Electron. During the summer of{" "}
+            <span className="text-emerald-300">2023</span>, I joined
+            <a
+              href="https://www.google.com/about/careers/"
+              className="text-emerald-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Google
+            </a>{" "}
+            as a{" "}
             <span className="text-emerald-300">STEP Software Engineer </span>in
-            the Montreal Chrome Team.
+            the Montreal Chrome Team. I returned to{" "}
+            <a
+              href="https://www.google.com/about/careers/"
+              className="text-emerald-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Google
+            </a>{" "}
+            as a{" "}
+            <span className="text-emerald-300">Software Engineer intern</span>{" "}
+            on the Cloud team in the summer of 2024. I will be joining{" "}
+            <a
+              href="https://centml.ai/"
+              className="text-emerald-300"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              CentML
+            </a>{" "}
+            in this fall as a Software Developer Intern.
           </div>
         </div>
       </div>
