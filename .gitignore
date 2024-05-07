@@ -1,28 +1,3 @@
-Last login: Wed Mar  1 21:37:10 on ttys000
-(base) ➜  Personal-website git:(main) ✗ code .                 
-(base) ➜  Personal-website git:(main) ✗ j fintor
-/Users/xiao215/UofT/fintorch_react
-(base) ➜  fintorch_react git:(master) ✗ ls               
-Dockerfile         middleware.ts      package.json       tailwind.config.js
-README.md          next-auth.d.ts     pages              tsconfig.json
-components         next-env.d.ts      postcss.config.js  yarn-error.log
-compose.yaml       next.config.js     process.d.ts       yarn.lock
-data               node_modules       public
-hooks              package-lock.json  styles
-(base) ➜  fintorch_react git:(master) ✗ vim .gitignore 
-
-
-
-
-
-
-
-
-
-
-
-
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
@@ -44,4 +19,4 @@ hooks              package-lock.json  styles
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-".gitignore" [noeol] 25L, 334B
+/out
