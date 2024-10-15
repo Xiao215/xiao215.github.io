@@ -17,6 +17,7 @@ const Index: NextPage = () => {
       <Suspense fallback={<div>Loading...</div>}>
         <Contact />
       </Suspense>
+      https://drive.google.com/drive/folders/1dCUtxbmjgFnGPvWp1i5DI8SlEEe-8N1b?usp=drive_link
     </main>
   );
 };
