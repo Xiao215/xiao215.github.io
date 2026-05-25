@@ -167,6 +167,7 @@ export function TravelExplorer() {
     };
 
     function resize() {
+      if (!container) return;
       const rect = container.getBoundingClientRect();
       const size = Math.max(260, Math.min(rect.width, rect.height || rect.width));
       renderer.setSize(rect.width, size, false);
