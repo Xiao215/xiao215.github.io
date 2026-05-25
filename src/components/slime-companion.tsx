@@ -15,6 +15,8 @@ const excitedWingFrequency = 1 / 0.62;
 export function SlimeCompanion({ className = "" }: { className?: string }) {
   const slimeRef = useRef<HTMLButtonElement>(null);
   const targetFrequencyRef = useRef(calmWingFrequency);
+  const lastPointerTypeRef = useRef<string | null>(null);
+  const calmTimeoutRef = useRef<number | null>(null);
   const [surprised, setSurprised] = useState(false);
   const [surpriseKey, setSurpriseKey] = useState(0);
   const [showSurprise, setShowSurprise] = useState(false);
@@ -89,14 +91,45 @@ export function SlimeCompanion({ className = "" }: { className?: string }) {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  useEffect(() => {
+    return () => {
+      if (calmTimeoutRef.current !== null) {
+        window.clearTimeout(calmTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const clearCalmTimeout = () => {
+    if (calmTimeoutRef.current !== null) {
+      window.clearTimeout(calmTimeoutRef.current);
+      calmTimeoutRef.current = null;
+    }
+  };
+
   const surpriseSlime = () => {
+    clearCalmTimeout();
     targetFrequencyRef.current = excitedWingFrequency;
     setSurprised(true);
   };
 
   const calmSlime = () => {
+    clearCalmTimeout();
     targetFrequencyRef.current = calmWingFrequency;
     setSurprised(false);
+  };
+
+  const showSurprisePop = () => {
+    setShowSurprise(true);
+    setSurpriseKey((current) => current + 1);
+  };
+
+  const calmSlimeSoon = () => {
+    clearCalmTimeout();
+    calmTimeoutRef.current = window.setTimeout(() => {
+      targetFrequencyRef.current = calmWingFrequency;
+      setSurprised(false);
+      calmTimeoutRef.current = null;
+    }, 420);
   };
 
   return (
@@ -107,13 +140,54 @@ export function SlimeCompanion({ className = "" }: { className?: string }) {
         surprised ? "slime-companion--surprised" : ""
       } ${className}`}
       aria-label="Surprise the slime"
-      onClick={() => {
+      onClick={(event) => {
+        if (lastPointerTypeRef.current === "touch" && event.detail !== 0) {
+          return;
+        }
+
         surpriseSlime();
-        setShowSurprise(true);
-        setSurpriseKey((current) => current + 1);
+        showSurprisePop();
+
+        if (event.detail === 0) {
+          calmSlimeSoon();
+        }
       }}
-      onPointerEnter={surpriseSlime}
-      onPointerLeave={calmSlime}
+      onPointerDown={(event) => {
+        lastPointerTypeRef.current = event.pointerType;
+
+        if (event.pointerType === "touch") {
+          surpriseSlime();
+          showSurprisePop();
+        }
+      }}
+      onPointerEnter={(event) => {
+        lastPointerTypeRef.current = event.pointerType;
+
+        if (event.pointerType !== "touch") {
+          surpriseSlime();
+        }
+      }}
+      onPointerLeave={(event) => {
+        if (event.pointerType === "touch") {
+          calmSlimeSoon();
+          return;
+        }
+
+        calmSlime();
+      }}
+      onPointerUp={(event) => {
+        if (event.pointerType === "touch") {
+          calmSlimeSoon();
+        }
+      }}
+      onPointerCancel={(event) => {
+        if (event.pointerType === "touch") {
+          calmSlimeSoon();
+          return;
+        }
+
+        calmSlime();
+      }}
     >
       <div className="slime-companion__stage">
         {showSurprise ? (
