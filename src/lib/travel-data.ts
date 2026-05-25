@@ -107,9 +107,9 @@ export const travelPlaces = [
     lng: 103.8198,
   }, // 12
   {
-    id: "taiwan",
+    id: "taipei",
     place: "Taipei",
-    country: "Taiwan",
+    country: "China",
     continent: "Asia",
     lat: 25.0330,
     lng: 121.5654,
@@ -489,7 +489,7 @@ export const travelRoutes = [
     to: travelPlaces[0],
   },
   {
-    id: "fuzhou-taiwan",
+    id: "fuzhou-taipei",
     from: travelPlaces[0],
     to: travelPlaces[13],
   },
