@@ -163,7 +163,10 @@ function groupPlacesByRegion(places: readonly TravelPlace[]) {
 }
 
 export function TravelExplorer() {
-  const [selectedIndex, setSelectedIndex] = useState(travelPlaces.length - 1);
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    const idx = travelPlaces.findIndex((p) => p.id === "san-francisco");
+    return idx >= 0 ? idx : 0;
+  });
   const [webglUnavailable, setWebglUnavailable] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const selectedIndexRef = useRef(selectedIndex);

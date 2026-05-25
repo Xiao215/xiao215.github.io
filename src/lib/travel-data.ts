@@ -412,6 +412,14 @@ export const travelPlaces = [
     lat: 11.5564,
     lng: 104.9282,
   }, // 50
+  {
+    id: "quebec-city",
+    place: "Quebec City",
+    country: "Canada",
+    continent: "North America",
+    lat: 46.8139,
+    lng: -71.2080,
+  }, // 51
 ];
 
 export const travelRoutes = [
@@ -592,5 +600,41 @@ export const travelRoutes = [
     id: "bangkok-fuzhou",
     from: travelPlaces[35], // Bangkok
     to: travelPlaces[0],    // Fuzhou
+  },
+  {
+    id: "montreal-quebec-city",
+    from: travelPlaces[23], // Montreal
+    to: travelPlaces[51],   // Quebec City
+  },
+  // add halifax to moncton, moncton to charlottetown, charlottetown halifax, toronto to kingston, kingston to ottowa, ottowa to montreal
+    {
+    id: "halifax-moncton",
+    from: travelPlaces[7], // Halifax
+    to: travelPlaces[42],   // Moncton
+  },
+  {
+    id: "moncton-charlottetown",
+    from: travelPlaces[42], // Moncton
+    to: travelPlaces[41],   // Charlottetown
+  },
+  {
+    id: "charlottetown-halifax",
+    from: travelPlaces[41], // Charlottetown
+    to: travelPlaces[7],   // Halifax
+  },
+  {
+    id: "toronto-kingston",
+    from: travelPlaces[1], // Toronto
+    to: travelPlaces[44],   // Kingston
+  },
+  {
+    id: "kingston-ottawa",
+    from: travelPlaces[44], // Kingston
+    to: travelPlaces[43],   // Ottawa
+  },
+  {
+    id: "ottawa-montreal",
+    from: travelPlaces[43], // Ottawa
+    to: travelPlaces[23],   // Montreal
   },
 ];
