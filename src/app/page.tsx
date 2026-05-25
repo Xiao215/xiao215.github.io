@@ -48,7 +48,7 @@ export default function Home() {
             </p>
           </div>
           <ContactButtons />
-          <TerminalCard />
+          {/* <TerminalCard /> */}
         </div>
 
         <div className="justify-self-center md:justify-self-end">
@@ -75,37 +75,13 @@ export default function Home() {
             Experience
           </h2>
           <p className="mt-3 max-w-sm leading-7 text-muted">
-            Current roles and selected software internships, with earlier
-            experience available on expansion.
+            My career journey.
           </p>
         </div>
         <ExperienceList />
       </section>
 
       <ResearchSection />
-
-      <section
-        id="focus"
-        className="grid gap-8 border-t border-line/70 py-14 md:grid-cols-[0.8fr_1.2fr]"
-      >
-        <div>
-          <h2 className="text-2xl font-semibold text-accent-strong">Focus</h2>
-          <p className="mt-3 max-w-sm leading-7 text-muted">
-            The new site can grow from here into projects, notes, and resume
-            pages without carrying over the old code.
-          </p>
-        </div>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {focus.map((item) => (
-            <li
-              key={item}
-              className="rounded-md border border-line/70 border-l-accent-pink bg-surface/70 px-5 py-4 shadow-[0_12px_34px_rgba(24,24,72,0.16)]"
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      </section>
 
       <footer
         id="contact"

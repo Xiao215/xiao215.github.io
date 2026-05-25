@@ -64,6 +64,7 @@ export const research = [
     detail: "arXiv:2604.15267",
     href: "https://arxiv.org/abs/2604.15267",
     pdfHref: "https://arxiv.org/pdf/2604.15267",
+    codeHref: "https://github.com/Xiao215/CoopEval",
     tags: ["LLM agents", "Game theory", "Social dilemmas"],
     summary:
       "A benchmark and comparative study of mechanisms that help capable LLM agents sustain cooperation in mixed-motive games.",

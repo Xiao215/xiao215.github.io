@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 import { PaimonHi } from "@/components/floating-paimon";
 import { SiteNav } from "@/components/site-nav";
@@ -15,28 +16,28 @@ export default function ResumePage() {
       <SiteNav />
 
       <section className="py-12 sm:py-16">
-        <div className="relative mb-8 flex flex-col gap-6 overflow-hidden rounded-md border border-line/70 bg-surface/70 p-5 shadow-[0_18px_60px_rgba(24,24,72,0.2)] md:flex-row md:items-end md:justify-between md:pr-44">
-          <div className="relative z-10">
+        <div className="relative mb-8 flex items-center justify-between gap-4 overflow-hidden rounded-md border border-line/70 bg-surface/70 p-5 shadow-[0_18px_60px_rgba(24,24,72,0.2)] sm:p-8 md:items-end md:pr-44">
+          <div className="relative z-10 min-w-0 flex-1">
             <p className="font-mono text-sm uppercase text-accent-strong">
               Resume
             </p>
             <h1 className="mt-3 text-4xl font-semibold leading-tight text-foreground sm:text-5xl">
-              Role-specific resume versions.
+              Resume.
             </h1>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-muted">
-              Switch between software and machine learning versions, then open
-              the selected file in Google Drive if you need the full viewer.
+              Select a version to preview.
             </p>
           </div>
+          <Image
+            src="/assets/paimon/paimon-hi.png"
+            alt=""
+            width={262}
+            height={394}
+            priority
+            aria-hidden="true"
+            className="relative z-10 block w-24 shrink-0 opacity-85 sm:w-28 md:hidden"
+          />
 
-          <a
-            href={selectedResume.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="relative z-10 inline-flex shrink-0 rounded-md border border-accent-pink/40 bg-surface-soft px-4 py-2 text-sm font-medium text-accent-strong transition hover:border-accent-strong"
-          >
-            Open {selectedResume.name} resume
-          </a>
           <PaimonHi />
         </div>
 
@@ -49,7 +50,7 @@ export default function ResumePage() {
                 key={resume.slug}
                 type="button"
                 onClick={() => setSelectedSlug(resume.slug)}
-                className={`rounded px-4 py-2 text-sm font-medium transition ${
+                className={`cursor-pointer rounded px-4 py-2 text-sm font-medium transition ${
                   active
                     ? "bg-accent-strong text-background"
                     : "text-muted hover:text-foreground"

@@ -13,6 +13,7 @@ export function PaimonHi() {
         width={262}
         height={394}
         className="paimon-hi__image"
+        priority
       />
     </div>
   );

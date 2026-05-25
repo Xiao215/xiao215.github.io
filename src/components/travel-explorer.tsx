@@ -212,6 +212,7 @@ export function TravelExplorer() {
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.domElement.style.display = "block";
+    renderer.domElement.style.touchAction = "none";
     renderer.domElement.style.width = "100%";
     container.appendChild(renderer.domElement);
 
@@ -394,6 +395,7 @@ export function TravelExplorer() {
     }
 
     function onPointerDown(event: PointerEvent) {
+      event.preventDefault();
       drag.active = true;
       drag.moved = false;
       drag.x = event.clientX;
@@ -406,6 +408,7 @@ export function TravelExplorer() {
         return;
       }
 
+      event.preventDefault();
       const deltaX = event.clientX - drag.x;
       const deltaY = event.clientY - drag.y;
       drag.moved = drag.moved || Math.abs(deltaX) + Math.abs(deltaY) > 4;
@@ -422,6 +425,7 @@ export function TravelExplorer() {
     }
 
     function onPointerUp(event: PointerEvent) {
+      event.preventDefault();
       drag.active = false;
       renderer.domElement.releasePointerCapture(event.pointerId);
 
@@ -508,87 +512,74 @@ export function TravelExplorer() {
   const groupedPlaces = groupPlacesByRegion(travelPlaces);
 
   return (
-    <section className="grid min-w-0 gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-      <div className="min-w-0">
-        <div className="relative min-w-0 overflow-hidden rounded-md border border-line/70 bg-surface/70 shadow-[0_24px_90px_rgba(24,24,72,0.35)]">
-          <div className="absolute left-5 top-5 z-10 rounded-md border border-line/70 bg-surface-soft/82 px-4 py-3 backdrop-blur">
-            <p className="font-mono text-xs uppercase text-accent">
-              Selected city
-            </p>
-            <p className="mt-1 text-lg font-semibold text-foreground">
-              {selectedPlace.place}
-            </p>
-          </div>
-          {webglUnavailable ? (
-            <TravelGlobeFallback
-              selectedIndex={selectedIndex}
-              onSelect={setSelectedIndex}
-            />
-          ) : (
+    <section className="min-w-0 space-y-5">
+      <div className="relative min-w-0 overflow-hidden rounded-md border border-line/70 bg-surface/70 shadow-[0_24px_90px_rgba(24,24,72,0.35)]">
+        <div className="absolute left-5 top-5 z-10 rounded-md border border-line/70 bg-surface-soft/82 px-4 py-3 backdrop-blur">
+          <p className="font-mono text-xs uppercase text-accent">
+            Selected city
+          </p>
+          <p className="mt-1 text-lg font-semibold text-foreground">
+            {selectedPlace.place}
+          </p>
+        </div>
+        {webglUnavailable ? (
+          <TravelGlobeFallback
+            selectedIndex={selectedIndex}
+            onSelect={setSelectedIndex}
+          />
+        ) : (
             <div
               ref={containerRef}
-              className="min-h-[360px] min-w-0 cursor-grab active:cursor-grabbing sm:min-h-[520px]"
+              className="min-h-[360px] min-w-0 touch-none cursor-grab active:cursor-grabbing sm:min-h-[540px]"
               aria-label="Interactive travel globe"
             />
-          )}
-        </div>
-
-        <div className="mt-5 rounded-md border border-line/70 bg-surface/65 p-5">
-          <p className="font-mono text-xs uppercase text-accent-strong">
-            City index
-          </p>
-          <div className="mt-4 grid gap-5 sm:grid-cols-2">
-            {Object.entries(groupedPlaces).map(([continent, countries]) => (
-              <div key={continent}>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {continent}
-                </h3>
-                <div className="mt-3 space-y-4">
-                  {Object.entries(countries).map(([country, places]) => (
-                    <div key={country}>
-                      <p className="font-mono text-xs uppercase text-accent">
-                        {country}
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {places.map((place) => {
-                          const index = travelPlaces.findIndex(
-                            (candidate) => candidate.id === place.id,
-                          );
-                          const active = index === selectedIndex;
-
-                          return (
-                            <button
-                              key={place.id}
-                              type="button"
-                              onClick={() => setSelectedIndex(index)}
-                              className={`rounded-full border px-3 py-1.5 text-sm transition ${
-                                active
-                                  ? "border-accent-strong/80 bg-accent-strong/15 text-foreground"
-                                  : "border-line/70 bg-surface-soft/55 text-muted hover:border-accent/70 hover:text-foreground"
-                              }`}
-                            >
-                              {place.place}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        )}
       </div>
 
-      <div className="min-w-0">
-        <div className="mb-5 rounded-md border border-line/70 bg-surface/65 p-5">
-          <p className="font-mono text-xs uppercase text-accent-strong">
-            Selected place
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold text-foreground">
-            {selectedPlace.place}, {selectedPlace.country}
-          </h2>
+      <div className="rounded-md border border-line/70 bg-surface/65 p-5">
+        <p className="font-mono text-xs uppercase text-accent-strong">
+          City index
+        </p>
+        <div className="mt-4 grid gap-6 md:grid-cols-3">
+          {Object.entries(groupedPlaces).map(([continent, countries]) => (
+            <div key={continent}>
+              <h3 className="text-lg font-semibold text-foreground">
+                {continent}
+              </h3>
+              <div className="mt-3 space-y-4">
+                {Object.entries(countries).map(([country, places]) => (
+                  <div key={country}>
+                    <p className="font-mono text-xs uppercase text-accent">
+                      {country}
+                    </p>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {places.map((place) => {
+                        const index = travelPlaces.findIndex(
+                          (candidate) => candidate.id === place.id,
+                        );
+                        const active = index === selectedIndex;
+
+                        return (
+                          <button
+                            key={place.id}
+                            type="button"
+                            onClick={() => setSelectedIndex(index)}
+                            className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm transition ${
+                              active
+                                ? "border-accent-strong/80 bg-accent-strong/15 text-foreground"
+                                : "border-line/70 bg-surface-soft/55 text-muted hover:border-accent/70 hover:text-foreground"
+                            }`}
+                          >
+                            {place.place}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

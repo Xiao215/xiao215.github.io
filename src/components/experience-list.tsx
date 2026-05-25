@@ -50,7 +50,7 @@ export function ExperienceList() {
       <button
         type="button"
         onClick={() => setExpanded((current) => !current)}
-        className="mt-4 rounded-md border border-accent/40 bg-surface-soft px-4 py-2 text-sm font-medium text-foreground transition hover:border-accent-strong hover:text-accent-strong"
+        className="mt-4 cursor-pointer rounded-md border border-accent/40 bg-surface-soft px-4 py-2 text-sm font-medium text-foreground shadow-[0_8px_24px_rgba(24,24,72,0.14)] transition hover:-translate-y-0.5 hover:border-accent-strong hover:bg-surface hover:text-accent-strong hover:shadow-[0_14px_32px_rgba(24,24,72,0.22)]"
       >
         {expanded ? "Show fewer roles" : "Show all experience"}
       </button>

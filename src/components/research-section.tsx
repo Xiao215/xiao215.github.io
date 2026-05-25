@@ -9,8 +9,7 @@ export function ResearchSection() {
       <div>
         <h2 className="text-2xl font-semibold text-accent-strong">Research</h2>
         <p className="mt-3 max-w-sm leading-7 text-muted">
-          Publications and research work around AI agents, cooperation, and
-          multi-agent systems.
+          Publications and research work.
         </p>
       </div>
 
@@ -56,6 +55,16 @@ export function ResearchSection() {
               >
                 PDF
               </a>
+              {paper.codeHref ? (
+                <a
+                  href={paper.codeHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="rounded-md border border-accent/40 px-4 py-2 text-foreground transition hover:border-accent-strong hover:text-accent-strong"
+                >
+                  Code
+                </a>
+              ) : null}
             </div>
           </article>
         ))}
