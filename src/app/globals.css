@@ -28,6 +28,22 @@
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  background: #20232b;
+}
+
 body {
   background:
     radial-gradient(circle at 16% 12%, rgba(216, 144, 192, 0.16), transparent 30rem),

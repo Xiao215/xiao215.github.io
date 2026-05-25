@@ -2,9 +2,28 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import { travelRoutes, travelStops } from "@/lib/travel-data";
+import type { Position } from "geojson";
+import { mesh } from "topojson-client";
+import type { GeometryObject, Topology } from "topojson-specification";
+import worldAtlas from "world-atlas/countries-110m.json";
+import { travelRoutes, travelPlaces } from "@/lib/travel-data";
+
+type TravelPlace = (typeof travelPlaces)[number];
 
 const globeRadius = 1;
+const worldTopology = worldAtlas as unknown as Topology<{
+  countries: GeometryObject;
+  land: GeometryObject;
+}>;
+const countryBorderLines = mesh(
+  worldTopology,
+  worldTopology.objects.countries,
+  (a, b) => a !== b,
+).coordinates;
+const coastlineLines = mesh(
+  worldTopology,
+  worldTopology.objects.land,
+).coordinates;
 
 function latLngToVector3(lat: number, lng: number, radius = globeRadius) {
   const phi = THREE.MathUtils.degToRad(90 - lat);
@@ -18,41 +37,148 @@ function latLngToVector3(lat: number, lng: number, radius = globeRadius) {
 }
 
 function targetRotationFor(lat: number, lng: number) {
+  const point = latLngToVector3(lat, lng).normalize();
+  const yRotation = Math.atan2(-point.x, point.z);
+  const horizontalDepth = Math.hypot(point.x, point.z);
+  const xRotation = Math.atan2(point.y, horizontalDepth);
+
   return {
-    x: THREE.MathUtils.degToRad(THREE.MathUtils.clamp(-lat * 0.55, -42, 42)),
-    y: THREE.MathUtils.degToRad(lng + 18),
+    x: THREE.MathUtils.clamp(xRotation, -0.78, 0.78),
+    y: yRotation,
   };
 }
 
 function makeArc(from: THREE.Vector3, to: THREE.Vector3) {
-  const midpoint = from.clone().add(to).normalize().multiplyScalar(1.42);
-  const curve = new THREE.QuadraticBezierCurve3(from, midpoint, to);
+  const start = from.clone().normalize();
+  const end = to.clone().normalize();
+  const angle = start.angleTo(end);
+  const sinAngle = Math.sin(angle);
+  const altitude = THREE.MathUtils.clamp(angle * 0.08, 0.055, 0.18);
+  const points = Array.from({ length: 90 }, (_, index) => {
+    const t = index / 89;
+    const radius = globeRadius * 1.035 + Math.sin(Math.PI * t) * altitude;
+    const surfacePoint =
+      sinAngle < 0.001
+        ? start.clone().lerp(end, t)
+        : start
+            .clone()
+            .multiplyScalar(Math.sin((1 - t) * angle) / sinAngle)
+            .add(end.clone().multiplyScalar(Math.sin(t * angle) / sinAngle));
 
-  return new THREE.BufferGeometry().setFromPoints(curve.getPoints(72));
+    return surfacePoint.normalize().multiplyScalar(radius);
+  });
+
+  return new THREE.CatmullRomCurve3(points);
+}
+
+function interpolateOnSphere(
+  start: THREE.Vector3,
+  end: THREE.Vector3,
+  t: number,
+) {
+  const angle = start.angleTo(end);
+  const sinAngle = Math.sin(angle);
+
+  if (sinAngle < 0.001) {
+    return start.clone().lerp(end, t).normalize();
+  }
+
+  return start
+    .clone()
+    .multiplyScalar(Math.sin((1 - t) * angle) / sinAngle)
+    .add(end.clone().multiplyScalar(Math.sin(t * angle) / sinAngle))
+    .normalize();
+}
+
+function makeSurfacePolyline(
+  points: readonly Position[],
+  radius = globeRadius * 1.028,
+) {
+  const linePoints: THREE.Vector3[] = [];
+
+  points.forEach((point, index) => {
+    const next = points[index + 1];
+    const start = latLngToVector3(point[1], point[0]).normalize();
+
+    if (!next) {
+      linePoints.push(start.multiplyScalar(radius));
+      return;
+    }
+
+    const end = latLngToVector3(next[1], next[0]).normalize();
+    const segments = Math.max(4, Math.ceil(start.angleTo(end) / 0.08));
+
+    for (let segment = 0; segment < segments; segment += 1) {
+      linePoints.push(
+        interpolateOnSphere(start, end, segment / segments).multiplyScalar(
+          radius,
+        ),
+      );
+    }
+  });
+
+  return new THREE.BufferGeometry().setFromPoints(linePoints);
+}
+
+function makeFallbackPath(points: readonly Position[]) {
+  const [firstPoint, ...restPoints] = points;
+
+  if (!firstPoint) {
+    return "";
+  }
+
+  const start = projectPoint(firstPoint[1], firstPoint[0]);
+
+  return restPoints.reduce((currentPath, point) => {
+    const projected = projectPoint(point[1], point[0]);
+
+    return `${currentPath} L ${projected.x} ${projected.y}`;
+  }, `M ${start.x} ${start.y}`);
 }
 
 function makeCircle(radius: number, segments = 128) {
   const points = Array.from({ length: segments + 1 }, (_, index) => {
     const angle = (index / segments) * Math.PI * 2;
-    return new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius);
+    return new THREE.Vector3(
+      Math.cos(angle) * radius,
+      0,
+      Math.sin(angle) * radius,
+    );
   });
 
   return new THREE.BufferGeometry().setFromPoints(points);
 }
 
+function groupPlacesByRegion(places: readonly TravelPlace[]) {
+  return places.reduce<Record<string, Record<string, TravelPlace[]>>>(
+    (continents, place) => {
+      continents[place.continent] ??= {};
+      continents[place.continent][place.country] ??= [];
+      continents[place.continent][place.country].push(place);
+
+      return continents;
+    },
+    {},
+  );
+}
+
 export function TravelExplorer() {
-  const [selectedIndex, setSelectedIndex] = useState(travelStops.length - 1);
+  const [selectedIndex, setSelectedIndex] = useState(travelPlaces.length - 1);
+  const [webglUnavailable, setWebglUnavailable] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const selectedIndexRef = useRef(selectedIndex);
   const targetRotationRef = useRef(
-    targetRotationFor(travelStops[selectedIndex].lat, travelStops[selectedIndex].lng),
+    targetRotationFor(
+      travelPlaces[selectedIndex].lat,
+      travelPlaces[selectedIndex].lng,
+    ),
   );
 
   useEffect(() => {
     selectedIndexRef.current = selectedIndex;
     targetRotationRef.current = targetRotationFor(
-      travelStops[selectedIndex].lat,
-      travelStops[selectedIndex].lng,
+      travelPlaces[selectedIndex].lat,
+      travelPlaces[selectedIndex].lng,
     );
   }, [selectedIndex]);
 
@@ -67,9 +193,23 @@ export function TravelExplorer() {
     const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
     camera.position.set(0, 0, 3.25);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    let renderer: THREE.WebGLRenderer;
+
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+        preserveDrawingBuffer: true,
+      });
+    } catch {
+      window.setTimeout(() => setWebglUnavailable(true), 0);
+      return;
+    }
+
     renderer.setClearColor(0x000000, 0);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.domElement.style.display = "block";
+    renderer.domElement.style.width = "100%";
     container.appendChild(renderer.domElement);
 
     const group = new THREE.Group();
@@ -77,77 +217,144 @@ export function TravelExplorer() {
     group.rotation.set(initialRotation.x, initialRotation.y, 0);
     scene.add(group);
 
-    const globe = new THREE.Mesh(
-      new THREE.SphereGeometry(globeRadius, 96, 96),
-      new THREE.MeshStandardMaterial({
-        color: 0x232733,
-        roughness: 0.95,
-        metalness: 0.05,
-        transparent: true,
-        opacity: 0.96,
-      }),
-    );
+    const globeGeometry = new THREE.SphereGeometry(globeRadius, 96, 96);
+    const globeMaterial = new THREE.MeshStandardMaterial({
+      color: 0x232733,
+      roughness: 0.95,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.94,
+    });
+    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
     group.add(globe);
 
-    const glow = new THREE.Mesh(
-      new THREE.SphereGeometry(globeRadius * 1.02, 96, 96),
-      new THREE.MeshBasicMaterial({
-        color: 0xa9a9ef,
-        transparent: true,
-        opacity: 0.1,
-        side: THREE.BackSide,
-      }),
-    );
+    const glowGeometry = new THREE.SphereGeometry(globeRadius * 1.02, 96, 96);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0xa9a9ef,
+      transparent: true,
+      opacity: 0.1,
+      side: THREE.BackSide,
+    });
+    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
     group.add(glow);
 
     const gridMaterial = new THREE.LineBasicMaterial({
       color: 0x5c526f,
       transparent: true,
-      opacity: 0.46,
+      opacity: 0.25,
     });
+    const gridGeometries: THREE.BufferGeometry[] = [];
 
     for (let lat = -60; lat <= 60; lat += 30) {
-      const line = new THREE.Line(makeCircle(Math.cos(THREE.MathUtils.degToRad(lat))), gridMaterial);
+      const geometry = makeCircle(Math.cos(THREE.MathUtils.degToRad(lat)));
+      const line = new THREE.Line(geometry, gridMaterial);
+      gridGeometries.push(geometry);
       line.position.y = Math.sin(THREE.MathUtils.degToRad(lat));
       group.add(line);
     }
 
     for (let lng = 0; lng < 180; lng += 30) {
-      const line = new THREE.Line(makeCircle(globeRadius), gridMaterial);
+      const geometry = makeCircle(globeRadius);
+      const line = new THREE.Line(geometry, gridMaterial);
+      gridGeometries.push(geometry);
       line.rotation.x = Math.PI / 2;
       line.rotation.z = THREE.MathUtils.degToRad(lng);
       group.add(line);
     }
 
-    const arcMaterial = new THREE.LineBasicMaterial({
-      color: 0xf1a5d8,
+    const coastMaterial = new THREE.LineBasicMaterial({
+      color: 0xf0d8c0,
       transparent: true,
-      opacity: 0.72,
+      opacity: 0.65,
+    });
+    const borderMaterial = new THREE.LineBasicMaterial({
+      color: 0xa9a9ef,
+      transparent: true,
+      opacity: 0.34,
+    });
+    const landGeometries: THREE.BufferGeometry[] = [];
+
+    coastlineLines.forEach((line) => {
+      const geometry = makeSurfacePolyline(line, globeRadius * 1.031);
+      const outline = new THREE.Line(geometry, coastMaterial);
+      landGeometries.push(geometry);
+      group.add(outline);
     });
 
+    countryBorderLines.forEach((line) => {
+      const geometry = makeSurfacePolyline(line, globeRadius * 1.033);
+      const outline = new THREE.Line(geometry, borderMaterial);
+      landGeometries.push(geometry);
+      group.add(outline);
+    });
+
+    const arcMaterial = new THREE.MeshBasicMaterial({
+      color: 0xf1a5d8,
+      transparent: true,
+      opacity: 0.95,
+    });
+    const arcGeometries: THREE.BufferGeometry[] = [];
+
     travelRoutes.forEach((route) => {
-      const from = latLngToVector3(route.from.lat, route.from.lng, globeRadius * 1.015);
-      const to = latLngToVector3(route.to.lat, route.to.lng, globeRadius * 1.015);
-      group.add(new THREE.Line(makeArc(from, to), arcMaterial));
+      const from = latLngToVector3(
+        route.from.lat,
+        route.from.lng,
+        globeRadius * 1.015,
+      );
+      const to = latLngToVector3(
+        route.to.lat,
+        route.to.lng,
+        globeRadius * 1.015,
+      );
+      const geometry = new THREE.TubeGeometry(
+        makeArc(from, to),
+        96,
+        0.0055,
+        8,
+        false,
+      );
+      const arc = new THREE.Mesh(geometry, arcMaterial);
+      arcGeometries.push(geometry);
+      group.add(arc);
     });
 
     const markerMeshes: THREE.Mesh[] = [];
+    const markerHaloMeshes: THREE.Mesh[] = [];
+    const markerMaterials: THREE.MeshStandardMaterial[] = [];
+    const markerHaloMaterials: THREE.MeshBasicMaterial[] = [];
     const markerGeometry = new THREE.SphereGeometry(0.026, 24, 24);
+    const markerHaloGeometry = new THREE.RingGeometry(0.034, 0.052, 36);
 
-    travelStops.forEach((stop, index) => {
-      const marker = new THREE.Mesh(
-        markerGeometry,
-        new THREE.MeshStandardMaterial({
-          color: index === selectedIndexRef.current ? 0xf1a5d8 : 0xf0d8c0,
-          emissive: index === selectedIndexRef.current ? 0xf1a5d8 : 0xa9a9ef,
-          emissiveIntensity: index === selectedIndexRef.current ? 0.75 : 0.36,
-          roughness: 0.45,
-        }),
-      );
-      marker.position.copy(latLngToVector3(stop.lat, stop.lng, globeRadius * 1.06));
+    travelPlaces.forEach((place, index) => {
+      const markerMaterial = new THREE.MeshStandardMaterial({
+        color: index === selectedIndexRef.current ? 0xf1a5d8 : 0xf0d8c0,
+        emissive: index === selectedIndexRef.current ? 0xf1a5d8 : 0xa9a9ef,
+        emissiveIntensity: index === selectedIndexRef.current ? 0.75 : 0.36,
+        roughness: 0.45,
+      });
+      markerMaterials.push(markerMaterial);
+      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+      const position = latLngToVector3(place.lat, place.lng, globeRadius * 1.058);
+      const normal = position.clone().normalize();
+      marker.position.copy(position);
       marker.userData.index = index;
       markerMeshes.push(marker);
       group.add(marker);
+
+      const haloMaterial = new THREE.MeshBasicMaterial({
+        color: index === selectedIndexRef.current ? 0xf1a5d8 : 0xf0d8c0,
+        transparent: true,
+        opacity: index === selectedIndexRef.current ? 0.4 : 0.18,
+        side: THREE.DoubleSide,
+      });
+      markerHaloMaterials.push(haloMaterial);
+      const halo = new THREE.Mesh(markerHaloGeometry, haloMaterial);
+      halo.position.copy(
+        latLngToVector3(place.lat, place.lng, globeRadius * 1.06),
+      );
+      halo.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+      markerHaloMeshes.push(halo);
+      group.add(halo);
     });
 
     const ambient = new THREE.AmbientLight(0xf6edf7, 1.6);
@@ -171,7 +378,9 @@ export function TravelExplorer() {
       const rect = container.getBoundingClientRect();
       const size = Math.max(260, Math.min(rect.width, rect.height || rect.width));
       renderer.setSize(rect.width, size, false);
+      renderer.domElement.style.height = `${size}px`;
       camera.aspect = rect.width / size;
+      camera.position.z = rect.width < 480 ? 3.75 : 3.25;
       camera.updateProjectionMatrix();
     }
 
@@ -200,7 +409,11 @@ export function TravelExplorer() {
       drag.x = event.clientX;
       drag.y = event.clientY;
       targetRotationRef.current = {
-        x: THREE.MathUtils.clamp(targetRotationRef.current.x + deltaY * 0.005, -0.95, 0.95),
+        x: THREE.MathUtils.clamp(
+          targetRotationRef.current.x + deltaY * 0.005,
+          -0.95,
+          0.95,
+        ),
         y: targetRotationRef.current.y + deltaX * 0.005,
       };
     }
@@ -241,10 +454,17 @@ export function TravelExplorer() {
       markerMeshes.forEach((marker, index) => {
         const active = index === selectedIndexRef.current;
         const material = marker.material as THREE.MeshStandardMaterial;
-        marker.scale.setScalar(active ? 1.72 : 1);
+        marker.scale.setScalar(active ? 1.45 : 1);
         material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
         material.emissive.set(active ? 0xf1a5d8 : 0xa9a9ef);
         material.emissiveIntensity = active ? 0.78 : 0.34;
+      });
+      markerHaloMeshes.forEach((halo, index) => {
+        const active = index === selectedIndexRef.current;
+        const material = halo.material as THREE.MeshBasicMaterial;
+        halo.scale.setScalar(active ? 1.28 : 1);
+        material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
+        material.opacity = active ? 0.45 : 0.18;
       });
 
       renderer.render(scene, camera);
@@ -260,80 +480,286 @@ export function TravelExplorer() {
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("pointerup", onPointerUp);
       renderer.dispose();
+      globeGeometry.dispose();
+      globeMaterial.dispose();
+      glowGeometry.dispose();
+      glowMaterial.dispose();
+      gridMaterial.dispose();
+      gridGeometries.forEach((geometry) => geometry.dispose());
+      coastMaterial.dispose();
+      borderMaterial.dispose();
+      arcMaterial.dispose();
+      arcGeometries.forEach((geometry) => geometry.dispose());
       markerGeometry.dispose();
-      container.removeChild(renderer.domElement);
+      markerHaloGeometry.dispose();
+      markerMaterials.forEach((material) => material.dispose());
+      markerHaloMaterials.forEach((material) => material.dispose());
+      landGeometries.forEach((geometry) => geometry.dispose());
+      if (renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement);
+      }
     };
   }, []);
 
-  const selectedStop = travelStops[selectedIndex];
+  const selectedPlace = travelPlaces[selectedIndex];
+  const groupedPlaces = groupPlacesByRegion(travelPlaces);
 
   return (
-    <section className="grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
-      <div className="relative overflow-hidden rounded-md border border-line/70 bg-surface/70 shadow-[0_24px_90px_rgba(24,24,72,0.35)]">
-        <div className="absolute left-5 top-5 z-10 rounded-md border border-line/70 bg-surface-soft/82 px-4 py-3 backdrop-blur">
-          <p className="font-mono text-xs uppercase text-accent">Focused stop</p>
-          <p className="mt-1 text-lg font-semibold text-foreground">
-            {selectedStop.place}
-          </p>
-          <p className="text-sm text-muted">{selectedStop.date}</p>
+    <section className="grid min-w-0 gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-start">
+      <div className="min-w-0">
+        <div className="relative min-w-0 overflow-hidden rounded-md border border-line/70 bg-surface/70 shadow-[0_24px_90px_rgba(24,24,72,0.35)]">
+          <div className="absolute left-5 top-5 z-10 rounded-md border border-line/70 bg-surface-soft/82 px-4 py-3 backdrop-blur">
+            <p className="font-mono text-xs uppercase text-accent">
+              Selected city
+            </p>
+            <p className="mt-1 text-lg font-semibold text-foreground">
+              {selectedPlace.place}
+            </p>
+          </div>
+          {webglUnavailable ? (
+            <TravelGlobeFallback
+              selectedIndex={selectedIndex}
+              onSelect={setSelectedIndex}
+            />
+          ) : (
+            <div
+              ref={containerRef}
+              className="min-h-[360px] min-w-0 cursor-grab active:cursor-grabbing sm:min-h-[520px]"
+              aria-label="Interactive travel globe"
+            />
+          )}
         </div>
-        <div
-          ref={containerRef}
-          className="min-h-[360px] cursor-grab active:cursor-grabbing sm:min-h-[520px]"
-          aria-label="Interactive travel globe"
-        />
+
+        <div className="mt-5 rounded-md border border-line/70 bg-surface/65 p-5">
+          <p className="font-mono text-xs uppercase text-accent-strong">
+            City index
+          </p>
+          <div className="mt-4 grid gap-5 sm:grid-cols-2">
+            {Object.entries(groupedPlaces).map(([continent, countries]) => (
+              <div key={continent}>
+                <h3 className="text-lg font-semibold text-foreground">
+                  {continent}
+                </h3>
+                <div className="mt-3 space-y-4">
+                  {Object.entries(countries).map(([country, places]) => (
+                    <div key={country}>
+                      <p className="font-mono text-xs uppercase text-accent">
+                        {country}
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {places.map((place) => {
+                          const index = travelPlaces.findIndex(
+                            (candidate) => candidate.id === place.id,
+                          );
+                          const active = index === selectedIndex;
+
+                          return (
+                            <button
+                              key={place.id}
+                              type="button"
+                              onClick={() => setSelectedIndex(index)}
+                              className={`rounded-full border px-3 py-1.5 text-sm transition ${
+                                active
+                                  ? "border-accent-strong/80 bg-accent-strong/15 text-foreground"
+                                  : "border-line/70 bg-surface-soft/55 text-muted hover:border-accent/70 hover:text-foreground"
+                              }`}
+                            >
+                              {place.place}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      <div>
+      <div className="min-w-0">
         <div className="mb-5 rounded-md border border-line/70 bg-surface/65 p-5">
           <p className="font-mono text-xs uppercase text-accent-strong">
-            Travel history
+            Selected place
           </p>
           <h2 className="mt-2 text-2xl font-semibold text-foreground">
-            {selectedStop.place}, {selectedStop.region}
+            {selectedPlace.place}, {selectedPlace.country}
           </h2>
-          <p className="mt-3 leading-7 text-muted">{selectedStop.note}</p>
         </div>
-
-        <ol className="relative space-y-4">
-          <div className="absolute bottom-5 left-[0.44rem] top-5 w-px bg-line/70" />
-          {travelStops.map((stop, index) => {
-            const active = index === selectedIndex;
-
-            return (
-              <li
-                key={stop.id}
-                className="relative grid grid-cols-[1.05rem_1fr] gap-4"
-              >
-                <span
-                  className={`relative z-10 mt-5 size-3 rounded-full border ${
-                    active
-                      ? "border-accent-strong bg-accent-strong shadow-[0_0_0_6px_rgba(241,165,216,0.15)]"
-                      : "border-accent bg-surface"
-                  }`}
-                />
-                <button
-                  type="button"
-                  onClick={() => setSelectedIndex(index)}
-                  className={`w-full rounded-md border p-4 text-left transition ${
-                    active
-                      ? "border-accent-strong/70 bg-surface text-foreground shadow-[0_16px_44px_rgba(24,24,72,0.22)]"
-                      : "border-line/60 bg-surface-soft/55 text-muted hover:border-accent/60 hover:text-foreground"
-                  }`}
-                >
-                  <span className="font-mono text-xs uppercase text-accent">
-                    {stop.date}
-                  </span>
-                  <span className="mt-1 block text-lg font-semibold">
-                    {stop.place}
-                  </span>
-                  <span className="mt-1 block text-sm">{stop.region}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
       </div>
     </section>
+  );
+}
+
+function projectPoint(lat: number, lng: number) {
+  const x = 50 + (lng / 180) * 36;
+  const y = 50 - (lat / 90) * 36;
+
+  return { x, y };
+}
+
+function TravelGlobeFallback({
+  selectedIndex,
+  onSelect,
+}: {
+  selectedIndex: number;
+  onSelect: (index: number) => void;
+}) {
+  return (
+    <div className="flex min-h-[360px] items-center justify-center px-5 py-16 sm:min-h-[520px]">
+      <svg
+        viewBox="0 0 100 100"
+        className="aspect-square w-full max-w-[34rem]"
+        role="img"
+        aria-label="Travel route globe"
+      >
+        <defs>
+          <radialGradient id="travel-globe-fill" cx="35%" cy="30%">
+            <stop offset="0%" stopColor="#313643" />
+            <stop offset="65%" stopColor="#232733" />
+            <stop offset="100%" stopColor="#181848" />
+          </radialGradient>
+          <clipPath id="travel-globe-clip">
+            <circle cx="50" cy="50" r="38" />
+          </clipPath>
+          <filter id="travel-globe-glow">
+            <feGaussianBlur stdDeviation="2.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <circle
+          cx="50"
+          cy="50"
+          r="38"
+          fill="url(#travel-globe-fill)"
+          stroke="#5c526f"
+          strokeWidth="0.5"
+        />
+        {[32, 42, 50, 58, 68].map((y) => (
+          <ellipse
+            key={y}
+            cx="50"
+            cy="50"
+            rx="38"
+            ry={Math.abs(50 - y)}
+            fill="none"
+            stroke="#5c526f"
+            strokeWidth="0.28"
+            opacity="0.6"
+          />
+        ))}
+        {[22, 34, 50, 66, 78].map((x) => (
+          <ellipse
+            key={x}
+            cx="50"
+            cy="50"
+            rx={Math.abs(50 - x)}
+            ry="38"
+            fill="none"
+            stroke="#5c526f"
+            strokeWidth="0.28"
+            opacity="0.48"
+          />
+        ))}
+
+        <g clipPath="url(#travel-globe-clip)">
+          {coastlineLines.map((line, index) => {
+            const path = makeFallbackPath(line);
+
+            if (!path) {
+              return null;
+            }
+
+            return (
+              <path
+                key={`coast-${index}`}
+                d={path}
+                fill="none"
+                stroke="#f0d8c0"
+                strokeWidth="0.42"
+                opacity="0.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            );
+          })}
+
+          {countryBorderLines.map((line, index) => {
+            const path = makeFallbackPath(line);
+
+            if (!path) {
+              return null;
+            }
+
+            return (
+              <path
+                key={`border-${index}`}
+                d={path}
+                fill="none"
+                stroke="#a9a9ef"
+                strokeWidth="0.24"
+                opacity="0.46"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            );
+          })}
+
+          {travelRoutes.map((route) => {
+            const from = projectPoint(route.from.lat, route.from.lng);
+            const to = projectPoint(route.to.lat, route.to.lng);
+            const controlX = (from.x + to.x) / 2;
+            const controlY = Math.min(from.y, to.y) - 10;
+
+            return (
+              <path
+                key={route.id}
+                d={`M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`}
+                fill="none"
+                stroke="#f1a5d8"
+                strokeWidth="0.7"
+                opacity="0.72"
+                strokeLinecap="round"
+              />
+            );
+          })}
+
+          {travelPlaces.map((stop, index) => {
+            const point = projectPoint(stop.lat, stop.lng);
+            const active = selectedIndex === index;
+
+            return (
+              <g key={stop.id}>
+                {active ? (
+                  <circle
+                    cx={point.x}
+                    cy={point.y}
+                    r="3.6"
+                    fill="#f1a5d8"
+                    opacity="0.24"
+                    filter="url(#travel-globe-glow)"
+                  />
+                ) : null}
+                <circle
+                  cx={point.x}
+                  cy={point.y}
+                  r={active ? 1.8 : 1.2}
+                  fill={active ? "#f1a5d8" : "#f0d8c0"}
+                  stroke="#181848"
+                  strokeWidth="0.45"
+                  className="cursor-pointer transition"
+                  onClick={() => onSelect(index)}
+                />
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    </div>
   );
 }

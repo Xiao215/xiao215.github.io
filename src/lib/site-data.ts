@@ -24,7 +24,7 @@ export const resumes = [
 export const work = [
   {
     role: "Software Engineer",
-    organization: "Google Cloud",
+    organization: "Google",
     date: "2025-Now",
   },
   {
@@ -34,22 +34,22 @@ export const work = [
   },
   {
     role: "Software Engineer Intern",
-    organization: "Google Cloud",
+    organization: "Google",
     date: "2024",
   },
   {
-    role: "STEP Software Engineer",
-    organization: "Google Chrome",
+    role: "STEP Software Engineer Intern",
+    organization: "Google",
     date: "2023",
   },
   {
     role: "Software Developer Intern",
-    organization: "RBC",
+    organization: "Royal Bank of Canada",
     date: "2022",
   },
   {
-    role: "Innovation Developer",
-    organization: "RBC Summer Tech Labs",
+    role: "Software Developer Intern",
+    organization: "Royal Bank of Canada",
     date: "2021",
   },
 ];

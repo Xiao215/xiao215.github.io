@@ -11,7 +11,7 @@ export default function ResumePage() {
     resumes.find((resume) => resume.slug === selectedSlug) ?? resumes[0];
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-6 py-8 sm:px-10 lg:px-12">
+    <main className="mx-auto flex min-h-screen w-[calc(100%_-_3rem)] max-w-6xl flex-col py-8 sm:w-[calc(100%_-_5rem)] lg:w-[calc(100%_-_6rem)]">
       <SiteNav />
 
       <section className="py-12 sm:py-16">
