@@ -1,17 +1,17 @@
 {
-  "name": "Xiao215",
-  "short_name": "Xiao215",
+  "name": "Xiao's Tea Pot",
+  "short_name": "Tea Pot",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#8bd996",
-  "theme_color": "#8bd996",
+  "background_color": "#282C34",
+  "theme_color": "#282C34",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/assets/logos/logo.png",
-      "type": "image/png",
-      "sizes": "72x72",
-      "purpose": "maskable"
+      "src": "/assets/logo/webicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
     }
   ]
 }
