@@ -11,6 +11,8 @@ import { travelRoutes, travelPlaces } from "@/lib/travel-data";
 type TravelPlace = (typeof travelPlaces)[number];
 
 const globeRadius = 1;
+const mapSurfaceRadius = globeRadius * 1.031;
+const markerRadius = 0.018;
 const worldTopology = worldAtlas as unknown as Topology<{
   countries: GeometryObject;
   land: GeometryObject;
@@ -279,7 +281,7 @@ export function TravelExplorer() {
     const landGeometries: THREE.BufferGeometry[] = [];
 
     coastlineLines.forEach((line) => {
-      const geometry = makeSurfacePolyline(line, globeRadius * 1.031);
+      const geometry = makeSurfacePolyline(line, mapSurfaceRadius);
       const outline = new THREE.Line(geometry, coastMaterial);
       landGeometries.push(geometry);
       group.add(outline);
@@ -326,8 +328,8 @@ export function TravelExplorer() {
     const markerHaloMeshes: THREE.Mesh[] = [];
     const markerMaterials: THREE.MeshStandardMaterial[] = [];
     const markerHaloMaterials: THREE.MeshBasicMaterial[] = [];
-    const markerGeometry = new THREE.SphereGeometry(0.026, 24, 24);
-    const markerHaloGeometry = new THREE.RingGeometry(0.034, 0.052, 36);
+    const markerGeometry = new THREE.SphereGeometry(markerRadius, 20, 20);
+    const markerHaloGeometry = new THREE.RingGeometry(0.026, 0.04, 32);
 
     travelPlaces.forEach((place, index) => {
       const markerMaterial = new THREE.MeshStandardMaterial({
@@ -338,7 +340,7 @@ export function TravelExplorer() {
       });
       markerMaterials.push(markerMaterial);
       const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      const position = latLngToVector3(place.lat, place.lng, globeRadius * 1.058);
+      const position = latLngToVector3(place.lat, place.lng, mapSurfaceRadius);
       const normal = position.clone().normalize();
       marker.position.copy(position);
       marker.userData.index = index;
@@ -354,7 +356,7 @@ export function TravelExplorer() {
       markerHaloMaterials.push(haloMaterial);
       const halo = new THREE.Mesh(markerHaloGeometry, haloMaterial);
       halo.position.copy(
-        latLngToVector3(place.lat, place.lng, globeRadius * 1.06),
+        latLngToVector3(place.lat, place.lng, mapSurfaceRadius + 0.002),
       );
       halo.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
       markerHaloMeshes.push(halo);
@@ -461,7 +463,7 @@ export function TravelExplorer() {
       markerMeshes.forEach((marker, index) => {
         const active = index === selectedIndexRef.current;
         const material = marker.material as THREE.MeshStandardMaterial;
-        marker.scale.setScalar(active ? 1.45 : 1);
+        marker.scale.setScalar(active ? 1.22 : 1);
         material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
         material.emissive.set(active ? 0xf1a5d8 : 0xa9a9ef);
         material.emissiveIntensity = active ? 0.78 : 0.34;
@@ -469,7 +471,7 @@ export function TravelExplorer() {
       markerHaloMeshes.forEach((halo, index) => {
         const active = index === selectedIndexRef.current;
         const material = halo.material as THREE.MeshBasicMaterial;
-        halo.scale.setScalar(active ? 1.28 : 1);
+        halo.scale.setScalar(active ? 1.12 : 1);
         material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
         material.opacity = active ? 0.45 : 0.18;
       });

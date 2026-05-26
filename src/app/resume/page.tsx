@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { PaimonHi } from "@/components/floating-paimon";
 import { SiteNav } from "@/components/site-nav";
@@ -28,16 +27,6 @@ export default function ResumePage() {
               Select a version to preview.
             </p>
           </div>
-          <Image
-            src="/assets/paimon/paimon-hi.png"
-            alt=""
-            width={262}
-            height={394}
-            priority
-            aria-hidden="true"
-            className="relative z-10 block w-24 shrink-0 opacity-85 sm:w-28 md:hidden"
-          />
-
           <PaimonHi />
         </div>
 
