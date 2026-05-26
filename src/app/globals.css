@@ -675,22 +675,6 @@ a {
   }
 }
 
-.terminal-cursor {
-  display: inline-block;
-  width: 0.6ch;
-  height: 1.1em;
-  margin-left: 0.1rem;
-  transform: translateY(0.18em);
-  background: var(--accent-strong);
-  animation: terminal-cursor-blink 1s steps(2, start) infinite;
-}
-
-@keyframes terminal-cursor-blink {
-  50% {
-    opacity: 0;
-  }
-}
-
 .sakura-layer {
   position: fixed;
   inset: 0;

@@ -4,8 +4,6 @@ import { ExperienceList } from "@/components/experience-list";
 import { FloatingPaimon } from "@/components/floating-paimon";
 import { ResearchSection } from "@/components/research-section";
 import { SiteNav } from "@/components/site-nav";
-import { TerminalCard } from "@/components/terminal-card";
-import { focus } from "@/lib/site-data";
 
 export default function Home() {
   return (
@@ -48,7 +46,6 @@ export default function Home() {
             </p>
           </div>
           <ContactButtons />
-          {/* <TerminalCard /> */}
         </div>
 
         <div className="justify-self-center md:justify-self-end">

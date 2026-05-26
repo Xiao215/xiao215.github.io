@@ -70,10 +70,3 @@ export const research = [
       "A benchmark and comparative study of mechanisms that help capable LLM agents sustain cooperation in mixed-motive games.",
   },
 ];
-
-export const focus = [
-  "Full-stack TypeScript and React systems",
-  "Machine learning, PyTorch, and model infrastructure",
-  "Autonomous vehicle perception with aUToronto",
-  "Engineering Science at the University of Toronto",
-];

@@ -777,11 +777,11 @@ export function TravelExplorer() {
             onSelect={setSelectedIndex}
           />
         ) : (
-            <div
-              ref={containerRef}
-              className="min-h-[360px] min-w-0 touch-none cursor-grab active:cursor-grabbing sm:min-h-[540px]"
-              aria-label="Interactive travel globe"
-            />
+          <div
+            ref={containerRef}
+            className="min-h-[360px] min-w-0 touch-none cursor-grab active:cursor-grabbing sm:min-h-[540px]"
+            aria-label="Interactive travel globe"
+          />
         )}
       </div>
 
