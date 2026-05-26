@@ -703,16 +703,34 @@ a {
   position: absolute;
   top: -12vh;
   left: 0;
+  display: block;
+  animation: sakura-fall var(--duration) linear var(--delay) infinite;
+  transform: translate3d(var(--start-x), -12vh, 0);
+  will-change: transform;
+}
+
+.sakura-petal__gust {
+  display: block;
+  width: 100%;
+  height: 100%;
+  animation: sakura-wind-push var(--duration) ease-in-out var(--delay) infinite;
+  will-change: transform;
+}
+
+.sakura-petal__image {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 8px 12px rgba(72, 72, 144, 0.12));
-  animation: sakura-fall var(--duration) linear var(--delay) infinite;
-  transform: translate3d(var(--start-x), -12vh, 0) rotate(var(--rotation));
+  animation: sakura-spin var(--duration) linear var(--delay) infinite;
+  transform: rotate(var(--rotation));
   will-change: transform;
 }
 
 @keyframes sakura-fall {
   0% {
-    transform: translate3d(var(--start-x), -12vh, 0) rotate(var(--rotation));
+    transform: translate3d(var(--start-x), -12vh, 0);
   }
 
   50% {
@@ -720,8 +738,7 @@ a {
         calc(var(--start-x) + (var(--drift) * 0.45)),
         48vh,
         0
-      )
-      rotate(calc(var(--rotation) + 360deg));
+      );
   }
 
   100% {
@@ -729,8 +746,40 @@ a {
         calc(var(--start-x) + var(--drift)),
         112vh,
         0
-      )
-      rotate(calc(var(--rotation) + 720deg));
+      );
+  }
+}
+
+@keyframes sakura-wind-push {
+  0%,
+  30% {
+    transform: translateX(0);
+  }
+
+  44% {
+    transform: translateX(calc(var(--gust) * 0.32));
+  }
+
+  58% {
+    transform: translateX(var(--gust));
+  }
+
+  100% {
+    transform: translateX(calc(var(--gust) * 0.72));
+  }
+}
+
+@keyframes sakura-spin {
+  0% {
+    transform: rotate(var(--rotation));
+  }
+
+  50% {
+    transform: rotate(calc(var(--rotation) + 360deg));
+  }
+
+  100% {
+    transform: rotate(calc(var(--rotation) + 720deg));
   }
 }
 

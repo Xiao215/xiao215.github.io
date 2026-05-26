@@ -5,7 +5,7 @@ export const contactLinks = [
     label: "Scholar",
     href: "https://scholar.google.com/citations?hl=en&user=_PvbotcAAAAJ",
   },
-  { label: "Email", href: "mailto:xiaozhang20030215@gmail.com" },
+  { label: "Email", href: "mailto:zhxiao@cs.toronto.edu" },
 ];
 
 export const resumes = [

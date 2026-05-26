@@ -16,6 +16,7 @@ type Petal = {
   size: string;
   startX: string;
   drift: string;
+  gust: string;
   duration: string;
   delay: string;
   opacity: string;
@@ -25,6 +26,7 @@ type Petal = {
 type PetalStyle = CSSProperties & {
   "--start-x": string;
   "--drift": string;
+  "--gust": string;
   "--rotation": string;
   "--duration": string;
   "--delay": string;
@@ -49,6 +51,7 @@ const petals: Petal[] = Array.from({ length: 24 }, (_, id) => ({
   size: fixed(id + 1, 18, 42),
   startX: fixed(id + 11, -8, 108),
   drift: fixed(id + 21, -18, 22),
+  gust: fixed(id + 25, 9, 24),
   duration: fixed(id + 31, 13, 28),
   delay: fixed(id + 41, -28, 0),
   opacity: fixed(id + 51, 0.24, 0.58, 3),
@@ -62,6 +65,7 @@ export function SakuraFall() {
         const style: PetalStyle = {
           "--start-x": `${petal.startX}vw`,
           "--drift": `${petal.drift}vw`,
+          "--gust": `${petal.gust}vw`,
           "--rotation": `${petal.rotation}deg`,
           "--duration": `${petal.duration}s`,
           "--delay": `${petal.delay}s`,
@@ -71,15 +75,17 @@ export function SakuraFall() {
         };
 
         return (
-          <Image
-            key={petal.id}
-            src={petal.src}
-            alt=""
-            width={48}
-            height={48}
-            className="sakura-petal"
-            style={style}
-          />
+          <span key={petal.id} className="sakura-petal" style={style}>
+            <span className="sakura-petal__gust">
+              <Image
+                src={petal.src}
+                alt=""
+                width={48}
+                height={48}
+                className="sakura-petal__image"
+              />
+            </span>
+          </span>
         );
       })}
     </div>

@@ -89,10 +89,10 @@ export default function Home() {
       >
         <p>(c) 2026 Xiao Zhang</p>
         <a
-          href="mailto:xiaozhang20030215@gmail.com"
+          href="mailto:zhxiao@cs.toronto.edu"
           className="hover:text-accent-strong"
         >
-          xiaozhang20030215@gmail.com
+          zhxiao [at] cs [dot] toronto [dot] edu
         </a>
       </footer>
     </main>

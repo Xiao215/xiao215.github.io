@@ -33,10 +33,19 @@ export function ResearchSection() {
             <p className="mt-3 leading-7 text-muted">{paper.authors}</p>
             <p className="mt-4 leading-7 text-foreground/90">{paper.summary}</p>
 
-            <p className="mt-4 text-sm text-muted">
-              <span className="font-medium text-accent">Topics:</span>{" "}
-              {paper.tags.join(" / ")}
-            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="mr-1 font-mono text-xs uppercase text-accent">
+                Topics
+              </span>
+              {paper.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-line/80 bg-surface-soft/70 px-3 py-1 text-sm text-foreground/85"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
 
             <div className="mt-5 flex flex-wrap gap-3 text-sm font-medium">
               <a

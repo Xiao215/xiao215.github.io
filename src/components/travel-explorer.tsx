@@ -2,8 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import type { Position } from "geojson";
-import { mesh } from "topojson-client";
+import type {
+  Feature,
+  FeatureCollection,
+  MultiPolygon,
+  Polygon,
+  Position,
+} from "geojson";
+import { feature, mesh } from "topojson-client";
 import type { GeometryObject, Topology } from "topojson-specification";
 import worldAtlas from "world-atlas/countries-110m.json";
 import { travelRoutes, travelPlaces } from "@/lib/travel-data";
@@ -11,8 +17,10 @@ import { travelRoutes, travelPlaces } from "@/lib/travel-data";
 type TravelPlace = (typeof travelPlaces)[number];
 
 const globeRadius = 1;
-const mapSurfaceRadius = globeRadius * 1.031;
+const landSurfaceRadius = globeRadius * 1.008;
+const mapSurfaceRadius = landSurfaceRadius;
 const markerRadius = 0.018;
+const routeSurfaceRadius = mapSurfaceRadius + markerRadius * 0.65;
 const worldTopology = worldAtlas as unknown as Topology<{
   countries: GeometryObject;
   land: GeometryObject;
@@ -26,6 +34,18 @@ const coastlineLines = mesh(
   worldTopology,
   worldTopology.objects.land,
 ).coordinates;
+const landGeoJson = feature(worldTopology, worldTopology.objects.land) as
+  | Feature<Polygon | MultiPolygon>
+  | FeatureCollection<Polygon | MultiPolygon>;
+const landFeatures =
+  landGeoJson.type === "FeatureCollection"
+    ? landGeoJson.features
+    : [landGeoJson];
+const landPolygons = landFeatures.flatMap((landFeature) =>
+  landFeature.geometry.type === "Polygon"
+    ? [landFeature.geometry.coordinates]
+    : landFeature.geometry.coordinates,
+);
 
 function latLngToVector3(lat: number, lng: number, radius = globeRadius) {
   const phi = THREE.MathUtils.degToRad(90 - lat);
@@ -50,7 +70,11 @@ function targetRotationFor(lat: number, lng: number) {
   };
 }
 
-function makeArc(from: THREE.Vector3, to: THREE.Vector3) {
+function makeArc(
+  from: THREE.Vector3,
+  to: THREE.Vector3,
+  baseRadius = routeSurfaceRadius,
+) {
   const start = from.clone().normalize();
   const end = to.clone().normalize();
   const angle = start.angleTo(end);
@@ -58,7 +82,7 @@ function makeArc(from: THREE.Vector3, to: THREE.Vector3) {
   const altitude = THREE.MathUtils.clamp(angle * 0.08, 0.055, 0.18);
   const points = Array.from({ length: 90 }, (_, index) => {
     const t = index / 89;
-    const radius = globeRadius * 1.035 + Math.sin(Math.PI * t) * altitude;
+    const radius = baseRadius + Math.sin(Math.PI * t) * altitude;
     const surfacePoint =
       sinAngle < 0.001
         ? start.clone().lerp(end, t)
@@ -138,6 +162,27 @@ function makeFallbackPath(points: readonly Position[]) {
   }, `M ${start.x} ${start.y}`);
 }
 
+function makeFallbackPolygonPath(polygon: readonly Position[][]) {
+  return polygon
+    .map((ring) => {
+      const [firstPoint, ...restPoints] = ring;
+
+      if (!firstPoint) {
+        return "";
+      }
+
+      const start = projectPoint(firstPoint[1], firstPoint[0]);
+      const path = restPoints.reduce((currentPath, point) => {
+        const projected = projectPoint(point[1], point[0]);
+
+        return `${currentPath} L ${projected.x} ${projected.y}`;
+      }, `M ${start.x} ${start.y}`);
+
+      return `${path} Z`;
+    })
+    .join(" ");
+}
+
 function makeCircle(radius: number, segments = 128) {
   const points = Array.from({ length: segments + 1 }, (_, index) => {
     const angle = (index / segments) * Math.PI * 2;
@@ -149,6 +194,186 @@ function makeCircle(radius: number, segments = 128) {
   });
 
   return new THREE.BufferGeometry().setFromPoints(points);
+}
+
+type SurfacePoint = {
+  lat: number;
+  lng: number;
+};
+
+function unwrapRing(ring: readonly Position[]) {
+  const openRing =
+    ring.length > 1 &&
+    ring[0][0] === ring[ring.length - 1][0] &&
+    ring[0][1] === ring[ring.length - 1][1]
+      ? ring.slice(0, -1)
+      : ring;
+
+  if (openRing.length < 3) {
+    return [];
+  }
+
+  const [firstPoint, ...restPoints] = openRing;
+  const points: SurfacePoint[] = [{ lng: firstPoint[0], lat: firstPoint[1] }];
+  let previousLng = firstPoint[0];
+
+  restPoints.forEach((point) => {
+    let lng = point[0];
+
+    while (lng - previousLng > 180) lng -= 360;
+    while (previousLng - lng > 180) lng += 360;
+
+    points.push({ lng, lat: point[1] });
+    previousLng = lng;
+  });
+
+  return points;
+}
+
+function getLngCenter(points: readonly SurfacePoint[]) {
+  const longitudes = points.map((point) => point.lng);
+
+  return (Math.min(...longitudes) + Math.max(...longitudes)) / 2;
+}
+
+function getLngSpan(points: readonly SurfacePoint[]) {
+  const longitudes = points.map((point) => point.lng);
+
+  return Math.max(...longitudes) - Math.min(...longitudes);
+}
+
+function isSouthPolarRing(points: readonly SurfacePoint[]) {
+  const latitudes = points.map((point) => point.lat);
+
+  return getLngSpan(points) > 340 && Math.min(...latitudes) < -80;
+}
+
+function closeSouthPolarRing(points: readonly SurfacePoint[]) {
+  return [
+    ...points,
+    { lat: -90, lng: points[points.length - 1].lng },
+    { lat: -90, lng: points[0].lng },
+  ];
+}
+
+function alignRingLongitude(
+  points: readonly SurfacePoint[],
+  targetCenter: number,
+) {
+  const ringCenter = getLngCenter(points);
+  let offset = 0;
+
+  while (ringCenter + offset - targetCenter > 180) offset -= 360;
+  while (targetCenter - (ringCenter + offset) > 180) offset += 360;
+
+  return points.map((point) => ({
+    lat: point.lat,
+    lng: point.lng + offset,
+  }));
+}
+
+function addSurfaceTriangle(
+  positions: number[],
+  first: SurfacePoint,
+  second: SurfacePoint,
+  third: SurfacePoint,
+  radius: number,
+) {
+  const maxSegment = 6;
+  const edges = [
+    { a: first, b: second, c: third },
+    { a: second, b: third, c: first },
+    { a: third, b: first, c: second },
+  ].map((edge) => ({
+    ...edge,
+    length: Math.hypot(edge.a.lng - edge.b.lng, edge.a.lat - edge.b.lat),
+  }));
+  const longestEdge = edges.reduce((longest, edge) =>
+    edge.length > longest.length ? edge : longest,
+  );
+
+  if (longestEdge.length > maxSegment) {
+    const midpoint = {
+      lat: (longestEdge.a.lat + longestEdge.b.lat) / 2,
+      lng: (longestEdge.a.lng + longestEdge.b.lng) / 2,
+    };
+
+    addSurfaceTriangle(
+      positions,
+      longestEdge.a,
+      midpoint,
+      longestEdge.c,
+      radius,
+    );
+    addSurfaceTriangle(
+      positions,
+      midpoint,
+      longestEdge.b,
+      longestEdge.c,
+      radius,
+    );
+    return;
+  }
+
+  [first, second, third].forEach((point) => {
+    const vertex = latLngToVector3(point.lat, point.lng, radius);
+    positions.push(vertex.x, vertex.y, vertex.z);
+  });
+}
+
+function makeLandFillGeometry() {
+  const radius = landSurfaceRadius;
+  const positions: number[] = [];
+
+  landPolygons.forEach((polygon) => {
+    const [rawOuterRing, ...rawHoleRings] = polygon;
+
+    if (!rawOuterRing) {
+      return;
+    }
+
+    const outerRing = unwrapRing(rawOuterRing);
+
+    if (outerRing.length < 3) {
+      return;
+    }
+
+    const contourRing = isSouthPolarRing(outerRing)
+      ? closeSouthPolarRing(outerRing)
+      : outerRing;
+    const outerCenter = getLngCenter(contourRing);
+    const holeRings = rawHoleRings
+      .map(unwrapRing)
+      .filter((ring) => ring.length >= 3)
+      .map((ring) => alignRingLongitude(ring, outerCenter));
+    const vertices = [...contourRing, ...holeRings.flat()];
+    const contour = contourRing.map(
+      (point) => new THREE.Vector2(point.lng, point.lat),
+    );
+    const holes = holeRings.map((ring) =>
+      ring.map((point) => new THREE.Vector2(point.lng, point.lat)),
+    );
+    const triangles = THREE.ShapeUtils.triangulateShape(contour, holes);
+
+    triangles.forEach(([firstIndex, secondIndex, thirdIndex]) => {
+      addSurfaceTriangle(
+        positions,
+        vertices[firstIndex],
+        vertices[secondIndex],
+        vertices[thirdIndex],
+        radius,
+      );
+    });
+  });
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(positions, 3),
+  );
+  geometry.computeVertexNormals();
+
+  return geometry;
 }
 
 function groupPlacesByRegion(places: readonly TravelPlace[]) {
@@ -232,7 +457,20 @@ export function TravelExplorer() {
       opacity: 0.94,
     });
     const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+    globe.renderOrder = 0;
     group.add(globe);
+
+    const landFillGeometry = makeLandFillGeometry();
+    const landFillMaterial = new THREE.MeshBasicMaterial({
+      color: 0x777466,
+      depthWrite: false,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+      polygonOffsetUnits: -2,
+    });
+    const landFill = new THREE.Mesh(landFillGeometry, landFillMaterial);
+    landFill.renderOrder = 1;
+    group.add(landFill);
 
     const glowGeometry = new THREE.SphereGeometry(globeRadius * 1.02, 96, 96);
     const glowMaterial = new THREE.MeshBasicMaterial({
@@ -272,24 +510,28 @@ export function TravelExplorer() {
       color: 0xf0d8c0,
       transparent: true,
       opacity: 0.65,
+      depthWrite: false,
     });
     const borderMaterial = new THREE.LineBasicMaterial({
-      color: 0xa9a9ef,
+      color: 0x8fa2d8,
       transparent: true,
-      opacity: 0.34,
+      opacity: 0.48,
+      depthWrite: false,
     });
     const landGeometries: THREE.BufferGeometry[] = [];
 
     coastlineLines.forEach((line) => {
       const geometry = makeSurfacePolyline(line, mapSurfaceRadius);
       const outline = new THREE.Line(geometry, coastMaterial);
+      outline.renderOrder = 2;
       landGeometries.push(geometry);
       group.add(outline);
     });
 
     countryBorderLines.forEach((line) => {
-      const geometry = makeSurfacePolyline(line, globeRadius * 1.033);
+      const geometry = makeSurfacePolyline(line, mapSurfaceRadius);
       const outline = new THREE.Line(geometry, borderMaterial);
+      outline.renderOrder = 2;
       landGeometries.push(geometry);
       group.add(outline);
     });
@@ -305,21 +547,22 @@ export function TravelExplorer() {
       const from = latLngToVector3(
         route.from.lat,
         route.from.lng,
-        globeRadius * 1.015,
+        routeSurfaceRadius,
       );
       const to = latLngToVector3(
         route.to.lat,
         route.to.lng,
-        globeRadius * 1.015,
+        routeSurfaceRadius,
       );
       const geometry = new THREE.TubeGeometry(
-        makeArc(from, to),
+        makeArc(from, to, routeSurfaceRadius),
         96,
         0.0055,
         8,
         false,
       );
       const arc = new THREE.Mesh(geometry, arcMaterial);
+      arc.renderOrder = 3;
       arcGeometries.push(geometry);
       group.add(arc);
     });
@@ -343,6 +586,7 @@ export function TravelExplorer() {
       const position = latLngToVector3(place.lat, place.lng, mapSurfaceRadius);
       const normal = position.clone().normalize();
       marker.position.copy(position);
+      marker.renderOrder = 4;
       marker.userData.index = index;
       markerMeshes.push(marker);
       group.add(marker);
@@ -359,6 +603,7 @@ export function TravelExplorer() {
         latLngToVector3(place.lat, place.lng, mapSurfaceRadius + 0.002),
       );
       halo.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
+      halo.renderOrder = 4;
       markerHaloMeshes.push(halo);
       group.add(halo);
     });
@@ -491,6 +736,8 @@ export function TravelExplorer() {
       renderer.dispose();
       globeGeometry.dispose();
       globeMaterial.dispose();
+      landFillGeometry.dispose();
+      landFillMaterial.dispose();
       glowGeometry.dispose();
       glowMaterial.dispose();
       gridMaterial.dispose();
@@ -664,6 +911,24 @@ function TravelGlobeFallback({
         ))}
 
         <g clipPath="url(#travel-globe-clip)">
+          {landPolygons.map((polygon, index) => {
+            const path = makeFallbackPolygonPath(polygon);
+
+            if (!path) {
+              return null;
+            }
+
+            return (
+              <path
+                key={`land-${index}`}
+                d={path}
+                fill="#7c8476"
+                opacity="0.58"
+                fillRule="evenodd"
+              />
+            );
+          })}
+
           {coastlineLines.map((line, index) => {
             const path = makeFallbackPath(line);
 
@@ -697,9 +962,9 @@ function TravelGlobeFallback({
                 key={`border-${index}`}
                 d={path}
                 fill="none"
-                stroke="#a9a9ef"
+                stroke="#8fa2d8"
                 strokeWidth="0.24"
-                opacity="0.46"
+                opacity="0.68"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
