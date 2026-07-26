@@ -225,6 +225,14 @@ export const travelPlaces = [
     lng: 114.1694,
   },
   {
+    id: "seoul",
+    place: "Seoul",
+    country: "South Korea",
+    continent: "Asia",
+    lat: 37.5665,
+    lng: 126.978,
+  },
+  {
     id: "salzburg",
     place: "Salzburg",
     country: "Austria",
@@ -279,6 +287,22 @@ export const travelPlaces = [
     continent: "Asia",
     lat: 35.1815,
     lng: 136.9066,
+  },
+  {
+    id: "kyoto",
+    place: "Kyoto",
+    country: "Japan",
+    continent: "Asia",
+    lat: 35.0116,
+    lng: 135.7681,
+  },
+  {
+    id: "nara",
+    place: "Nara",
+    country: "Japan",
+    continent: "Asia",
+    lat: 34.6851,
+    lng: 135.8048,
   },
   {
     id: "chiang-mai",
@@ -417,6 +441,14 @@ export const travelPlaces = [
     lng: 104.9282,
   },
   {
+    id: "angkor-wat",
+    place: "吴哥窟",
+    country: "Cambodia",
+    continent: "Asia",
+    lat: 13.4125,
+    lng: 103.8670,
+  },
+  {
     id: "quebec-city",
     place: "Quebec City",
     country: "Canada",
@@ -469,6 +501,8 @@ export const travelRoutes = [
   route("montreal-banff", "montreal", "banff"),
   route("san-francisco-la", "san-francisco", "los-angeles"),
   route("san-francisco-hk", "san-francisco", "hong-kong"),
+  route("san-francisco-seoul", "san-francisco", "seoul"),
+  route("seoul-fuzhou", "seoul", "fuzhou"),
   route("fuzhou-phnom-penh", "fuzhou", "phnom-penh"),
   route("milan-salzburg", "milan", "salzburg"),
   route("vienna-prague", "vienna", "prague"),
@@ -483,4 +517,6 @@ export const travelRoutes = [
   route("toronto-kingston", "toronto", "kingston"),
   route("kingston-ottawa", "kingston", "ottawa"),
   route("ottawa-montreal", "ottawa", "montreal"),
+  route("fuzhou-cebu", "fuzhou", "cebu"),
+  route("cebu-manila", "cebu", "manila"),
 ] as const;
