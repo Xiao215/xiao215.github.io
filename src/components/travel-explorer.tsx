@@ -2,50 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
-import type {
-  Feature,
-  FeatureCollection,
-  MultiPolygon,
-  Polygon,
-  Position,
-} from "geojson";
-import { feature, mesh } from "topojson-client";
-import type { GeometryObject, Topology } from "topojson-specification";
-import worldAtlas from "world-atlas/countries-110m.json";
+import type { Position } from "geojson";
+import {
+  coastlineLines,
+  countryBorderLines,
+  landPolygons,
+} from "@/components/travel-globe-data";
+import { TravelGlobeFallback } from "@/components/travel-globe-fallback";
+import { TravelPlaceIndex } from "@/components/travel-place-index";
 import { travelRoutes, travelPlaces } from "@/lib/travel-data";
-
-type TravelPlace = (typeof travelPlaces)[number];
 
 const globeRadius = 1;
 const landSurfaceRadius = globeRadius * 1.008;
 const mapSurfaceRadius = landSurfaceRadius;
 const markerRadius = 0.018;
 const routeSurfaceRadius = mapSurfaceRadius + markerRadius * 0.65;
-const worldTopology = worldAtlas as unknown as Topology<{
-  countries: GeometryObject;
-  land: GeometryObject;
-}>;
-const countryBorderLines = mesh(
-  worldTopology,
-  worldTopology.objects.countries,
-  (a, b) => a !== b,
-).coordinates;
-const coastlineLines = mesh(
-  worldTopology,
-  worldTopology.objects.land,
-).coordinates;
-const landGeoJson = feature(worldTopology, worldTopology.objects.land) as
-  | Feature<Polygon | MultiPolygon>
-  | FeatureCollection<Polygon | MultiPolygon>;
-const landFeatures =
-  landGeoJson.type === "FeatureCollection"
-    ? landGeoJson.features
-    : [landGeoJson];
-const landPolygons = landFeatures.flatMap((landFeature) =>
-  landFeature.geometry.type === "Polygon"
-    ? [landFeature.geometry.coordinates]
-    : landFeature.geometry.coordinates,
-);
 
 function latLngToVector3(lat: number, lng: number, radius = globeRadius) {
   const phi = THREE.MathUtils.degToRad(90 - lat);
@@ -144,43 +115,6 @@ function makeSurfacePolyline(
   });
 
   return new THREE.BufferGeometry().setFromPoints(linePoints);
-}
-
-function makeFallbackPath(points: readonly Position[]) {
-  const [firstPoint, ...restPoints] = points;
-
-  if (!firstPoint) {
-    return "";
-  }
-
-  const start = projectPoint(firstPoint[1], firstPoint[0]);
-
-  return restPoints.reduce((currentPath, point) => {
-    const projected = projectPoint(point[1], point[0]);
-
-    return `${currentPath} L ${projected.x} ${projected.y}`;
-  }, `M ${start.x} ${start.y}`);
-}
-
-function makeFallbackPolygonPath(polygon: readonly Position[][]) {
-  return polygon
-    .map((ring) => {
-      const [firstPoint, ...restPoints] = ring;
-
-      if (!firstPoint) {
-        return "";
-      }
-
-      const start = projectPoint(firstPoint[1], firstPoint[0]);
-      const path = restPoints.reduce((currentPath, point) => {
-        const projected = projectPoint(point[1], point[0]);
-
-        return `${currentPath} L ${projected.x} ${projected.y}`;
-      }, `M ${start.x} ${start.y}`);
-
-      return `${path} Z`;
-    })
-    .join(" ");
 }
 
 function makeCircle(radius: number, segments = 128) {
@@ -374,19 +308,6 @@ function makeLandFillGeometry() {
   geometry.computeVertexNormals();
 
   return geometry;
-}
-
-function groupPlacesByRegion(places: readonly TravelPlace[]) {
-  return places.reduce<Record<string, Record<string, TravelPlace[]>>>(
-    (continents, place) => {
-      continents[place.continent] ??= {};
-      continents[place.continent][place.country] ??= [];
-      continents[place.continent][place.country].push(place);
-
-      return continents;
-    },
-    {},
-  );
 }
 
 export function TravelExplorer() {
@@ -758,7 +679,6 @@ export function TravelExplorer() {
   }, []);
 
   const selectedPlace = travelPlaces[selectedIndex];
-  const groupedPlaces = groupPlacesByRegion(travelPlaces);
 
   return (
     <section className="min-w-0 space-y-5">
@@ -785,242 +705,10 @@ export function TravelExplorer() {
         )}
       </div>
 
-      <div className="rounded-md border border-line/70 bg-surface/65 p-5">
-        <p className="font-mono text-xs uppercase text-accent-strong">
-          City index
-        </p>
-        <div className="mt-4 grid gap-6 md:grid-cols-3">
-          {Object.entries(groupedPlaces).map(([continent, countries]) => (
-            <div key={continent}>
-              <h3 className="text-lg font-semibold text-foreground">
-                {continent}
-              </h3>
-              <div className="mt-3 space-y-4">
-                {Object.entries(countries).map(([country, places]) => (
-                  <div key={country}>
-                    <p className="font-mono text-xs uppercase text-accent">
-                      {country}
-                    </p>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {places.map((place) => {
-                        const index = travelPlaces.findIndex(
-                          (candidate) => candidate.id === place.id,
-                        );
-                        const active = index === selectedIndex;
-
-                        return (
-                          <button
-                            key={place.id}
-                            type="button"
-                            onClick={() => setSelectedIndex(index)}
-                            className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm transition ${
-                              active
-                                ? "border-accent-strong/80 bg-accent-strong/15 text-foreground"
-                                : "border-line/70 bg-surface-soft/55 text-muted hover:border-accent/70 hover:text-foreground"
-                            }`}
-                          >
-                            {place.place}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <TravelPlaceIndex
+        selectedIndex={selectedIndex}
+        onSelect={setSelectedIndex}
+      />
     </section>
-  );
-}
-
-function projectPoint(lat: number, lng: number) {
-  const x = 50 + (lng / 180) * 36;
-  const y = 50 - (lat / 90) * 36;
-
-  return { x, y };
-}
-
-function TravelGlobeFallback({
-  selectedIndex,
-  onSelect,
-}: {
-  selectedIndex: number;
-  onSelect: (index: number) => void;
-}) {
-  return (
-    <div className="flex min-h-[360px] items-center justify-center px-5 py-16 sm:min-h-[520px]">
-      <svg
-        viewBox="0 0 100 100"
-        className="aspect-square w-full max-w-[34rem]"
-        role="img"
-        aria-label="Travel route globe"
-      >
-        <defs>
-          <radialGradient id="travel-globe-fill" cx="35%" cy="30%">
-            <stop offset="0%" stopColor="#313643" />
-            <stop offset="65%" stopColor="#232733" />
-            <stop offset="100%" stopColor="#181848" />
-          </radialGradient>
-          <clipPath id="travel-globe-clip">
-            <circle cx="50" cy="50" r="38" />
-          </clipPath>
-          <filter id="travel-globe-glow">
-            <feGaussianBlur stdDeviation="2.5" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <circle
-          cx="50"
-          cy="50"
-          r="38"
-          fill="url(#travel-globe-fill)"
-          stroke="#5c526f"
-          strokeWidth="0.5"
-        />
-        {[32, 42, 50, 58, 68].map((y) => (
-          <ellipse
-            key={y}
-            cx="50"
-            cy="50"
-            rx="38"
-            ry={Math.abs(50 - y)}
-            fill="none"
-            stroke="#5c526f"
-            strokeWidth="0.28"
-            opacity="0.6"
-          />
-        ))}
-        {[22, 34, 50, 66, 78].map((x) => (
-          <ellipse
-            key={x}
-            cx="50"
-            cy="50"
-            rx={Math.abs(50 - x)}
-            ry="38"
-            fill="none"
-            stroke="#5c526f"
-            strokeWidth="0.28"
-            opacity="0.48"
-          />
-        ))}
-
-        <g clipPath="url(#travel-globe-clip)">
-          {landPolygons.map((polygon, index) => {
-            const path = makeFallbackPolygonPath(polygon);
-
-            if (!path) {
-              return null;
-            }
-
-            return (
-              <path
-                key={`land-${index}`}
-                d={path}
-                fill="#7c8476"
-                opacity="0.58"
-                fillRule="evenodd"
-              />
-            );
-          })}
-
-          {coastlineLines.map((line, index) => {
-            const path = makeFallbackPath(line);
-
-            if (!path) {
-              return null;
-            }
-
-            return (
-              <path
-                key={`coast-${index}`}
-                d={path}
-                fill="none"
-                stroke="#f0d8c0"
-                strokeWidth="0.42"
-                opacity="0.7"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            );
-          })}
-
-          {countryBorderLines.map((line, index) => {
-            const path = makeFallbackPath(line);
-
-            if (!path) {
-              return null;
-            }
-
-            return (
-              <path
-                key={`border-${index}`}
-                d={path}
-                fill="none"
-                stroke="#8fa2d8"
-                strokeWidth="0.24"
-                opacity="0.68"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            );
-          })}
-
-          {travelRoutes.map((route) => {
-            const from = projectPoint(route.from.lat, route.from.lng);
-            const to = projectPoint(route.to.lat, route.to.lng);
-            const controlX = (from.x + to.x) / 2;
-            const controlY = Math.min(from.y, to.y) - 10;
-
-            return (
-              <path
-                key={route.id}
-                d={`M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`}
-                fill="none"
-                stroke="#f1a5d8"
-                strokeWidth="0.7"
-                opacity="0.72"
-                strokeLinecap="round"
-              />
-            );
-          })}
-
-          {travelPlaces.map((stop, index) => {
-            const point = projectPoint(stop.lat, stop.lng);
-            const active = selectedIndex === index;
-
-            return (
-              <g key={stop.id}>
-                {active ? (
-                  <circle
-                    cx={point.x}
-                    cy={point.y}
-                    r="3.6"
-                    fill="#f1a5d8"
-                    opacity="0.24"
-                    filter="url(#travel-globe-glow)"
-                  />
-                ) : null}
-                <circle
-                  cx={point.x}
-                  cy={point.y}
-                  r={active ? 1.8 : 1.2}
-                  fill={active ? "#f1a5d8" : "#f0d8c0"}
-                  stroke="#181848"
-                  strokeWidth="0.45"
-                  className="cursor-pointer transition"
-                  onClick={() => onSelect(index)}
-                />
-              </g>
-            );
-          })}
-        </g>
-      </svg>
-    </div>
   );
 }

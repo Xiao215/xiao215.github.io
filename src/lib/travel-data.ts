@@ -442,7 +442,7 @@ export const travelPlaces = [
   },
   {
     id: "angkor-wat",
-    place: "吴哥窟",
+    place: "Angkor Wat",
     country: "Cambodia",
     continent: "Asia",
     lat: 13.4125,

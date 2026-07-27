@@ -75,3 +75,6 @@ bower_components/
 
 # Next.js telemetry file
 .telemetry.json
+
+# TypeScript incremental build info
+*.tsbuildinfo

@@ -51,7 +51,7 @@ export default function Home() {
         <div className="justify-self-center md:justify-self-end">
           <div className="relative">
             <Image
-              src="/assets/photos/pfp.jpeg"
+              src="/assets/photos/pfp.webp"
               alt="Portrait of Xiao Zhang"
               width={420}
               height={420}
@@ -84,7 +84,7 @@ export default function Home() {
         id="contact"
         className="flex flex-col gap-4 border-t border-line/70 py-8 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"
       >
-        <p>(c) 2026 Xiao Zhang</p>
+        <p>&copy; 2026 Xiao Zhang</p>
         <a
           href="mailto:zhxiao@cs.toronto.edu"
           className="hover:text-accent-strong"

@@ -4,6 +4,7 @@ import { SlimeCompanion } from "@/components/slime-companion";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://xiao215.github.io"),
   title: "Xiao's Tea Pot",
   description:
     "Welcome to Xiao's Tea Pot, the personal website for Xiao Zhang.",
