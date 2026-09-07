@@ -1,337 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import * as THREE from "three";
-import type { Position } from "geojson";
-import {
-  coastlineLines,
-  countryBorderLines,
-  landPolygons,
-} from "@/components/travel-globe-data";
 import { TravelGlobeFallback } from "@/components/travel-globe-fallback";
 import { TravelPlaceIndex } from "@/components/travel-place-index";
-import { travelRoutes, travelPlaces } from "@/lib/travel-data";
+import { TravelGlobeScene } from "@/lib/globe/scene";
+import { travelPlaces, type TravelPlaceId } from "@/lib/travel-data";
 
-const globeRadius = 1;
-const landSurfaceRadius = globeRadius * 1.008;
-const mapSurfaceRadius = landSurfaceRadius;
-const markerRadius = 0.018;
-const routeSurfaceRadius = mapSurfaceRadius + markerRadius * 0.65;
-
-function latLngToVector3(lat: number, lng: number, radius = globeRadius) {
-  const phi = THREE.MathUtils.degToRad(90 - lat);
-  const theta = THREE.MathUtils.degToRad(lng + 180);
-
-  return new THREE.Vector3(
-    -radius * Math.sin(phi) * Math.cos(theta),
-    radius * Math.cos(phi),
-    radius * Math.sin(phi) * Math.sin(theta),
-  );
-}
-
-function targetRotationFor(lat: number, lng: number) {
-  const point = latLngToVector3(lat, lng).normalize();
-  const yRotation = Math.atan2(-point.x, point.z);
-  const horizontalDepth = Math.hypot(point.x, point.z);
-  const xRotation = Math.atan2(point.y, horizontalDepth);
-
-  return {
-    x: THREE.MathUtils.clamp(xRotation, -0.78, 0.78),
-    y: yRotation,
-  };
-}
-
-function makeArc(
-  from: THREE.Vector3,
-  to: THREE.Vector3,
-  baseRadius = routeSurfaceRadius,
-) {
-  const start = from.clone().normalize();
-  const end = to.clone().normalize();
-  const angle = start.angleTo(end);
-  const sinAngle = Math.sin(angle);
-  const altitude = THREE.MathUtils.clamp(angle * 0.08, 0.055, 0.18);
-  const points = Array.from({ length: 90 }, (_, index) => {
-    const t = index / 89;
-    const radius = baseRadius + Math.sin(Math.PI * t) * altitude;
-    const surfacePoint =
-      sinAngle < 0.001
-        ? start.clone().lerp(end, t)
-        : start
-            .clone()
-            .multiplyScalar(Math.sin((1 - t) * angle) / sinAngle)
-            .add(end.clone().multiplyScalar(Math.sin(t * angle) / sinAngle));
-
-    return surfacePoint.normalize().multiplyScalar(radius);
-  });
-
-  return new THREE.CatmullRomCurve3(points);
-}
-
-function interpolateOnSphere(
-  start: THREE.Vector3,
-  end: THREE.Vector3,
-  t: number,
-) {
-  const angle = start.angleTo(end);
-  const sinAngle = Math.sin(angle);
-
-  if (sinAngle < 0.001) {
-    return start.clone().lerp(end, t).normalize();
-  }
-
-  return start
-    .clone()
-    .multiplyScalar(Math.sin((1 - t) * angle) / sinAngle)
-    .add(end.clone().multiplyScalar(Math.sin(t * angle) / sinAngle))
-    .normalize();
-}
-
-function makeSurfacePolyline(
-  points: readonly Position[],
-  radius = globeRadius * 1.028,
-) {
-  const linePoints: THREE.Vector3[] = [];
-
-  points.forEach((point, index) => {
-    const next = points[index + 1];
-    const start = latLngToVector3(point[1], point[0]).normalize();
-
-    if (!next) {
-      linePoints.push(start.multiplyScalar(radius));
-      return;
-    }
-
-    const end = latLngToVector3(next[1], next[0]).normalize();
-    const segments = Math.max(4, Math.ceil(start.angleTo(end) / 0.08));
-
-    for (let segment = 0; segment < segments; segment += 1) {
-      linePoints.push(
-        interpolateOnSphere(start, end, segment / segments).multiplyScalar(
-          radius,
-        ),
-      );
-    }
-  });
-
-  return new THREE.BufferGeometry().setFromPoints(linePoints);
-}
-
-function makeCircle(radius: number, segments = 128) {
-  const points = Array.from({ length: segments + 1 }, (_, index) => {
-    const angle = (index / segments) * Math.PI * 2;
-    return new THREE.Vector3(
-      Math.cos(angle) * radius,
-      0,
-      Math.sin(angle) * radius,
-    );
-  });
-
-  return new THREE.BufferGeometry().setFromPoints(points);
-}
-
-type SurfacePoint = {
-  lat: number;
-  lng: number;
-};
-
-function unwrapRing(ring: readonly Position[]) {
-  const openRing =
-    ring.length > 1 &&
-    ring[0][0] === ring[ring.length - 1][0] &&
-    ring[0][1] === ring[ring.length - 1][1]
-      ? ring.slice(0, -1)
-      : ring;
-
-  if (openRing.length < 3) {
-    return [];
-  }
-
-  const [firstPoint, ...restPoints] = openRing;
-  const points: SurfacePoint[] = [{ lng: firstPoint[0], lat: firstPoint[1] }];
-  let previousLng = firstPoint[0];
-
-  restPoints.forEach((point) => {
-    let lng = point[0];
-
-    while (lng - previousLng > 180) lng -= 360;
-    while (previousLng - lng > 180) lng += 360;
-
-    points.push({ lng, lat: point[1] });
-    previousLng = lng;
-  });
-
-  return points;
-}
-
-function getLngCenter(points: readonly SurfacePoint[]) {
-  const longitudes = points.map((point) => point.lng);
-
-  return (Math.min(...longitudes) + Math.max(...longitudes)) / 2;
-}
-
-function getLngSpan(points: readonly SurfacePoint[]) {
-  const longitudes = points.map((point) => point.lng);
-
-  return Math.max(...longitudes) - Math.min(...longitudes);
-}
-
-function isSouthPolarRing(points: readonly SurfacePoint[]) {
-  const latitudes = points.map((point) => point.lat);
-
-  return getLngSpan(points) > 340 && Math.min(...latitudes) < -80;
-}
-
-function closeSouthPolarRing(points: readonly SurfacePoint[]) {
-  return [
-    ...points,
-    { lat: -90, lng: points[points.length - 1].lng },
-    { lat: -90, lng: points[0].lng },
-  ];
-}
-
-function alignRingLongitude(
-  points: readonly SurfacePoint[],
-  targetCenter: number,
-) {
-  const ringCenter = getLngCenter(points);
-  let offset = 0;
-
-  while (ringCenter + offset - targetCenter > 180) offset -= 360;
-  while (targetCenter - (ringCenter + offset) > 180) offset += 360;
-
-  return points.map((point) => ({
-    lat: point.lat,
-    lng: point.lng + offset,
-  }));
-}
-
-function addSurfaceTriangle(
-  positions: number[],
-  first: SurfacePoint,
-  second: SurfacePoint,
-  third: SurfacePoint,
-  radius: number,
-) {
-  const maxSegment = 6;
-  const edges = [
-    { a: first, b: second, c: third },
-    { a: second, b: third, c: first },
-    { a: third, b: first, c: second },
-  ].map((edge) => ({
-    ...edge,
-    length: Math.hypot(edge.a.lng - edge.b.lng, edge.a.lat - edge.b.lat),
-  }));
-  const longestEdge = edges.reduce((longest, edge) =>
-    edge.length > longest.length ? edge : longest,
-  );
-
-  if (longestEdge.length > maxSegment) {
-    const midpoint = {
-      lat: (longestEdge.a.lat + longestEdge.b.lat) / 2,
-      lng: (longestEdge.a.lng + longestEdge.b.lng) / 2,
-    };
-
-    addSurfaceTriangle(
-      positions,
-      longestEdge.a,
-      midpoint,
-      longestEdge.c,
-      radius,
-    );
-    addSurfaceTriangle(
-      positions,
-      midpoint,
-      longestEdge.b,
-      longestEdge.c,
-      radius,
-    );
-    return;
-  }
-
-  [first, second, third].forEach((point) => {
-    const vertex = latLngToVector3(point.lat, point.lng, radius);
-    positions.push(vertex.x, vertex.y, vertex.z);
-  });
-}
-
-function makeLandFillGeometry() {
-  const radius = landSurfaceRadius;
-  const positions: number[] = [];
-
-  landPolygons.forEach((polygon) => {
-    const [rawOuterRing, ...rawHoleRings] = polygon;
-
-    if (!rawOuterRing) {
-      return;
-    }
-
-    const outerRing = unwrapRing(rawOuterRing);
-
-    if (outerRing.length < 3) {
-      return;
-    }
-
-    const contourRing = isSouthPolarRing(outerRing)
-      ? closeSouthPolarRing(outerRing)
-      : outerRing;
-    const outerCenter = getLngCenter(contourRing);
-    const holeRings = rawHoleRings
-      .map(unwrapRing)
-      .filter((ring) => ring.length >= 3)
-      .map((ring) => alignRingLongitude(ring, outerCenter));
-    const vertices = [...contourRing, ...holeRings.flat()];
-    const contour = contourRing.map(
-      (point) => new THREE.Vector2(point.lng, point.lat),
-    );
-    const holes = holeRings.map((ring) =>
-      ring.map((point) => new THREE.Vector2(point.lng, point.lat)),
-    );
-    const triangles = THREE.ShapeUtils.triangulateShape(contour, holes);
-
-    triangles.forEach(([firstIndex, secondIndex, thirdIndex]) => {
-      addSurfaceTriangle(
-        positions,
-        vertices[firstIndex],
-        vertices[secondIndex],
-        vertices[thirdIndex],
-        radius,
-      );
-    });
-  });
-
-  const geometry = new THREE.BufferGeometry();
-  geometry.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(positions, 3),
-  );
-  geometry.computeVertexNormals();
-
-  return geometry;
-}
+const defaultPlaceId: TravelPlaceId = "san-francisco";
 
 export function TravelExplorer() {
-  const [selectedIndex, setSelectedIndex] = useState(() => {
-    const idx = travelPlaces.findIndex((p) => p.id === "san-francisco");
-    return idx >= 0 ? idx : 0;
-  });
+  const [selectedId, setSelectedId] = useState<TravelPlaceId>(defaultPlaceId);
   const [webglUnavailable, setWebglUnavailable] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const selectedIndexRef = useRef(selectedIndex);
-  const targetRotationRef = useRef(
-    targetRotationFor(
-      travelPlaces[selectedIndex].lat,
-      travelPlaces[selectedIndex].lng,
-    ),
-  );
-
-  useEffect(() => {
-    selectedIndexRef.current = selectedIndex;
-    targetRotationRef.current = targetRotationFor(
-      travelPlaces[selectedIndex].lat,
-      travelPlaces[selectedIndex].lng,
-    );
-  }, [selectedIndex]);
+  const sceneRef = useRef<TravelGlobeScene | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -340,359 +21,35 @@ export function TravelExplorer() {
       return;
     }
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
-    camera.position.set(0, 0, 3.25);
-
-    let renderer: THREE.WebGLRenderer;
+    let scene: TravelGlobeScene;
 
     try {
-      renderer = new THREE.WebGLRenderer({
-        alpha: true,
-        antialias: true,
-        preserveDrawingBuffer: true,
+      scene = new TravelGlobeScene({
+        container,
+        selectedId: defaultPlaceId,
+        onSelect: (place) => setSelectedId(place.id),
       });
     } catch {
-      window.setTimeout(() => setWebglUnavailable(true), 0);
+      // No WebGL context; swap in the static SVG globe. Deferred to a
+      // microtask so the effect body itself does not set state.
+      queueMicrotask(() => setWebglUnavailable(true));
       return;
     }
 
-    renderer.setClearColor(0x000000, 0);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.domElement.style.display = "block";
-    renderer.domElement.style.touchAction = "none";
-    renderer.domElement.style.width = "100%";
-    container.appendChild(renderer.domElement);
-
-    const group = new THREE.Group();
-    const initialRotation = targetRotationRef.current;
-    group.rotation.set(initialRotation.x, initialRotation.y, 0);
-    scene.add(group);
-
-    const globeGeometry = new THREE.SphereGeometry(globeRadius, 96, 96);
-    const globeMaterial = new THREE.MeshStandardMaterial({
-      color: 0x232733,
-      roughness: 0.95,
-      metalness: 0.05,
-      transparent: true,
-      opacity: 0.94,
-    });
-    const globe = new THREE.Mesh(globeGeometry, globeMaterial);
-    globe.renderOrder = 0;
-    group.add(globe);
-
-    const landFillGeometry = makeLandFillGeometry();
-    const landFillMaterial = new THREE.MeshBasicMaterial({
-      color: 0x777466,
-      depthWrite: false,
-      polygonOffset: true,
-      polygonOffsetFactor: -2,
-      polygonOffsetUnits: -2,
-    });
-    const landFill = new THREE.Mesh(landFillGeometry, landFillMaterial);
-    landFill.renderOrder = 1;
-    group.add(landFill);
-
-    const glowGeometry = new THREE.SphereGeometry(globeRadius * 1.02, 96, 96);
-    const glowMaterial = new THREE.MeshBasicMaterial({
-      color: 0xa9a9ef,
-      transparent: true,
-      opacity: 0.1,
-      side: THREE.BackSide,
-    });
-    const glow = new THREE.Mesh(glowGeometry, glowMaterial);
-    group.add(glow);
-
-    const gridMaterial = new THREE.LineBasicMaterial({
-      color: 0x5c526f,
-      transparent: true,
-      opacity: 0.25,
-    });
-    const gridGeometries: THREE.BufferGeometry[] = [];
-
-    for (let lat = -60; lat <= 60; lat += 30) {
-      const geometry = makeCircle(Math.cos(THREE.MathUtils.degToRad(lat)));
-      const line = new THREE.Line(geometry, gridMaterial);
-      gridGeometries.push(geometry);
-      line.position.y = Math.sin(THREE.MathUtils.degToRad(lat));
-      group.add(line);
-    }
-
-    for (let lng = 0; lng < 180; lng += 30) {
-      const geometry = makeCircle(globeRadius);
-      const line = new THREE.Line(geometry, gridMaterial);
-      gridGeometries.push(geometry);
-      line.rotation.x = Math.PI / 2;
-      line.rotation.z = THREE.MathUtils.degToRad(lng);
-      group.add(line);
-    }
-
-    const coastMaterial = new THREE.LineBasicMaterial({
-      color: 0xf0d8c0,
-      transparent: true,
-      opacity: 0.65,
-      depthWrite: false,
-    });
-    const borderMaterial = new THREE.LineBasicMaterial({
-      color: 0x8fa2d8,
-      transparent: true,
-      opacity: 0.48,
-      depthWrite: false,
-    });
-    const landGeometries: THREE.BufferGeometry[] = [];
-
-    coastlineLines.forEach((line) => {
-      const geometry = makeSurfacePolyline(line, mapSurfaceRadius);
-      const outline = new THREE.Line(geometry, coastMaterial);
-      outline.renderOrder = 2;
-      landGeometries.push(geometry);
-      group.add(outline);
-    });
-
-    countryBorderLines.forEach((line) => {
-      const geometry = makeSurfacePolyline(line, mapSurfaceRadius);
-      const outline = new THREE.Line(geometry, borderMaterial);
-      outline.renderOrder = 2;
-      landGeometries.push(geometry);
-      group.add(outline);
-    });
-
-    const arcMaterial = new THREE.MeshBasicMaterial({
-      color: 0xf1a5d8,
-      transparent: true,
-      opacity: 0.95,
-    });
-    const arcGeometries: THREE.BufferGeometry[] = [];
-
-    travelRoutes.forEach((route) => {
-      const from = latLngToVector3(
-        route.from.lat,
-        route.from.lng,
-        routeSurfaceRadius,
-      );
-      const to = latLngToVector3(
-        route.to.lat,
-        route.to.lng,
-        routeSurfaceRadius,
-      );
-      const geometry = new THREE.TubeGeometry(
-        makeArc(from, to, routeSurfaceRadius),
-        96,
-        0.0055,
-        8,
-        false,
-      );
-      const arc = new THREE.Mesh(geometry, arcMaterial);
-      arc.renderOrder = 3;
-      arcGeometries.push(geometry);
-      group.add(arc);
-    });
-
-    const markerMeshes: THREE.Mesh[] = [];
-    const markerHaloMeshes: THREE.Mesh[] = [];
-    const markerMaterials: THREE.MeshStandardMaterial[] = [];
-    const markerHaloMaterials: THREE.MeshBasicMaterial[] = [];
-    const markerGeometry = new THREE.SphereGeometry(markerRadius, 20, 20);
-    const markerHaloGeometry = new THREE.RingGeometry(0.026, 0.04, 32);
-
-    travelPlaces.forEach((place, index) => {
-      const markerMaterial = new THREE.MeshStandardMaterial({
-        color: index === selectedIndexRef.current ? 0xf1a5d8 : 0xf0d8c0,
-        emissive: index === selectedIndexRef.current ? 0xf1a5d8 : 0xa9a9ef,
-        emissiveIntensity: index === selectedIndexRef.current ? 0.75 : 0.36,
-        roughness: 0.45,
-      });
-      markerMaterials.push(markerMaterial);
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      const position = latLngToVector3(place.lat, place.lng, mapSurfaceRadius);
-      const normal = position.clone().normalize();
-      marker.position.copy(position);
-      marker.renderOrder = 4;
-      marker.userData.index = index;
-      markerMeshes.push(marker);
-      group.add(marker);
-
-      const haloMaterial = new THREE.MeshBasicMaterial({
-        color: index === selectedIndexRef.current ? 0xf1a5d8 : 0xf0d8c0,
-        transparent: true,
-        opacity: index === selectedIndexRef.current ? 0.4 : 0.18,
-        side: THREE.DoubleSide,
-      });
-      markerHaloMaterials.push(haloMaterial);
-      const halo = new THREE.Mesh(markerHaloGeometry, haloMaterial);
-      halo.position.copy(
-        latLngToVector3(place.lat, place.lng, mapSurfaceRadius + 0.002),
-      );
-      halo.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal);
-      halo.renderOrder = 4;
-      markerHaloMeshes.push(halo);
-      group.add(halo);
-    });
-
-    const ambient = new THREE.AmbientLight(0xf6edf7, 1.6);
-    const key = new THREE.DirectionalLight(0xf1a5d8, 1.2);
-    key.position.set(2, 2, 3);
-    const fill = new THREE.DirectionalLight(0xa9a9ef, 0.9);
-    fill.position.set(-3, -1, 2);
-    scene.add(ambient, key, fill);
-
-    const raycaster = new THREE.Raycaster();
-    const pointer = new THREE.Vector2();
-    const drag = {
-      active: false,
-      moved: false,
-      x: 0,
-      y: 0,
-    };
-
-    function resize() {
-      if (!container) return;
-      const rect = container.getBoundingClientRect();
-      const size = Math.max(260, Math.min(rect.width, rect.height || rect.width));
-      renderer.setSize(rect.width, size, false);
-      renderer.domElement.style.height = `${size}px`;
-      camera.aspect = rect.width / size;
-      camera.position.z = rect.width < 480 ? 3.75 : 3.25;
-      camera.updateProjectionMatrix();
-    }
-
-    function setPointer(event: PointerEvent) {
-      const rect = renderer.domElement.getBoundingClientRect();
-      pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-    }
-
-    function onPointerDown(event: PointerEvent) {
-      event.preventDefault();
-      drag.active = true;
-      drag.moved = false;
-      drag.x = event.clientX;
-      drag.y = event.clientY;
-      renderer.domElement.setPointerCapture(event.pointerId);
-    }
-
-    function onPointerMove(event: PointerEvent) {
-      if (!drag.active) {
-        return;
-      }
-
-      event.preventDefault();
-      const deltaX = event.clientX - drag.x;
-      const deltaY = event.clientY - drag.y;
-      drag.moved = drag.moved || Math.abs(deltaX) + Math.abs(deltaY) > 4;
-      drag.x = event.clientX;
-      drag.y = event.clientY;
-      targetRotationRef.current = {
-        x: THREE.MathUtils.clamp(
-          targetRotationRef.current.x + deltaY * 0.005,
-          -0.95,
-          0.95,
-        ),
-        y: targetRotationRef.current.y + deltaX * 0.005,
-      };
-    }
-
-    function endDrag(event: PointerEvent) {
-      drag.active = false;
-
-      if (renderer.domElement.hasPointerCapture(event.pointerId)) {
-        renderer.domElement.releasePointerCapture(event.pointerId);
-      }
-    }
-
-    function onPointerCancel(event: PointerEvent) {
-      endDrag(event);
-      drag.moved = true;
-    }
-
-    function onPointerUp(event: PointerEvent) {
-      event.preventDefault();
-      endDrag(event);
-
-      if (drag.moved) {
-        return;
-      }
-
-      setPointer(event);
-      raycaster.setFromCamera(pointer, camera);
-      const [hit] = raycaster.intersectObjects(markerMeshes);
-
-      if (hit?.object.userData.index !== undefined) {
-        setSelectedIndex(hit.object.userData.index);
-      }
-    }
-
-    renderer.domElement.addEventListener("pointerdown", onPointerDown);
-    renderer.domElement.addEventListener("pointermove", onPointerMove);
-    renderer.domElement.addEventListener("pointerup", onPointerUp);
-    renderer.domElement.addEventListener("pointercancel", onPointerCancel);
-
-    const observer = new ResizeObserver(resize);
-    observer.observe(container);
-    resize();
-
-    let frameId = 0;
-
-    function animate() {
-      const target = targetRotationRef.current;
-      group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, target.x, 0.08);
-      group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, target.y, 0.08);
-      group.rotation.z = Math.sin(performance.now() * 0.0005) * 0.018;
-
-      markerMeshes.forEach((marker, index) => {
-        const active = index === selectedIndexRef.current;
-        const material = marker.material as THREE.MeshStandardMaterial;
-        marker.scale.setScalar(active ? 1.22 : 1);
-        material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
-        material.emissive.set(active ? 0xf1a5d8 : 0xa9a9ef);
-        material.emissiveIntensity = active ? 0.78 : 0.34;
-      });
-      markerHaloMeshes.forEach((halo, index) => {
-        const active = index === selectedIndexRef.current;
-        const material = halo.material as THREE.MeshBasicMaterial;
-        halo.scale.setScalar(active ? 1.12 : 1);
-        material.color.set(active ? 0xf1a5d8 : 0xf0d8c0);
-        material.opacity = active ? 0.45 : 0.18;
-      });
-
-      renderer.render(scene, camera);
-      frameId = requestAnimationFrame(animate);
-    }
-
-    animate();
+    sceneRef.current = scene;
 
     return () => {
-      cancelAnimationFrame(frameId);
-      observer.disconnect();
-      renderer.domElement.removeEventListener("pointerdown", onPointerDown);
-      renderer.domElement.removeEventListener("pointermove", onPointerMove);
-      renderer.domElement.removeEventListener("pointerup", onPointerUp);
-      renderer.domElement.removeEventListener("pointercancel", onPointerCancel);
-      renderer.dispose();
-      globeGeometry.dispose();
-      globeMaterial.dispose();
-      landFillGeometry.dispose();
-      landFillMaterial.dispose();
-      glowGeometry.dispose();
-      glowMaterial.dispose();
-      gridMaterial.dispose();
-      gridGeometries.forEach((geometry) => geometry.dispose());
-      coastMaterial.dispose();
-      borderMaterial.dispose();
-      arcMaterial.dispose();
-      arcGeometries.forEach((geometry) => geometry.dispose());
-      markerGeometry.dispose();
-      markerHaloGeometry.dispose();
-      markerMaterials.forEach((material) => material.dispose());
-      markerHaloMaterials.forEach((material) => material.dispose());
-      landGeometries.forEach((geometry) => geometry.dispose());
-      if (renderer.domElement.parentNode === container) {
-        container.removeChild(renderer.domElement);
-      }
+      sceneRef.current = null;
+      scene.dispose();
     };
   }, []);
 
-  const selectedPlace = travelPlaces[selectedIndex];
+  useEffect(() => {
+    sceneRef.current?.setSelected(selectedId);
+  }, [selectedId]);
+
+  const selectedPlace =
+    travelPlaces.find((place) => place.id === selectedId) ?? travelPlaces[0];
 
   return (
     <section className="min-w-0 space-y-5">
@@ -707,22 +64,20 @@ export function TravelExplorer() {
         </div>
         {webglUnavailable ? (
           <TravelGlobeFallback
-            selectedIndex={selectedIndex}
-            onSelect={setSelectedIndex}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
           />
         ) : (
           <div
             ref={containerRef}
             className="min-h-[360px] min-w-0 touch-none cursor-grab active:cursor-grabbing sm:min-h-[540px]"
+            role="img"
             aria-label="Interactive travel globe"
           />
         )}
       </div>
 
-      <TravelPlaceIndex
-        selectedIndex={selectedIndex}
-        onSelect={setSelectedIndex}
-      />
+      <TravelPlaceIndex selectedId={selectedId} onSelect={setSelectedId} />
     </section>
   );
 }

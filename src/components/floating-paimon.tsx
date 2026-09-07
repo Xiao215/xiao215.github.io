@@ -188,7 +188,6 @@ export function PaimonHi({
           width={262}
           height={394}
           className="paimon-hi__image"
-          priority
         />
         <PaimonStars />
       </div>
@@ -206,7 +205,6 @@ export function FloatingPaimon() {
           width={188}
           height={145}
           className="floating-paimon__wing"
-          priority
         />
         <Image
           src={floatingBodySrc}
@@ -214,7 +212,6 @@ export function FloatingPaimon() {
           width={321}
           height={477}
           className="floating-paimon__body"
-          priority
         />
         <PaimonStars />
       </div>
@@ -232,7 +229,6 @@ export function ConfusedPaimon({ className = "" }: { className?: string }) {
           width={264}
           height={367}
           className="confused-paimon__body"
-          priority
         />
         <PaimonStars />
       </div>
