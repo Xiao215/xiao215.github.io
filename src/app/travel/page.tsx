@@ -1,5 +1,12 @@
+import type { Metadata } from "next";
 import { SiteNav } from "@/components/site-nav";
 import { TravelExplorer } from "@/components/travel-explorer";
+
+export const metadata: Metadata = {
+  title: "Travel",
+  description: "An interactive globe of the cities and routes Xiao Zhang has travelled.",
+  openGraph: { title: "Travel", url: "/travel/" },
+};
 
 export default function TravelPage() {
   return (

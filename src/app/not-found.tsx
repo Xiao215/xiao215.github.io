@@ -1,7 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, Compass, FileText, Home, Map } from "lucide-react";
 import { ConfusedPaimon } from "@/components/floating-paimon";
 import { SiteNav } from "@/components/site-nav";
+
+export const metadata: Metadata = {
+  title: "Page not found",
+};
 
 export default function NotFound() {
   return (

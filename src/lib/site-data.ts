@@ -13,11 +13,13 @@ export const resumes = [
     name: "Software",
     slug: "software",
     href: "https://drive.google.com/file/d/1eOFepl2Mfsk5X1DANQqtrFkcyQktwZ9u/preview",
+    viewHref: "https://drive.google.com/file/d/1eOFepl2Mfsk5X1DANQqtrFkcyQktwZ9u/view",
   },
   {
     name: "Machine Learning",
     slug: "machine-learning",
     href: "https://drive.google.com/file/d/1pSJX5jQz3GYFS1BhL_RRn-rhOCGgFJW9/preview",
+    viewHref: "https://drive.google.com/file/d/1pSJX5jQz3GYFS1BhL_RRn-rhOCGgFJW9/view",
   },
 ];
 

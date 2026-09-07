@@ -1,15 +1,15 @@
-"use client";
-
-import { useState } from "react";
+import type { Metadata } from "next";
 import { PaimonHi } from "@/components/floating-paimon";
+import { ResumePicker } from "@/components/resume-picker";
 import { SiteNav } from "@/components/site-nav";
-import { resumes } from "@/lib/site-data";
+
+export const metadata: Metadata = {
+  title: "Resume",
+  description: "Software and machine learning resumes for Xiao Zhang.",
+  openGraph: { title: "Resume", url: "/resume/" },
+};
 
 export default function ResumePage() {
-  const [selectedSlug, setSelectedSlug] = useState(resumes[0].slug);
-  const selectedResume =
-    resumes.find((resume) => resume.slug === selectedSlug) ?? resumes[0];
-
   return (
     <main className="mx-auto flex min-h-screen w-[calc(100%_-_3rem)] max-w-6xl flex-col py-8 sm:w-[calc(100%_-_5rem)] lg:w-[calc(100%_-_6rem)]">
       <SiteNav />
@@ -30,36 +30,7 @@ export default function ResumePage() {
           <PaimonHi />
         </div>
 
-        <div className="mb-5 inline-flex rounded-md border border-line/70 bg-surface-soft p-1">
-          {resumes.map((resume) => {
-            const active = resume.slug === selectedSlug;
-
-            return (
-              <button
-                key={resume.slug}
-                type="button"
-                onClick={() => setSelectedSlug(resume.slug)}
-                className={`cursor-pointer rounded px-4 py-2 text-sm font-medium transition ${
-                  active
-                    ? "bg-accent-strong text-background"
-                    : "text-muted hover:text-foreground"
-                }`}
-              >
-                {resume.name}
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="overflow-hidden rounded-md border border-accent/30 bg-surface-soft p-2 shadow-[0_24px_90px_rgba(24,24,72,0.42)]">
-          <iframe
-            key={selectedResume.slug}
-            src={selectedResume.href}
-            className="min-h-[720px] w-full rounded-sm bg-white"
-            allow="autoplay"
-            title={`${selectedResume.name} resume`}
-          />
-        </div>
+        <ResumePicker />
       </section>
     </main>
   );
