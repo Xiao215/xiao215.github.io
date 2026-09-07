@@ -521,3 +521,10 @@ export const travelRoutes = [
   route("fuzhou-cebu", "fuzhou", "cebu"),
   route("cebu-manila", "cebu", "manila"),
 ] as const;
+
+export const travelStats = {
+  cities: travelPlaces.length,
+  countries: new Set(travelPlaces.map((place) => place.country)).size,
+  continents: new Set(travelPlaces.map((place) => place.continent)).size,
+  routes: travelRoutes.length,
+};

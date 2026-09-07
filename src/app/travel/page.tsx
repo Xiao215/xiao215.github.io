@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SiteNav } from "@/components/site-nav";
 import { TravelExplorer } from "@/components/travel-explorer";
+import { travelStats } from "@/lib/travel-data";
 
 export const metadata: Metadata = {
   title: "Travel",
@@ -23,6 +24,24 @@ export default function TravelPage() {
           </h1>
           <p className="mt-4 text-lg leading-8 text-muted">
             A small interactive map of cities and routes, not a full timeline.
+          </p>
+          <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-xs uppercase text-accent">
+            <span>
+              <span className="text-foreground">{travelStats.cities}</span>{" "}
+              cities
+            </span>
+            <span>
+              <span className="text-foreground">{travelStats.countries}</span>{" "}
+              countries
+            </span>
+            <span>
+              <span className="text-foreground">{travelStats.continents}</span>{" "}
+              continents
+            </span>
+            <span>
+              <span className="text-foreground">{travelStats.routes}</span>{" "}
+              routes
+            </span>
           </p>
         </div>
 
