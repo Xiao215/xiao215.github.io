@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Compass, FileText, Home, Map } from "lucide-react";
+import { Compass, FileText, Home, Map } from "lucide-react";
 import { ConfusedPaimon } from "@/components/floating-paimon";
 import { SiteNav } from "@/components/site-nav";
+import { TeapotTerminal } from "@/components/teapot-terminal";
 
 export const metadata: Metadata = {
   title: "Page not found",
@@ -68,27 +69,7 @@ export default function NotFound() {
             </div>
 
             <div className="relative mt-8 grid min-w-0 gap-5 sm:grid-cols-[1fr_9rem] sm:items-end">
-              <div className="min-w-0 rounded-md border border-accent/30 bg-surface-soft/85 p-4 backdrop-blur">
-                <div className="mb-4 flex gap-2" aria-hidden="true">
-                  <span className="size-2 rounded-full bg-accent-strong" />
-                  <span className="size-2 rounded-full bg-accent-warm" />
-                  <span className="size-2 rounded-full bg-accent" />
-                </div>
-                <p className="break-words font-mono text-sm text-accent-warm">
-                  brew route --address unknown
-                </p>
-                <p className="mt-3 text-sm leading-6 text-muted">
-                  No matching page was found. The nearest stable portals are
-                  home, resume, and travel.
-                </p>
-                <Link
-                  href="/"
-                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-accent-strong hover:text-foreground"
-                >
-                  <ArrowLeft className="size-4" aria-hidden="true" />
-                  Return to the teapot
-                </Link>
-              </div>
+              <TeapotTerminal />
 
               <ConfusedPaimon className="mx-auto w-32 sm:w-40" />
             </div>

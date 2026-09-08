@@ -18,6 +18,7 @@ import {
   travelPlaces,
   travelRoutes,
   type TravelPlaceEntry,
+  type TravelPlaceId,
 } from "@/lib/travel-data";
 
 const colors = {
@@ -33,18 +34,32 @@ const colors = {
   markerGlow: 0xa9a9ef,
 } as const;
 
+/** Seconds without interaction before the globe starts drifting. */
+const idleDelay = 5;
+/** Radians per second of idle drift (one turn every ~80s). */
+const idleSpeed = 0.08;
+const hitRadius = 0.045;
+
 type Rotation = { x: number; y: number };
+
+export type HoverInfo = {
+  place: TravelPlaceEntry;
+  /** Pointer position relative to the globe container. */
+  x: number;
+  y: number;
+};
 
 export type TravelGlobeSceneOptions = {
   container: HTMLElement;
-  selectedId: string;
+  selectedId: TravelPlaceId;
   onSelect: (place: TravelPlaceEntry) => void;
+  onHover?: (info: HoverInfo | null) => void;
 };
 
 /**
  * Owns the three.js scene for the travel globe: geometry, lighting, pointer
  * handling, and the render loop. The React component only forwards the
- * selected city in and receives marker clicks out.
+ * selected city in and receives marker clicks and hovers out.
  *
  * The constructor throws if a WebGL context cannot be created, so callers
  * can fall back to the SVG globe.
@@ -52,6 +67,7 @@ export type TravelGlobeSceneOptions = {
 export class TravelGlobeScene {
   private readonly container: HTMLElement;
   private readonly onSelect: (place: TravelPlaceEntry) => void;
+  private readonly onHover?: (info: HoverInfo | null) => void;
   private readonly renderer: THREE.WebGLRenderer;
   private readonly scene = new THREE.Scene();
   private readonly camera = new THREE.PerspectiveCamera(42, 1, 0.1, 100);
@@ -70,15 +86,27 @@ export class TravelGlobeScene {
     THREE.RingGeometry,
     THREE.MeshBasicMaterial
   >[] = [];
+  /** Invisible, larger spheres that make markers easy to hover and click. */
+  private readonly hitTargets: THREE.Mesh[] = [];
   private readonly drag = { active: false, moved: false, x: 0, y: 0 };
+  private globe!: THREE.Mesh;
   private targetRotation: Rotation;
-  private selectedId: string;
+  private selectedId: TravelPlaceId;
+  private hoveredId: TravelPlaceId | null = null;
+  private lastInteraction = performance.now();
+  private lastFrame = performance.now();
   private frameId = 0;
   private visible = true;
 
-  constructor({ container, selectedId, onSelect }: TravelGlobeSceneOptions) {
+  constructor({
+    container,
+    selectedId,
+    onSelect,
+    onHover,
+  }: TravelGlobeSceneOptions) {
     this.container = container;
     this.onSelect = onSelect;
+    this.onHover = onHover;
     this.selectedId = selectedId;
     this.targetRotation = this.rotationFor(selectedId);
     this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -109,6 +137,7 @@ export class TravelGlobeScene {
     canvas.addEventListener("pointermove", this.onPointerMove);
     canvas.addEventListener("pointerup", this.onPointerUp);
     canvas.addEventListener("pointercancel", this.onPointerCancel);
+    canvas.addEventListener("pointerleave", this.onPointerLeave);
 
     this.resizeObserver = new ResizeObserver(this.resize);
     this.resizeObserver.observe(container);
@@ -118,6 +147,7 @@ export class TravelGlobeScene {
     this.visibilityObserver = new IntersectionObserver(([entry]) => {
       this.visible = entry?.isIntersecting ?? true;
       if (this.visible) {
+        this.lastFrame = performance.now();
         this.start();
       }
     });
@@ -125,14 +155,15 @@ export class TravelGlobeScene {
     this.start();
   }
 
-  /** Highlight a city and rotate the globe to face it. */
-  setSelected(id: string) {
+  /** Highlight a city, fly there along known routes, and face it. */
+  setSelected(id: TravelPlaceId) {
     if (id === this.selectedId) {
       return;
     }
 
     this.selectedId = id;
     this.targetRotation = this.rotationFor(id);
+    this.lastInteraction = performance.now();
     this.applySelection();
     this.start();
   }
@@ -148,6 +179,7 @@ export class TravelGlobeScene {
     canvas.removeEventListener("pointermove", this.onPointerMove);
     canvas.removeEventListener("pointerup", this.onPointerUp);
     canvas.removeEventListener("pointercancel", this.onPointerCancel);
+    canvas.removeEventListener("pointerleave", this.onPointerLeave);
 
     this.disposables.forEach((item) => item.dispose());
     this.renderer.dispose();
@@ -162,14 +194,19 @@ export class TravelGlobeScene {
     return item;
   }
 
-  private rotationFor(id: string) {
-    const place =
-      travelPlaces.find((candidate) => candidate.id === id) ?? travelPlaces[0];
+  private placeFor(id: TravelPlaceId) {
+    return (
+      travelPlaces.find((candidate) => candidate.id === id) ?? travelPlaces[0]
+    );
+  }
+
+  private rotationFor(id: TravelPlaceId) {
+    const place = this.placeFor(id);
     return targetRotationFor(place.lat, place.lng);
   }
 
   private buildGlobe() {
-    const globe = new THREE.Mesh(
+    this.globe = new THREE.Mesh(
       this.track(new THREE.SphereGeometry(globeRadius, 96, 96)),
       this.track(
         new THREE.MeshStandardMaterial({
@@ -181,8 +218,8 @@ export class TravelGlobeScene {
         }),
       ),
     );
-    globe.renderOrder = 0;
-    this.group.add(globe);
+    this.globe.renderOrder = 0;
+    this.group.add(this.globe);
 
     const glow = new THREE.Mesh(
       this.track(new THREE.SphereGeometry(globeRadius * 1.02, 96, 96)),
@@ -311,6 +348,8 @@ export class TravelGlobeScene {
       new THREE.SphereGeometry(markerRadius, 20, 20),
     );
     const haloGeometry = this.track(new THREE.RingGeometry(0.026, 0.04, 32));
+    const hitGeometry = this.track(new THREE.SphereGeometry(hitRadius, 8, 8));
+    const hitMaterial = this.track(new THREE.MeshBasicMaterial());
     const up = new THREE.Vector3(0, 0, 1);
 
     travelPlaces.forEach((place) => {
@@ -323,7 +362,6 @@ export class TravelGlobeScene {
       );
       marker.position.copy(position);
       marker.renderOrder = 4;
-      marker.userData.placeId = place.id;
       this.markers.push(marker);
       this.group.add(marker);
 
@@ -343,6 +381,13 @@ export class TravelGlobeScene {
       halo.renderOrder = 4;
       this.halos.push(halo);
       this.group.add(halo);
+
+      const hit = new THREE.Mesh(hitGeometry, hitMaterial);
+      hit.position.copy(position);
+      hit.visible = false;
+      hit.userData.placeId = place.id;
+      this.hitTargets.push(hit);
+      this.group.add(hit);
     });
   }
 
@@ -359,19 +404,20 @@ export class TravelGlobeScene {
   private applySelection() {
     travelPlaces.forEach((place, index) => {
       const active = place.id === this.selectedId;
+      const hovered = place.id === this.hoveredId;
       const marker = this.markers[index];
       const halo = this.halos[index];
 
-      marker.scale.setScalar(active ? 1.22 : 1);
+      marker.scale.setScalar(active ? 1.22 : hovered ? 1.12 : 1);
       marker.material.color.set(active ? colors.markerActive : colors.marker);
       marker.material.emissive.set(
         active ? colors.markerActive : colors.markerGlow,
       );
-      marker.material.emissiveIntensity = active ? 0.78 : 0.34;
+      marker.material.emissiveIntensity = active ? 0.78 : hovered ? 0.55 : 0.34;
 
-      halo.scale.setScalar(active ? 1.12 : 1);
+      halo.scale.setScalar(active ? 1.12 : hovered ? 1.06 : 1);
       halo.material.color.set(active ? colors.markerActive : colors.marker);
-      halo.material.opacity = active ? 0.45 : 0.18;
+      halo.material.opacity = active ? 0.45 : hovered ? 0.32 : 0.18;
     });
   }
 
@@ -387,8 +433,48 @@ export class TravelGlobeScene {
     this.start();
   };
 
+  private pickPlace(event: PointerEvent) {
+    const rect = this.renderer.domElement.getBoundingClientRect();
+    this.pointer.set(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1,
+    );
+    this.raycaster.setFromCamera(this.pointer, this.camera);
+    // Include the globe so markers on the far side cannot be picked.
+    const [hit] = this.raycaster.intersectObjects([
+      ...this.hitTargets,
+      this.globe,
+    ]);
+    const placeId = hit?.object.userData.placeId as TravelPlaceId | undefined;
+
+    return placeId ? this.placeFor(placeId) : null;
+  }
+
+  private setHovered(place: TravelPlaceEntry | null, event: PointerEvent) {
+    const id = place?.id ?? null;
+    this.renderer.domElement.style.cursor = place ? "pointer" : "";
+
+    if (place && this.onHover) {
+      const rect = this.container.getBoundingClientRect();
+      this.onHover({
+        place,
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+      });
+    } else if (!place && this.hoveredId !== null) {
+      this.onHover?.(null);
+    }
+
+    if (id !== this.hoveredId) {
+      this.hoveredId = id;
+      this.applySelection();
+      this.start();
+    }
+  }
+
   private readonly onPointerDown = (event: PointerEvent) => {
     event.preventDefault();
+    this.lastInteraction = performance.now();
     this.drag.active = true;
     this.drag.moved = false;
     this.drag.x = event.clientX;
@@ -398,10 +484,15 @@ export class TravelGlobeScene {
 
   private readonly onPointerMove = (event: PointerEvent) => {
     if (!this.drag.active) {
+      if (event.pointerType !== "touch") {
+        this.lastInteraction = performance.now();
+        this.setHovered(this.pickPlace(event), event);
+      }
       return;
     }
 
     event.preventDefault();
+    this.lastInteraction = performance.now();
     const deltaX = event.clientX - this.drag.x;
     const deltaY = event.clientY - this.drag.y;
     this.drag.moved =
@@ -419,8 +510,13 @@ export class TravelGlobeScene {
     this.start();
   };
 
+  private readonly onPointerLeave = (event: PointerEvent) => {
+    this.setHovered(null, event);
+  };
+
   private endDrag(event: PointerEvent) {
     this.drag.active = false;
+    this.lastInteraction = performance.now();
 
     if (this.renderer.domElement.hasPointerCapture(event.pointerId)) {
       this.renderer.domElement.releasePointerCapture(event.pointerId);
@@ -440,15 +536,7 @@ export class TravelGlobeScene {
       return;
     }
 
-    const rect = this.renderer.domElement.getBoundingClientRect();
-    this.pointer.set(
-      ((event.clientX - rect.left) / rect.width) * 2 - 1,
-      -((event.clientY - rect.top) / rect.height) * 2 + 1,
-    );
-    this.raycaster.setFromCamera(this.pointer, this.camera);
-    const [hit] = this.raycaster.intersectObjects(this.markers);
-    const placeId = hit?.object.userData.placeId;
-    const place = travelPlaces.find((candidate) => candidate.id === placeId);
+    const place = this.pickPlace(event);
 
     if (place) {
       this.onSelect(place);
@@ -457,6 +545,7 @@ export class TravelGlobeScene {
 
   private start() {
     if (this.frameId === 0 && this.visible) {
+      this.lastFrame = performance.now();
       this.frameId = requestAnimationFrame(this.animate);
     }
   }
@@ -468,15 +557,31 @@ export class TravelGlobeScene {
       return;
     }
 
+    const now = performance.now();
+    const delta = Math.min((now - this.lastFrame) / 1000, 0.05);
+    this.lastFrame = now;
+    const reduced = this.reducedMotion.matches;
+
+    // Idle drift: after a quiet spell, keep the globe slowly turning until
+    // the visitor touches it or picks a city again.
+    const idle =
+      !reduced &&
+      !this.drag.active &&
+      this.hoveredId === null &&
+      now - this.lastInteraction > idleDelay * 1000;
+
+    if (idle) {
+      this.targetRotation.y += idleSpeed * delta;
+    }
+
     const target = this.targetRotation;
     const rotation = this.group.rotation;
     rotation.x = THREE.MathUtils.lerp(rotation.x, target.x, 0.08);
     rotation.y = THREE.MathUtils.lerp(rotation.y, target.y, 0.08);
 
-    // A gentle idle sway; skipped for people who prefer reduced motion so the
+    // A gentle sway; skipped for people who prefer reduced motion so the
     // globe can settle and stop rendering.
-    const reduced = this.reducedMotion.matches;
-    rotation.z = reduced ? 0 : Math.sin(performance.now() * 0.0005) * 0.018;
+    rotation.z = reduced ? 0 : Math.sin(now * 0.0005) * 0.018;
 
     this.renderer.render(this.scene, this.camera);
 
