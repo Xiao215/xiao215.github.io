@@ -1,7 +1,10 @@
-import { travelPlaces } from "@/lib/travel-data";
+import {
+  travelPlaces,
+  type TravelPlaceEntry,
+  type TravelPlaceId,
+} from "@/lib/travel-data";
 
-type TravelPlace = (typeof travelPlaces)[number];
-type GroupedPlaces = Record<string, Record<string, TravelPlace[]>>;
+type GroupedPlaces = Record<string, Record<string, TravelPlaceEntry[]>>;
 
 const groupedPlaces = travelPlaces.reduce<GroupedPlaces>(
   (continents, place) => {
@@ -14,16 +17,12 @@ const groupedPlaces = travelPlaces.reduce<GroupedPlaces>(
   {},
 );
 
-const placeIndexById = new Map(
-  travelPlaces.map((place, index) => [place.id, index]),
-);
-
 export function TravelPlaceIndex({
-  selectedIndex,
+  selectedId,
   onSelect,
 }: {
-  selectedIndex: number;
-  onSelect: (index: number) => void;
+  selectedId: TravelPlaceId;
+  onSelect: (id: TravelPlaceId) => void;
 }) {
   return (
     <div className="rounded-md border border-line/70 bg-surface/65 p-5">
@@ -44,14 +43,14 @@ export function TravelPlaceIndex({
                   </p>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {places.map((place) => {
-                      const index = placeIndexById.get(place.id) ?? 0;
-                      const active = index === selectedIndex;
+                      const active = place.id === selectedId;
 
                       return (
                         <button
                           key={place.id}
                           type="button"
-                          onClick={() => onSelect(index)}
+                          aria-pressed={active}
+                          onClick={() => onSelect(place.id)}
                           className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm transition ${
                             active
                               ? "border-accent-strong/80 bg-accent-strong/15 text-foreground"

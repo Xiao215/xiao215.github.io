@@ -6,14 +6,18 @@ import {
   makeFallbackPolygonPath,
   projectPoint,
 } from "@/components/travel-globe-data";
-import { travelPlaces, travelRoutes } from "@/lib/travel-data";
+import {
+  travelPlaces,
+  travelRoutes,
+  type TravelPlaceId,
+} from "@/lib/travel-data";
 
 export function TravelGlobeFallback({
-  selectedIndex,
+  selectedId,
   onSelect,
 }: {
-  selectedIndex: number;
-  onSelect: (index: number) => void;
+  selectedId: TravelPlaceId;
+  onSelect: (id: TravelPlaceId) => void;
 }) {
   return (
     <div className="flex min-h-[360px] items-center justify-center px-5 py-16 sm:min-h-[520px]">
@@ -156,9 +160,9 @@ export function TravelGlobeFallback({
             );
           })}
 
-          {travelPlaces.map((stop, index) => {
+          {travelPlaces.map((stop) => {
             const point = projectPoint(stop.lat, stop.lng);
-            const active = selectedIndex === index;
+            const active = selectedId === stop.id;
 
             return (
               <g key={stop.id}>
@@ -180,7 +184,7 @@ export function TravelGlobeFallback({
                   stroke="#181848"
                   strokeWidth="0.45"
                   className="cursor-pointer transition"
-                  onClick={() => onSelect(index)}
+                  onClick={() => onSelect(stop.id)}
                 />
               </g>
             );

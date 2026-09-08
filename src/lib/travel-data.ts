@@ -458,11 +458,13 @@ export const travelPlaces = [
   },
 ] as const satisfies readonly TravelPlace[];
 
-type TravelPlaceId = (typeof travelPlaces)[number]["id"];
+/** One entry of `travelPlaces`, with its id narrowed to the known ids. */
+export type TravelPlaceEntry = (typeof travelPlaces)[number];
+export type TravelPlaceId = TravelPlaceEntry["id"];
 
-const travelPlacesById = Object.fromEntries(
+export const travelPlacesById = Object.fromEntries(
   travelPlaces.map((place) => [place.id, place]),
-) as Record<TravelPlaceId, (typeof travelPlaces)[number]>;
+) as Record<TravelPlaceId, TravelPlaceEntry>;
 
 function route(id: string, from: TravelPlaceId, to: TravelPlaceId) {
   return {
@@ -475,7 +477,6 @@ function route(id: string, from: TravelPlaceId, to: TravelPlaceId) {
 export const travelRoutes = [
   route("fuzhou-toronto", "fuzhou", "toronto"),
   route("toronto-iceland", "toronto", "iceland"),
-  route("iceland-toronto", "iceland", "toronto"),
   route("toronto-san-francisco", "toronto", "san-francisco"),
   route("fuzhou-berlin", "fuzhou", "berlin"),
   route("fuzhou-rome", "fuzhou", "rome"),
