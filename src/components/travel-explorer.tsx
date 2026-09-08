@@ -592,10 +592,22 @@ export function TravelExplorer() {
       };
     }
 
+    function endDrag(event: PointerEvent) {
+      drag.active = false;
+
+      if (renderer.domElement.hasPointerCapture(event.pointerId)) {
+        renderer.domElement.releasePointerCapture(event.pointerId);
+      }
+    }
+
+    function onPointerCancel(event: PointerEvent) {
+      endDrag(event);
+      drag.moved = true;
+    }
+
     function onPointerUp(event: PointerEvent) {
       event.preventDefault();
-      drag.active = false;
-      renderer.domElement.releasePointerCapture(event.pointerId);
+      endDrag(event);
 
       if (drag.moved) {
         return;
@@ -613,6 +625,7 @@ export function TravelExplorer() {
     renderer.domElement.addEventListener("pointerdown", onPointerDown);
     renderer.domElement.addEventListener("pointermove", onPointerMove);
     renderer.domElement.addEventListener("pointerup", onPointerUp);
+    renderer.domElement.addEventListener("pointercancel", onPointerCancel);
 
     const observer = new ResizeObserver(resize);
     observer.observe(container);
@@ -654,6 +667,7 @@ export function TravelExplorer() {
       renderer.domElement.removeEventListener("pointerdown", onPointerDown);
       renderer.domElement.removeEventListener("pointermove", onPointerMove);
       renderer.domElement.removeEventListener("pointerup", onPointerUp);
+      renderer.domElement.removeEventListener("pointercancel", onPointerCancel);
       renderer.dispose();
       globeGeometry.dispose();
       globeMaterial.dispose();

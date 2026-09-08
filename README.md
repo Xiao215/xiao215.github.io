@@ -1,13 +1,13 @@
 # xiao215.github.io
 
-New personal website for Xiao Zhang.
+Personal website for Xiao Zhang, live at https://xiao215.github.io.
 
 ## Stack
 
-- Next.js App Router
+- Next.js App Router (static export)
 - TypeScript
 - Tailwind CSS
-- Static export for GitHub Pages
+- three.js for the travel globe
 
 ## Commands
 
@@ -17,10 +17,13 @@ npm run lint
 npm run build
 ```
 
-The production build writes a static site to `out/`, which is what the GitHub
-Pages workflow deploys.
+`npm run build` writes the static site to `out/`, which the GitHub Pages
+workflow in `.github/workflows/nextjs.yml` deploys on every push to `main`.
 
-## Content Migration
+## Layout
 
-The previous website is kept in `old+site/` as content reference only. New code
-should live in `src/`.
+- `src/app/` – routes (`/`, `/resume`, `/travel`, 404)
+- `src/components/` – UI, companions, and the globe
+- `src/lib/site-data.ts` – contact links, resumes, work, research
+- `src/lib/travel-data.ts` – cities and routes shown on the globe
+- `public/assets/` – images and decorations

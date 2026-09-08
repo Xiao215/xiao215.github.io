@@ -3,11 +3,18 @@ import { SakuraFall } from "@/components/sakura-fall";
 import { SlimeCompanion } from "@/components/slime-companion";
 import "./globals.css";
 
+export const siteUrl = "https://xiao215.github.io";
+const siteName = "Xiao's Tea Pot";
+const siteDescription =
+  "Xiao Zhang is a software engineer at Google Cloud and a research collaborator at Vector Institute working on LLM agents.";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://xiao215.github.io"),
-  title: "Xiao's Tea Pot",
-  description:
-    "Welcome to Xiao's Tea Pot, the personal website for Xiao Zhang.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s · ${siteName}`,
+  },
+  description: siteDescription,
   manifest: "/manifest.json",
   icons: {
     icon: "/assets/logo/webicon.svg",
@@ -15,10 +22,22 @@ export const metadata: Metadata = {
     apple: "/assets/logo/logo.png",
   },
   openGraph: {
-    title: "Xiao's Tea Pot",
-    description: "Welcome to Xiao's Tea Pot.",
-    siteName: "Xiao's Tea Pot",
+    title: siteName,
+    description: siteDescription,
+    siteName,
     type: "website",
+    url: "/",
+    images: [
+      {
+        url: "/assets/photos/pfp.webp",
+        width: 420,
+        height: 420,
+        alt: "Portrait of Xiao Zhang",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary",
   },
 };
 

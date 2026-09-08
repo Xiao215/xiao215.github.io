@@ -78,3 +78,6 @@ bower_components/
 
 # TypeScript incremental build info
 *.tsbuildinfo
+
+# Claude Code local tooling and worktrees
+.claude/
