@@ -22,8 +22,10 @@ workflow in `.github/workflows/nextjs.yml` deploys on every push to `main`.
 
 ## Layout
 
-- `src/app/` – routes (`/`, `/resume`, `/travel`, 404)
-- `src/components/` – UI, companions, and the globe
+- `src/app/` – routes (`/`, `/resume`, `/travel`, `/sport`, 404)
+- `src/components/` – UI, companions, the globe, and the slime playdate
+- `src/lib/toy-physics.ts` – throwable-ball physics for the sport page
+- `src/lib/piano-synth.ts` – Web Audio notes used by the sport page
 - `src/lib/site-data.ts` – contact links, resumes, work, research
 - `src/lib/travel-data.ts` – cities and routes shown on the globe
 - `public/assets/` – images and decorations

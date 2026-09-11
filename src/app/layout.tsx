@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { SakuraFall } from "@/components/sakura-fall";
-import { SlimeCompanion } from "@/components/slime-companion";
+import { SiteSlimeCompanion } from "@/components/slime-companion";
 import "./globals.css";
 
 export const siteUrl = "https://xiao215.github.io";
@@ -55,7 +55,7 @@ export default function RootLayout({
       <body className="min-h-full">
         <SakuraFall />
         <div className="relative z-10">{children}</div>
-        <SlimeCompanion className="site-slime-companion" />
+        <SiteSlimeCompanion />
       </body>
     </html>
   );
