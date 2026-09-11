@@ -8,6 +8,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "Resume", href: "/resume" },
   { label: "Travel", href: "/travel" },
+  { label: "Sport", href: "/sport" },
 ];
 
 export function SiteNav() {

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const bodySrc = "/assets/slime/slime_body.png";
@@ -11,6 +12,18 @@ const leftWingSrc = "/assets/slime/slime_left_wing.png";
 const rightWingSrc = "/assets/slime/slime_right_wing.png";
 const calmWingFrequency = 1 / 5.2;
 const excitedWingFrequency = 1 / 0.62;
+
+// The fixed corner slime, except on the sport page, where the slime is part
+// of the playable scene instead.
+export function SiteSlimeCompanion() {
+  const pathname = usePathname();
+
+  if (pathname.startsWith("/sport")) {
+    return null;
+  }
+
+  return <SlimeCompanion className="site-slime-companion" />;
+}
 
 export function SlimeCompanion({ className = "" }: { className?: string }) {
   const slimeRef = useRef<HTMLButtonElement>(null);
