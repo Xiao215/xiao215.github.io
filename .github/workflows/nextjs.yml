@@ -55,12 +55,15 @@ jobs:
           cache: ${{ steps.detect-package-manager.outputs.manager }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          # Automatically inject basePath in your Next.js configuration file and disable
-          # server side image optimization (https://nextjs.org/docs/api-reference/next/image#unoptimized).
-          #
-          # You may remove this line if you want to manage the configuration yourself.
-          static_site_generator: next
+        # No static_site_generator here on purpose. That input makes the action
+        # write its own next.config.js, and because it cannot read a TypeScript
+        # config it reports "Using default blank configuration" and starts from
+        # an empty object. The generated .js then wins over our next.config.ts,
+        # so `trailingSlash: true` was being dropped on every deploy: the build
+        # emitted travel.html instead of travel/index.html, and every /travel/
+        # style URL — the form our own nav and sitemap use — returned the 404
+        # page. next.config.ts already sets output, basePath and
+        # images.unoptimized, so there is nothing left for the action to inject.
       - name: Restore cache
         uses: actions/cache@v4
         with:
