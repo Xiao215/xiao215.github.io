@@ -520,3 +520,93 @@ export const travelRoutes = [
   route("fuzhou-cebu", "fuzhou", "cebu"),
   route("cebu-manila", "cebu", "manila"),
 ] as const;
+
+/**
+ * Legs travelled on the ground — trains, buses, drives. They carry no flight,
+ * so without them a third of the cities would sit on the globe unconnected.
+ */
+export const travelGroundLegs = [
+  route("tokyo-nagoya", "tokyo", "nagoya"),
+  route("nagoya-kyoto", "nagoya", "kyoto"),
+  route("kyoto-nara", "kyoto", "nara"),
+  route("nara-osaka", "nara", "osaka"),
+  route("rome-florence", "rome", "florence"),
+  route("florence-venice", "florence", "venice"),
+  route("venice-milan", "venice", "milan"),
+  route("munich-salzburg", "munich", "salzburg"),
+  route("salzburg-vienna", "salzburg", "vienna"),
+  route("berlin-dresden", "berlin", "dresden"),
+  route("dresden-prague", "dresden", "prague"),
+  route("amsterdam-cologne", "amsterdam", "cologne"),
+  route("shanghai-suzhou", "shanghai", "suzhou"),
+  route("beijing-tianjin", "beijing", "tianjin"),
+  route("zhejiang-wuyuan", "zhejiang", "wuyuan"),
+  route("fuzhou-ningde", "fuzhou", "ningde"),
+  route("phnom-penh-angkor-wat", "phnom-penh", "angkor-wat"),
+] as const;
+
+/**
+ * Real IATA codes where the city has an airport. The five reached only on the
+ * ground — Kyoto, Nara, Suzhou, Wuyuan, Ningde — get invented three letters.
+ * Banff borrows Calgary's.
+ */
+export const travelPlaceCodes = {
+  fuzhou: "FOC",
+  toronto: "YYZ",
+  iceland: "KEF",
+  "san-francisco": "SFO",
+  berlin: "BER",
+  rome: "FCO",
+  phuket: "HKT",
+  halifax: "YHZ",
+  tokyo: "HND",
+  manila: "MNL",
+  sabah: "BKI",
+  "kuala-lumpur": "KUL",
+  singapore: "SIN",
+  taipei: "TPE",
+  shanghai: "PVG",
+  beijing: "PEK",
+  xian: "XIY",
+  harbin: "HRB",
+  chengdu: "CTU",
+  zhejiang: "HGH",
+  xiamen: "XMN",
+  shenzhen: "SZX",
+  changchun: "CGQ",
+  montreal: "YUL",
+  banff: "YYC",
+  "los-angeles": "LAX",
+  "hong-kong": "HKG",
+  seoul: "ICN",
+  salzburg: "SZG",
+  cologne: "CGN",
+  amsterdam: "AMS",
+  milan: "MXP",
+  florence: "FLR",
+  osaka: "KIX",
+  nagoya: "NGO",
+  kyoto: "KYO",
+  nara: "NRA",
+  "chiang-mai": "CNX",
+  bangkok: "BKK",
+  cebu: "CEB",
+  vienna: "VIE",
+  munich: "MUC",
+  dresden: "DRS",
+  prague: "PRG",
+  charlottetown: "YYG",
+  moncton: "YQM",
+  ottawa: "YOW",
+  kingston: "YGK",
+  venice: "VCE",
+  tianjin: "TSN",
+  suzhou: "SZH",
+  wuyuan: "WUY",
+  ningde: "NDE",
+  "phnom-penh": "PNH",
+  "angkor-wat": "REP",
+  "quebec-city": "YQB",
+} as const satisfies Record<TravelPlaceId, string>;
+
+export type TravelLeg = (typeof travelRoutes)[number] | (typeof travelGroundLegs)[number];

@@ -801,3 +801,530 @@ a {
     display: none;
   }
 }
+
+/* ---------------------------------------------------------------- travel */
+
+.globe-card {
+  position: relative;
+  /* The rail beside it is taller; without this the card stretches to match and
+     the player bar drifts hundreds of pixels below the globe. */
+  align-self: start;
+  overflow: hidden;
+  border: 1px solid rgba(92, 82, 111, 0.55);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 70% 0%, rgba(169, 169, 239, 0.1), transparent 60%),
+    rgba(35, 39, 51, 0.6);
+}
+
+.globe-card__bar {
+  position: absolute;
+  inset: 16px 16px auto;
+  z-index: 2;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.globe-canvas {
+  display: block;
+  width: 100%;
+  height: 560px;
+}
+
+.globe-tools {
+  display: flex;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.globe-ghost {
+  padding: 7px 11px;
+  border: 1px solid rgba(92, 82, 111, 0.6);
+  border-radius: 7px;
+  background: rgba(22, 24, 34, 0.72);
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: 140ms;
+}
+
+.globe-ghost:hover {
+  color: var(--foreground);
+  border-color: rgba(169, 169, 239, 0.7);
+}
+
+.globe-ghost[aria-pressed="true"] {
+  color: var(--foreground);
+  border-color: rgba(241, 165, 216, 0.5);
+  background: rgba(241, 165, 216, 0.14);
+}
+
+/* Lets the chapter row scroll instead of shoving the buttons off the card. */
+.globe-card__bar > div:first-child {
+  min-width: 0;
+}
+
+.globe-chapters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 10px;
+  padding: 4px;
+  border: 1px solid rgba(92, 82, 111, 0.5);
+  border-radius: 8px;
+  background: rgba(22, 24, 34, 0.74);
+  backdrop-filter: blur(8px);
+  pointer-events: auto;
+}
+
+.globe-chapters button {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.globe-chapters button small {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  opacity: 0.55;
+}
+
+.globe-chapters button:hover {
+  color: var(--foreground);
+}
+
+.globe-chapters button[aria-current="true"] {
+  background: rgba(169, 169, 239, 0.2);
+  color: var(--foreground);
+}
+
+.globe-player {
+  position: absolute;
+  inset: auto 14px 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid rgba(92, 82, 111, 0.55);
+  border-radius: 9px;
+  background: rgba(20, 22, 32, 0.78);
+  backdrop-filter: blur(12px);
+}
+
+.globe-player__play {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 13px;
+  border-radius: 7px;
+  background: var(--accent-strong);
+  color: #181848;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.globe-player__trips {
+  display: flex;
+  gap: 6px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.globe-player__trips::-webkit-scrollbar {
+  display: none;
+}
+
+.globe-player__trips button {
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  border: 1px solid rgba(92, 82, 111, 0.55);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.globe-player__trips button:hover {
+  color: var(--foreground);
+}
+
+.globe-player__trips button[aria-current="true"] {
+  color: var(--foreground);
+  border-color: rgba(241, 165, 216, 0.6);
+  background: rgba(241, 165, 216, 0.14);
+}
+
+.globe-player__now {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent-warm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* A paper ticket is the one warm, opaque thing on the page, so it reads as an
+   object you were handed rather than another panel. */
+.ticket {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #ece3d6;
+  color: #22202c;
+  box-shadow: 0 18px 44px rgba(10, 10, 32, 0.45);
+}
+
+.ticket__main {
+  min-width: 0;
+  padding: 14px 15px 15px;
+}
+
+.ticket__brand {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a7f72;
+}
+
+.ticket__brand b {
+  color: #b83a73;
+  font-weight: 700;
+}
+
+.ticket--ground .ticket__brand b,
+.ticket--ground .ticket__glyph {
+  color: #4b4b96;
+}
+
+.ticket__route {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  margin-top: 13px;
+}
+
+.ticket__route b {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.ticket__route span {
+  display: block;
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: #6d6458;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ticket__route > div:last-child {
+  text-align: right;
+}
+
+.ticket__glyph {
+  font-size: 15px;
+  color: #b83a73;
+}
+
+.ticket__meta {
+  display: grid;
+  /* Wraps to two rows in a narrow rail rather than letting the numbers collide. */
+  grid-template-columns: repeat(auto-fit, minmax(68px, 1fr));
+  gap: 11px 8px;
+  margin: 14px 0 0;
+  padding-top: 11px;
+  border-top: 1px dashed rgba(34, 32, 44, 0.25);
+}
+
+.ticket__meta dt {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a7f72;
+}
+
+.ticket__meta dd {
+  margin: 3px 0 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ticket__stub {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 14px 6px;
+  background: #ded1bf;
+  border-left: 2px dashed rgba(34, 32, 44, 0.32);
+  font-family: var(--font-mono);
+  text-align: center;
+}
+
+.ticket__stub small {
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8a7f72;
+}
+
+.ticket__rank {
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.ticket__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 26px;
+}
+
+.ticket__bars i {
+  display: block;
+  height: 100%;
+  background: #22202c;
+}
+
+.travel-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.travel-card {
+  border: 1px solid rgba(92, 82, 111, 0.55);
+  border-radius: 10px;
+  background: rgba(35, 39, 51, 0.58);
+  padding: 16px;
+}
+
+.travel-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 10px;
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid rgba(92, 82, 111, 0.4);
+}
+
+.travel-meta dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(201, 190, 216, 0.6);
+}
+
+.travel-meta dd {
+  margin: 4px 0 0;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--accent-warm);
+}
+
+.travel-legs {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.travel-legs button {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 7px;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: 140ms;
+}
+
+.travel-legs button:hover {
+  background: rgba(241, 165, 216, 0.12);
+  color: var(--foreground);
+}
+
+.travel-legs .km {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(240, 216, 192, 0.75);
+}
+
+.travel-legs i {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent-warm);
+  border: 1px solid rgba(240, 216, 192, 0.35);
+  border-radius: 4px;
+  padding: 1px 4px;
+  margin-left: 7px;
+  vertical-align: 1px;
+}
+
+.travel-search {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid rgba(92, 82, 111, 0.6);
+  border-radius: 7px;
+  background: rgba(24, 24, 72, 0.3);
+  color: var(--foreground);
+  font-size: 14px;
+}
+
+.travel-search::placeholder {
+  color: rgba(201, 190, 216, 0.5);
+}
+
+.travel-index {
+  max-height: 168px;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-top: 12px;
+}
+
+.travel-index h4 {
+  margin: 14px 0 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.travel-index h4:first-child {
+  margin-top: 0;
+}
+
+.travel-index button {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.travel-index button small {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(201, 190, 216, 0.45);
+}
+
+.travel-index button:hover {
+  background: rgba(169, 169, 239, 0.12);
+  color: var(--foreground);
+}
+
+.travel-index button[aria-current="true"] {
+  background: rgba(241, 165, 216, 0.16);
+  color: var(--foreground);
+}
+
+.travel-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.travel-facts p {
+  flex: 1 1 230px;
+  margin: 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(92, 82, 111, 0.45);
+  border-radius: 9px;
+  background: rgba(35, 39, 51, 0.5);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.travel-facts b {
+  color: var(--accent-warm);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 900px) {
+  .globe-canvas {
+    height: 420px;
+  }
+}
+
+@media (max-width: 560px) {
+  .globe-chapters {
+    flex-wrap: nowrap;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .globe-chapters button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+
+  .globe-ghost {
+    padding: 6px 9px;
+    font-size: 11px;
+  }
+
+  .globe-tools {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+}
