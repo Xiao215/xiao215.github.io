@@ -76,8 +76,28 @@ function alignRing(ring, center) {
   return offset ? ring.map(([lng, lat]) => [lng + offset, lat]) : ring;
 }
 
+/**
+ * Natural Earth clips Antarctica at about -85.6 degrees, and its ring runs the
+ * whole way round the planet without ever enclosing the pole. Tested as it
+ * stands, everything below that latitude reads as ocean and the globe gets a
+ * bare circular hole at the south pole. Carry the ring down to -90 so the cap
+ * is inside it.
+ */
+function closeSouthPolarCap(ring) {
+  let low = Infinity;
+  let high = -Infinity;
+  let minLat = 90;
+  for (const [lng, lat] of ring) {
+    if (lng < low) low = lng;
+    if (lng > high) high = lng;
+    if (lat < minLat) minLat = lat;
+  }
+  if (high - low < 340 || minLat > -80) return ring;
+  return [...ring, [ring[ring.length - 1][0], -90], [ring[0][0], -90]];
+}
+
 const prepared = polygons.map((rings) => {
-  const outer = unwrapRing(rings[0]);
+  const outer = closeSouthPolarCap(unwrapRing(rings[0]));
   const center = centerLng(outer);
   const holes = rings.slice(1).map((ring) => alignRing(unwrapRing(ring), center));
   let minLng = Infinity;
@@ -130,13 +150,20 @@ function isLand(lng, lat) {
   return false;
 }
 
-/** Longitude step widens with latitude so the dots stay evenly spread on the sphere. */
+/**
+ * Each row of latitude gets however many dots keep the spacing even on the
+ * sphere, which is one at the poles and most at the equator. Running the rows
+ * all the way to +/-90 matters: stopping short leaves an unsampled cap, which
+ * shows up as a hole in Antarctica.
+ */
 function sampleLand(step) {
   const points = [];
-  for (let lat = -84; lat <= 84; lat += step) {
-    const lngStep = step / Math.max(Math.cos((lat * Math.PI) / 180), 0.15);
-    for (let lng = -180; lng < 180; lng += lngStep) {
-      if (isLand(lng, lat)) points.push([round(lng), round(lat)]);
+  for (let lat = -90; lat <= 90.0001; lat += step) {
+    const row = Math.min(90, lat);
+    const count = Math.max(1, Math.round((360 * Math.cos((row * Math.PI) / 180)) / step));
+    for (let i = 0; i < count; i += 1) {
+      const lng = -180 + (i * 360) / count;
+      if (isLand(lng, row)) points.push([round(lng), round(row)]);
     }
   }
   return points;
