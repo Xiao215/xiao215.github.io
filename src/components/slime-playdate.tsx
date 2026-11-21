@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { playNote, unlockAudio } from "@/lib/piano-synth";
 import {
   attachGrab,
   clamp,
@@ -174,18 +173,11 @@ export function SlimePlaydate() {
       squashAmount = clamp(strength, 0.25, 1);
     }
 
-    function chime(notes: number[]) {
-      notes.forEach((midi, index) =>
-        playNote(midi, { velocity: 0.4, delay: index * 0.06 }),
-      );
-    }
-
     function bonk(ball: (typeof balls)[number], impact: number) {
       bonkCount++;
       setBonks(bonkCount);
       setCaption(bonkCaptions[bonkCount % bonkCaptions.length]);
       surprise(impact / 1200);
-      chime([79, 84]);
       boings.push({ x: slime.cx, y: slime.bodyY - 18, age: 0 });
 
       // Throw balls back; a shuttle is light enough to just settle on top.
@@ -202,7 +194,6 @@ export function SlimePlaydate() {
       onTapEmpty: (point) => {
         if (insideSlime(point)) {
           surprise(0.5);
-          chime([76, 79]);
         }
       },
       cursorAt: (point) => (insideSlime(point) ? "pointer" : ""),
@@ -394,7 +385,6 @@ export function SlimePlaydate() {
       visible = entries.some((entry) => entry.isIntersecting);
     });
     intersectionObserver.observe(canvas);
-    canvas.addEventListener("pointerdown", unlockAudio);
     resetRef.current = () => {
       if (ready) {
         place();
@@ -406,7 +396,6 @@ export function SlimePlaydate() {
       cancelAnimationFrame(frameId);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      canvas.removeEventListener("pointerdown", unlockAudio);
       grab.detach();
       resetRef.current = () => {};
     };

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ContactButtons } from "@/components/contact-buttons";
 import { ExperienceList } from "@/components/experience-list";
 import { FloatingPaimon } from "@/components/floating-paimon";
+import { ProjectsSection } from "@/components/projects-section";
 import { ResearchSection } from "@/components/research-section";
 import { SiteNav } from "@/components/site-nav";
 
@@ -79,6 +80,8 @@ export default function Home() {
       </section>
 
       <ResearchSection />
+
+      <ProjectsSection />
 
       <footer
         id="contact"

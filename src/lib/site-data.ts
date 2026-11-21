@@ -72,3 +72,33 @@ export const research = [
       "A benchmark and comparative study of mechanisms that help capable LLM agents sustain cooperation in mixed-motive games.",
   },
 ];
+
+export const projects = [
+  {
+    name: "self.mp3",
+    slug: "selfmp3",
+    status: "Live",
+    date: "2026",
+    tagline: "An AI-native music app for a library that is actually yours.",
+    image: {
+      src: "/assets/projects/selfmp3-home.webp",
+      width: 1440,
+      height: 900,
+      alt: "The self.mp3 desktop app: tag tiles, recently played albums and the player bar.",
+    },
+    summary:
+      "Ask it in your own words to play something, dig up a song or put a playlist together \u2014 always from music you own, never a catalogue you rent. It runs on the web, iPhone, Android and Mac, and the phone and Mac apps keep playing with no signal.",
+    links: [
+      { label: "Open the app", href: "https://xiao215.github.io/selfmp3/" },
+      { label: "Code", href: "https://github.com/Xiao215/selfmp3" },
+      {
+        label: "Docs",
+        href: "https://github.com/Xiao215/selfmp3/blob/main/docs/README.md",
+      },
+      {
+        label: "Get it on your phone",
+        href: "https://xiao215.github.io/selfmp3/install/",
+      },
+    ],
+  },
+];
